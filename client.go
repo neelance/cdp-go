@@ -4,6 +4,7 @@ import (
 	"github.com/neelance/cdp-go/protocol/accessibility"
 	"github.com/neelance/cdp-go/protocol/animation"
 	"github.com/neelance/cdp-go/protocol/applicationcache"
+	"github.com/neelance/cdp-go/protocol/browser"
 	"github.com/neelance/cdp-go/protocol/cachestorage"
 	"github.com/neelance/cdp-go/protocol/css"
 	"github.com/neelance/cdp-go/protocol/database"
@@ -20,8 +21,8 @@ import (
 	"github.com/neelance/cdp-go/protocol/log"
 	"github.com/neelance/cdp-go/protocol/memory"
 	"github.com/neelance/cdp-go/protocol/network"
+	"github.com/neelance/cdp-go/protocol/overlay"
 	"github.com/neelance/cdp-go/protocol/page"
-	"github.com/neelance/cdp-go/protocol/rendering"
 	"github.com/neelance/cdp-go/protocol/security"
 	"github.com/neelance/cdp-go/protocol/serviceworker"
 	"github.com/neelance/cdp-go/protocol/storage"
@@ -38,6 +39,7 @@ type Client struct {
 	Accessibility     accessibility.Domain
 	Animation         animation.Domain
 	ApplicationCache  applicationcache.Domain
+	Browser           browser.Domain
 	CacheStorage      cachestorage.Domain
 	CSS               css.Domain
 	Database          database.Domain
@@ -54,8 +56,8 @@ type Client struct {
 	Log               log.Domain
 	Memory            memory.Domain
 	Network           network.Domain
+	Overlay           overlay.Domain
 	Page              page.Domain
-	Rendering         rendering.Domain
 	Security          security.Domain
 	ServiceWorker     serviceworker.Domain
 	Storage           storage.Domain
@@ -76,6 +78,7 @@ func Dial(url string) *Client {
 		Accessibility:     accessibility.Domain{Client: cl},
 		Animation:         animation.Domain{Client: cl},
 		ApplicationCache:  applicationcache.Domain{Client: cl},
+		Browser:           browser.Domain{Client: cl},
 		CacheStorage:      cachestorage.Domain{Client: cl},
 		CSS:               css.Domain{Client: cl},
 		Database:          database.Domain{Client: cl},
@@ -92,8 +95,8 @@ func Dial(url string) *Client {
 		Log:               log.Domain{Client: cl},
 		Memory:            memory.Domain{Client: cl},
 		Network:           network.Domain{Client: cl},
+		Overlay:           overlay.Domain{Client: cl},
 		Page:              page.Domain{Client: cl},
-		Rendering:         rendering.Domain{Client: cl},
 		Security:          security.Domain{Client: cl},
 		ServiceWorker:     serviceworker.Domain{Client: cl},
 		Storage:           storage.Domain{Client: cl},

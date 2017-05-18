@@ -39,7 +39,7 @@ type CSSStyleSheetHeader interface{}
 // CSS rule representation.
 type CSSRule interface{}
 
-// CSS rule usage information. (experimental)
+// CSS coverage information. (experimental)
 type RuleUsage interface{}
 
 // Text range within a resource. All numbers are zero-based.
@@ -419,6 +419,17 @@ func (d *Domain) GetLayoutTreeAndStyles(opts *GetLayoutTreeAndStylesOpts) (*GetL
 // Enables the selector recording. (experimental)
 func (d *Domain) StartRuleUsageTracking() error {
 	return d.Client.Call("CSS.startRuleUsageTracking", nil, nil)
+}
+
+type TakeCoverageDeltaResult struct {
+	Coverage []RuleUsage `json:"coverage"`
+}
+
+// Obtain list of rules that became used since last call to this method (or since start of coverage instrumentation) (experimental)
+func (d *Domain) TakeCoverageDelta() (*TakeCoverageDeltaResult, error) {
+	var result TakeCoverageDeltaResult
+	err := d.Client.Call("CSS.takeCoverageDelta", nil, &result)
+	return &result, err
 }
 
 type StopRuleUsageTrackingResult struct {

@@ -46,12 +46,6 @@ type ShapeOutsideInfo interface{}
 // Rectangle. (experimental)
 type Rect interface{}
 
-// Configuration data for the highlighting of page elements.
-type HighlightConfig interface{}
-
-// (experimental)
-type InspectMode interface{}
-
 // Enables DOM agent for the given page.
 func (d *Domain) Enable() error {
 	return d.Client.Call("DOM.enable", nil, nil)
@@ -366,98 +360,19 @@ func (d *Domain) RequestNode(opts *RequestNodeOpts) (*RequestNodeResult, error) 
 	return &result, err
 }
 
-type SetInspectModeOpts struct {
-	// Set an inspection mode.
-	Mode InspectMode `json:"mode"`
-
-	// A descriptor for the highlight appearance of hovered-over nodes. May be omitted if <code>enabled == false</code>. (optional)
-	HighlightConfig HighlightConfig `json:"highlightConfig,omitempty"`
+// Highlights given rectangle.
+func (d *Domain) HighlightRect() error {
+	return d.Client.Call("DOM.highlightRect", nil, nil)
 }
 
-// Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted. Backend then generates 'inspectNodeRequested' event upon element selection. (experimental)
-func (d *Domain) SetInspectMode(opts *SetInspectModeOpts) error {
-	return d.Client.Call("DOM.setInspectMode", opts, nil)
+// Highlights DOM node.
+func (d *Domain) HighlightNode() error {
+	return d.Client.Call("DOM.highlightNode", nil, nil)
 }
 
-type HighlightRectOpts struct {
-	// X coordinate
-	X int `json:"x"`
-
-	// Y coordinate
-	Y int `json:"y"`
-
-	// Rectangle width
-	Width int `json:"width"`
-
-	// Rectangle height
-	Height int `json:"height"`
-
-	// The highlight fill color (default: transparent). (optional)
-	Color RGBA `json:"color,omitempty"`
-
-	// The highlight outline color (default: transparent). (optional)
-	OutlineColor RGBA `json:"outlineColor,omitempty"`
-}
-
-// Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
-func (d *Domain) HighlightRect(opts *HighlightRectOpts) error {
-	return d.Client.Call("DOM.highlightRect", opts, nil)
-}
-
-type HighlightQuadOpts struct {
-	// Quad to highlight
-	Quad Quad `json:"quad"`
-
-	// The highlight fill color (default: transparent). (optional)
-	Color RGBA `json:"color,omitempty"`
-
-	// The highlight outline color (default: transparent). (optional)
-	OutlineColor RGBA `json:"outlineColor,omitempty"`
-}
-
-// Highlights given quad. Coordinates are absolute with respect to the main frame viewport. (experimental)
-func (d *Domain) HighlightQuad(opts *HighlightQuadOpts) error {
-	return d.Client.Call("DOM.highlightQuad", opts, nil)
-}
-
-type HighlightNodeOpts struct {
-	// A descriptor for the highlight appearance.
-	HighlightConfig HighlightConfig `json:"highlightConfig"`
-
-	// Identifier of the node to highlight. (optional)
-	NodeId NodeId `json:"nodeId,omitempty"`
-
-	// Identifier of the backend node to highlight. (optional)
-	BackendNodeId BackendNodeId `json:"backendNodeId,omitempty"`
-
-	// JavaScript object id of the node to be highlighted. (optional, experimental)
-	ObjectId interface{} `json:"objectId,omitempty"`
-}
-
-// Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or objectId must be specified.
-func (d *Domain) HighlightNode(opts *HighlightNodeOpts) error {
-	return d.Client.Call("DOM.highlightNode", opts, nil)
-}
-
-// Hides DOM node highlight.
+// Hides any highlight.
 func (d *Domain) HideHighlight() error {
 	return d.Client.Call("DOM.hideHighlight", nil, nil)
-}
-
-type HighlightFrameOpts struct {
-	// Identifier of the frame to highlight.
-	FrameId interface{} `json:"frameId"`
-
-	// The content box highlight fill color (default: transparent). (optional)
-	ContentColor RGBA `json:"contentColor,omitempty"`
-
-	// The content box highlight outline color (default: transparent). (optional)
-	ContentOutlineColor RGBA `json:"contentOutlineColor,omitempty"`
-}
-
-// Highlights owner element of the frame with given id. (experimental)
-func (d *Domain) HighlightFrame(opts *HighlightFrameOpts) error {
-	return d.Client.Call("DOM.highlightFrame", opts, nil)
 }
 
 type PushNodeByPathToFrontendOpts struct {
@@ -648,6 +563,9 @@ type GetNodeForLocationOpts struct {
 
 	// Y coordinate.
 	Y int `json:"y"`
+
+	// False to skip to the nearest non-UA shadow root ancestor (default: false). (optional)
+	IncludeUserAgentShadowDOM bool `json:"includeUserAgentShadowDOM,omitempty"`
 }
 
 type GetNodeForLocationResult struct {
@@ -679,23 +597,6 @@ func (d *Domain) GetRelayoutBoundary(opts *GetRelayoutBoundaryOpts) (*GetRelayou
 	return &result, err
 }
 
-type GetHighlightObjectForTestOpts struct {
-	// Id of the node to get highlight object for.
-	NodeId NodeId `json:"nodeId"`
-}
-
-type GetHighlightObjectForTestResult struct {
-	// Highlight data for the node.
-	Highlight interface{} `json:"highlight"`
-}
-
-// For testing. (experimental)
-func (d *Domain) GetHighlightObjectForTest(opts *GetHighlightObjectForTestOpts) (*GetHighlightObjectForTestResult, error) {
-	var result GetHighlightObjectForTestResult
-	err := d.Client.Call("DOM.getHighlightObjectForTest", opts, &result)
-	return &result, err
-}
-
 type DocumentUpdatedEvent struct {
 }
 
@@ -703,23 +604,6 @@ type DocumentUpdatedEvent struct {
 func (d *Domain) OnDocumentUpdated(listener func(*DocumentUpdatedEvent)) {
 	d.Client.AddListener("DOM.documentUpdated", func(params json.RawMessage) {
 		var event DocumentUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
-type InspectNodeRequestedEvent struct {
-	// Id of the node to inspect.
-	BackendNodeId BackendNodeId `json:"backendNodeId"`
-}
-
-// Fired when the node should be inspected. This happens after call to <code>setInspectMode</code>. (experimental)
-func (d *Domain) OnInspectNodeRequested(listener func(*InspectNodeRequestedEvent)) {
-	d.Client.AddListener("DOM.inspectNodeRequested", func(params json.RawMessage) {
-		var event InspectNodeRequestedEvent
 		if err := json.Unmarshal(params, &event); err != nil {
 			log.Print(err)
 			return
@@ -983,22 +867,6 @@ type DistributedNodesUpdatedEvent struct {
 func (d *Domain) OnDistributedNodesUpdated(listener func(*DistributedNodesUpdatedEvent)) {
 	d.Client.AddListener("DOM.distributedNodesUpdated", func(params json.RawMessage) {
 		var event DistributedNodesUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
-type NodeHighlightRequestedEvent struct {
-	NodeId NodeId `json:"nodeId"`
-}
-
-// (experimental)
-func (d *Domain) OnNodeHighlightRequested(listener func(*NodeHighlightRequestedEvent)) {
-	d.Client.AddListener("DOM.nodeHighlightRequested", func(params json.RawMessage) {
-		var event NodeHighlightRequestedEvent
 		if err := json.Unmarshal(params, &event); err != nil {
 			log.Print(err)
 			return

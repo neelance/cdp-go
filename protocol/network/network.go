@@ -129,11 +129,11 @@ func (d *Domain) GetResponseBody(opts *GetResponseBodyOpts) (*GetResponseBodyRes
 }
 
 type SetBlockedURLsOpts struct {
-	// URLs to block.
+	// URL patterns to block. Wildcards ('*') are allowed.
 	Urls []string `json:"urls"`
 }
 
-// Blocks specific URL from loading. (experimental)
+// Blocks URLs from loading. (experimental)
 func (d *Domain) SetBlockedURLs(opts *SetBlockedURLsOpts) error {
 	return d.Client.Call("Network.setBlockedURLs", opts, nil)
 }
@@ -146,16 +146,6 @@ type ReplayXHROpts struct {
 // This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password. (experimental)
 func (d *Domain) ReplayXHR(opts *ReplayXHROpts) error {
 	return d.Client.Call("Network.replayXHR", opts, nil)
-}
-
-type SetMonitoringXHREnabledOpts struct {
-	// Monitoring enabled state.
-	Enabled bool `json:"enabled"`
-}
-
-// Toggles monitoring of XMLHttpRequest. If <code>true</code>, console will receive messages upon each XHR issued. (experimental)
-func (d *Domain) SetMonitoringXHREnabled(opts *SetMonitoringXHREnabledOpts) error {
-	return d.Client.Call("Network.setMonitoringXHREnabled", opts, nil)
 }
 
 type CanClearBrowserCacheResult struct {

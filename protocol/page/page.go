@@ -391,15 +391,50 @@ func (d *Domain) CaptureScreenshot(opts *CaptureScreenshotOpts) (*CaptureScreens
 	return &result, err
 }
 
+type PrintToPDFOpts struct {
+	// Paper orientation. Defaults to false. (optional)
+	Landscape bool `json:"landscape,omitempty"`
+
+	// Display header and footer. Defaults to false. (optional)
+	DisplayHeaderFooter bool `json:"displayHeaderFooter,omitempty"`
+
+	// Print background graphics. Defaults to false. (optional)
+	PrintBackground bool `json:"printBackground,omitempty"`
+
+	// Scale of the webpage rendering. Defaults to 1. (optional)
+	Scale float64 `json:"scale,omitempty"`
+
+	// Paper width in inches. Defaults to 8.5 inches. (optional)
+	PaperWidth float64 `json:"paperWidth,omitempty"`
+
+	// Paper height in inches. Defaults to 11 inches. (optional)
+	PaperHeight float64 `json:"paperHeight,omitempty"`
+
+	// Top margin in inches. Defaults to 1cm (~0.4 inches). (optional)
+	MarginTop float64 `json:"marginTop,omitempty"`
+
+	// Bottom margin in inches. Defaults to 1cm (~0.4 inches). (optional)
+	MarginBottom float64 `json:"marginBottom,omitempty"`
+
+	// Left margin in inches. Defaults to 1cm (~0.4 inches). (optional)
+	MarginLeft float64 `json:"marginLeft,omitempty"`
+
+	// Right margin in inches. Defaults to 1cm (~0.4 inches). (optional)
+	MarginRight float64 `json:"marginRight,omitempty"`
+
+	// Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages. (optional)
+	PageRanges string `json:"pageRanges,omitempty"`
+}
+
 type PrintToPDFResult struct {
 	// Base64-encoded pdf data.
 	Data string `json:"data"`
 }
 
-// Print page as pdf. (experimental)
-func (d *Domain) PrintToPDF() (*PrintToPDFResult, error) {
+// Print page as PDF. (experimental)
+func (d *Domain) PrintToPDF(opts *PrintToPDFOpts) (*PrintToPDFResult, error) {
 	var result PrintToPDFResult
-	err := d.Client.Call("Page.printToPDF", nil, &result)
+	err := d.Client.Call("Page.printToPDF", opts, &result)
 	return &result, err
 }
 
@@ -451,29 +486,6 @@ type HandleJavaScriptDialogOpts struct {
 // Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 func (d *Domain) HandleJavaScriptDialog(opts *HandleJavaScriptDialogOpts) error {
 	return d.Client.Call("Page.handleJavaScriptDialog", opts, nil)
-}
-
-type SetColorPickerEnabledOpts struct {
-	// Shows / hides color picker
-	Enabled bool `json:"enabled"`
-}
-
-// Shows / hides color picker (experimental)
-func (d *Domain) SetColorPickerEnabled(opts *SetColorPickerEnabledOpts) error {
-	return d.Client.Call("Page.setColorPickerEnabled", opts, nil)
-}
-
-type ConfigureOverlayOpts struct {
-	// Whether overlay should be suspended and not consume any resources. (optional)
-	Suspended bool `json:"suspended,omitempty"`
-
-	// Overlay message to display. (optional)
-	Message string `json:"message,omitempty"`
-}
-
-// Configures overlay. (experimental)
-func (d *Domain) ConfigureOverlay(opts *ConfigureOverlayOpts) error {
-	return d.Client.Call("Page.configureOverlay", opts, nil)
 }
 
 type GetAppManifestResult struct {
@@ -536,6 +548,22 @@ func (d *Domain) GetLayoutMetrics() (*GetLayoutMetricsResult, error) {
 	return &result, err
 }
 
+type CreateIsolatedWorldOpts struct {
+	// Id of the frame in which the isolated world should be created.
+	FrameId FrameId `json:"frameId"`
+
+	// An optional name which is reported in the Execution Context. (optional)
+	WorldName string `json:"worldName,omitempty"`
+
+	// Whether or not universal access should be granted to the isolated world. This is a powerful option, use with caution. (optional)
+	GrantUniveralAccess bool `json:"grantUniveralAccess,omitempty"`
+}
+
+// Creates an isolated world for the given frame. (experimental)
+func (d *Domain) CreateIsolatedWorld(opts *CreateIsolatedWorldOpts) error {
+	return d.Client.Call("Page.createIsolatedWorld", opts, nil)
+}
+
 type DomContentEventFiredEvent struct {
 	Timestamp float64 `json:"timestamp"`
 }
@@ -572,6 +600,9 @@ type FrameAttachedEvent struct {
 
 	// Parent frame identifier.
 	ParentFrameId FrameId `json:"parentFrameId"`
+
+	// JavaScript stack trace of when frame was attached, only set if frame initiated from script. (optional, experimental)
+	Stack interface{} `json:"stack"`
 }
 
 // Fired when frame has been attached to its parent.
@@ -775,23 +806,6 @@ type ScreencastVisibilityChangedEvent struct {
 func (d *Domain) OnScreencastVisibilityChanged(listener func(*ScreencastVisibilityChangedEvent)) {
 	d.Client.AddListener("Page.screencastVisibilityChanged", func(params json.RawMessage) {
 		var event ScreencastVisibilityChangedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
-type ColorPickedEvent struct {
-	// RGBA of the picked color.
-	Color interface{} `json:"color"`
-}
-
-// Fired when a color has been picked. (experimental)
-func (d *Domain) OnColorPicked(listener func(*ColorPickedEvent)) {
-	d.Client.AddListener("Page.colorPicked", func(params json.RawMessage) {
-		var event ColorPickedEvent
 		if err := json.Unmarshal(params, &event); err != nil {
 			log.Print(err)
 			return

@@ -64,7 +64,7 @@ func (d *Domain) SetRemoteLocations(opts *SetRemoteLocationsOpts) error {
 }
 
 type SendMessageToTargetOpts struct {
-	TargetId string `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 
 	Message string `json:"message"`
 }
