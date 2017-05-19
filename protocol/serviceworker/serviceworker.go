@@ -36,9 +36,9 @@ type ServiceWorkerVersion struct {
 
 	ScriptURL string `json:"scriptURL"`
 
-	RunningStatus *ServiceWorkerVersionRunningStatus `json:"runningStatus"`
+	RunningStatus ServiceWorkerVersionRunningStatus `json:"runningStatus"`
 
-	Status *ServiceWorkerVersionStatus `json:"status"`
+	Status ServiceWorkerVersionStatus `json:"status"`
 
 	// The Last-Modified header value of the main script. (optional)
 	ScriptLastModified float64 `json:"scriptLastModified,omitempty"`

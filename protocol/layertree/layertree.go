@@ -48,10 +48,10 @@ type PictureTile struct {
 
 type Layer struct {
 	// The unique id for this layer.
-	LayerId *LayerId `json:"layerId"`
+	LayerId LayerId `json:"layerId"`
 
 	// The id of parent (not present for root). (optional)
-	ParentLayerId *LayerId `json:"parentLayerId,omitempty"`
+	ParentLayerId LayerId `json:"parentLayerId,omitempty"`
 
 	// The backend id for the node associated with this layer. (optional)
 	BackendNodeId interface{} `json:"backendNodeId,omitempty"`
@@ -109,7 +109,7 @@ func (d *Domain) Disable() error {
 
 type CompositingReasonsOpts struct {
 	// The id of the layer for which we want to get the reasons it was composited.
-	LayerId *LayerId `json:"layerId"`
+	LayerId LayerId `json:"layerId"`
 }
 
 type CompositingReasonsResult struct {
@@ -126,12 +126,12 @@ func (d *Domain) CompositingReasons(opts *CompositingReasonsOpts) (*CompositingR
 
 type MakeSnapshotOpts struct {
 	// The id of the layer.
-	LayerId *LayerId `json:"layerId"`
+	LayerId LayerId `json:"layerId"`
 }
 
 type MakeSnapshotResult struct {
 	// The id of the layer snapshot.
-	SnapshotId *SnapshotId `json:"snapshotId"`
+	SnapshotId SnapshotId `json:"snapshotId"`
 }
 
 // Returns the layer snapshot identifier.
@@ -148,7 +148,7 @@ type LoadSnapshotOpts struct {
 
 type LoadSnapshotResult struct {
 	// The id of the snapshot.
-	SnapshotId *SnapshotId `json:"snapshotId"`
+	SnapshotId SnapshotId `json:"snapshotId"`
 }
 
 // Returns the snapshot identifier.
@@ -160,7 +160,7 @@ func (d *Domain) LoadSnapshot(opts *LoadSnapshotOpts) (*LoadSnapshotResult, erro
 
 type ReleaseSnapshotOpts struct {
 	// The id of the layer snapshot.
-	SnapshotId *SnapshotId `json:"snapshotId"`
+	SnapshotId SnapshotId `json:"snapshotId"`
 }
 
 // Releases layer snapshot captured by the back-end.
@@ -170,7 +170,7 @@ func (d *Domain) ReleaseSnapshot(opts *ReleaseSnapshotOpts) error {
 
 type ProfileSnapshotOpts struct {
 	// The id of the layer snapshot.
-	SnapshotId *SnapshotId `json:"snapshotId"`
+	SnapshotId SnapshotId `json:"snapshotId"`
 
 	// The maximum number of times to replay the snapshot (1, if not specified). (optional)
 	MinRepeatCount int `json:"minRepeatCount,omitempty"`
@@ -184,7 +184,7 @@ type ProfileSnapshotOpts struct {
 
 type ProfileSnapshotResult struct {
 	// The array of paint profiles, one per run.
-	Timings []*PaintProfile `json:"timings"`
+	Timings []PaintProfile `json:"timings"`
 }
 
 func (d *Domain) ProfileSnapshot(opts *ProfileSnapshotOpts) (*ProfileSnapshotResult, error) {
@@ -195,7 +195,7 @@ func (d *Domain) ProfileSnapshot(opts *ProfileSnapshotOpts) (*ProfileSnapshotRes
 
 type ReplaySnapshotOpts struct {
 	// The id of the layer snapshot.
-	SnapshotId *SnapshotId `json:"snapshotId"`
+	SnapshotId SnapshotId `json:"snapshotId"`
 
 	// The first step to replay from (replay from the very start if not specified). (optional)
 	FromStep int `json:"fromStep,omitempty"`
@@ -221,7 +221,7 @@ func (d *Domain) ReplaySnapshot(opts *ReplaySnapshotOpts) (*ReplaySnapshotResult
 
 type SnapshotCommandLogOpts struct {
 	// The id of the layer snapshot.
-	SnapshotId *SnapshotId `json:"snapshotId"`
+	SnapshotId SnapshotId `json:"snapshotId"`
 }
 
 type SnapshotCommandLogResult struct {
@@ -254,7 +254,7 @@ func (d *Domain) OnLayerTreeDidChange(listener func(*LayerTreeDidChangeEvent)) {
 
 type LayerPaintedEvent struct {
 	// The id of the painted layer.
-	LayerId *LayerId `json:"layerId"`
+	LayerId LayerId `json:"layerId"`
 
 	// Clip rectangle.
 	Clip interface{} `json:"clip"`

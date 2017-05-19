@@ -135,7 +135,7 @@ func (d *Domain) SetSuspended(opts *SetSuspendedOpts) error {
 
 type SetInspectModeOpts struct {
 	// Set an inspection mode.
-	Mode *InspectMode `json:"mode"`
+	Mode InspectMode `json:"mode"`
 
 	// A descriptor for the highlight appearance of hovered-over nodes. May be omitted if <code>enabled == false</code>. (optional)
 	HighlightConfig *HighlightConfig `json:"highlightConfig,omitempty"`

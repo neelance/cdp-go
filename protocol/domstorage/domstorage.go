@@ -50,7 +50,7 @@ type GetDOMStorageItemsOpts struct {
 }
 
 type GetDOMStorageItemsResult struct {
-	Entries []*Item `json:"entries"`
+	Entries []Item `json:"entries"`
 }
 
 func (d *Domain) GetDOMStorageItems(opts *GetDOMStorageItemsOpts) (*GetDOMStorageItemsResult, error) {

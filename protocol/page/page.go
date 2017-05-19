@@ -53,7 +53,7 @@ type FrameResource struct {
 	URL string `json:"url"`
 
 	// Type of this resource.
-	Type *ResourceType `json:"type"`
+	Type ResourceType `json:"type"`
 
 	// Resource mimeType as determined by the browser.
 	MimeType string `json:"mimeType"`
@@ -207,7 +207,7 @@ type AddScriptToEvaluateOnLoadOpts struct {
 
 type AddScriptToEvaluateOnLoadResult struct {
 	// Identifier of the added script.
-	Identifier *ScriptIdentifier `json:"identifier"`
+	Identifier ScriptIdentifier `json:"identifier"`
 }
 
 // (experimental)
@@ -218,7 +218,7 @@ func (d *Domain) AddScriptToEvaluateOnLoad(opts *AddScriptToEvaluateOnLoadOpts) 
 }
 
 type RemoveScriptToEvaluateOnLoadOpts struct {
-	Identifier *ScriptIdentifier `json:"identifier"`
+	Identifier ScriptIdentifier `json:"identifier"`
 }
 
 // (experimental)
@@ -259,7 +259,7 @@ type NavigateOpts struct {
 
 type NavigateResult struct {
 	// Frame id that will be navigated.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 }
 
 // Navigates current page to the given URL.
@@ -338,7 +338,7 @@ func (d *Domain) GetResourceTree() (*GetResourceTreeResult, error) {
 
 type GetResourceContentOpts struct {
 	// Frame id to get resource for.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 
 	// URL of the resource to get content for.
 	URL string `json:"url"`
@@ -361,7 +361,7 @@ func (d *Domain) GetResourceContent(opts *GetResourceContentOpts) (*GetResourceC
 
 type SearchInResourceOpts struct {
 	// Frame id for resource to search in.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 
 	// URL of the resource to search in.
 	URL string `json:"url"`
@@ -390,7 +390,7 @@ func (d *Domain) SearchInResource(opts *SearchInResourceOpts) (*SearchInResource
 
 type SetDocumentContentOpts struct {
 	// Frame id to set HTML for.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 
 	// HTML content to set.
 	Html string `json:"html"`
@@ -659,7 +659,7 @@ func (d *Domain) SetControlNavigations(opts *SetControlNavigationsOpts) error {
 }
 
 type ProcessNavigationOpts struct {
-	Response *NavigationResponse `json:"response"`
+	Response NavigationResponse `json:"response"`
 
 	NavigationId int `json:"navigationId"`
 }
@@ -689,7 +689,7 @@ func (d *Domain) GetLayoutMetrics() (*GetLayoutMetricsResult, error) {
 
 type CreateIsolatedWorldOpts struct {
 	// Id of the frame in which the isolated world should be created.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 
 	// An optional name which is reported in the Execution Context. (optional)
 	WorldName string `json:"worldName,omitempty"`
@@ -735,10 +735,10 @@ func (d *Domain) OnLoadEventFired(listener func(*LoadEventFiredEvent)) {
 
 type FrameAttachedEvent struct {
 	// Id of the frame that has been attached.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 
 	// Parent frame identifier.
-	ParentFrameId *FrameId `json:"parentFrameId"`
+	ParentFrameId FrameId `json:"parentFrameId"`
 
 	// JavaScript stack trace of when frame was attached, only set if frame initiated from script. (optional, experimental)
 	Stack interface{} `json:"stack"`
@@ -775,7 +775,7 @@ func (d *Domain) OnFrameNavigated(listener func(*FrameNavigatedEvent)) {
 
 type FrameDetachedEvent struct {
 	// Id of the frame that has been detached.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 }
 
 // Fired when frame has been detached from its parent.
@@ -792,7 +792,7 @@ func (d *Domain) OnFrameDetached(listener func(*FrameDetachedEvent)) {
 
 type FrameStartedLoadingEvent struct {
 	// Id of the frame that has started loading.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 }
 
 // Fired when frame has started loading. (experimental)
@@ -809,7 +809,7 @@ func (d *Domain) OnFrameStartedLoading(listener func(*FrameStartedLoadingEvent))
 
 type FrameStoppedLoadingEvent struct {
 	// Id of the frame that has stopped loading.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 }
 
 // Fired when frame has stopped loading. (experimental)
@@ -826,7 +826,7 @@ func (d *Domain) OnFrameStoppedLoading(listener func(*FrameStoppedLoadingEvent))
 
 type FrameScheduledNavigationEvent struct {
 	// Id of the frame that has scheduled a navigation.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 
 	// Delay (in seconds) until the navigation is scheduled to begin. The navigation is not guaranteed to start.
 	Delay float64 `json:"delay"`
@@ -846,7 +846,7 @@ func (d *Domain) OnFrameScheduledNavigation(listener func(*FrameScheduledNavigat
 
 type FrameClearedScheduledNavigationEvent struct {
 	// Id of the frame that has cleared its scheduled navigation.
-	FrameId *FrameId `json:"frameId"`
+	FrameId FrameId `json:"frameId"`
 }
 
 // Fired when frame no longer has a scheduled navigation. (experimental)
@@ -881,7 +881,7 @@ type JavascriptDialogOpeningEvent struct {
 	Message string `json:"message"`
 
 	// Dialog type.
-	Type *DialogType `json:"type"`
+	Type DialogType `json:"type"`
 }
 
 // Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to open.

@@ -30,7 +30,7 @@ type AXValueNativeSourceType string
 
 type AXValueSource struct {
 	// What type of source this is.
-	Type *AXValueSourceType `json:"type"`
+	Type AXValueSourceType `json:"type"`
 
 	// The value of this property source. (optional)
 	Value *AXValue `json:"value,omitempty"`
@@ -45,7 +45,7 @@ type AXValueSource struct {
 	Superseded bool `json:"superseded,omitempty"`
 
 	// The native markup source for this value, e.g. a <label> element. (optional)
-	NativeSource *AXValueNativeSourceType `json:"nativeSource,omitempty"`
+	NativeSource AXValueNativeSourceType `json:"nativeSource,omitempty"`
 
 	// The value, such as a node or node list, of the native source. (optional)
 	NativeSourceValue *AXValue `json:"nativeSourceValue,omitempty"`
@@ -80,7 +80,7 @@ type AXProperty struct {
 
 type AXValue struct {
 	// The type of this value.
-	Type *AXValueType `json:"type"`
+	Type AXValueType `json:"type"`
 
 	// The computed value of this property. (optional)
 	Value interface{} `json:"value,omitempty"`
@@ -116,7 +116,7 @@ type AXRelationshipAttributes string
 
 type AXNode struct {
 	// Unique identifier for this node.
-	NodeId *AXNodeId `json:"nodeId"`
+	NodeId AXNodeId `json:"nodeId"`
 
 	// Whether this node is ignored for accessibility
 	Ignored bool `json:"ignored"`
@@ -140,7 +140,7 @@ type AXNode struct {
 	Properties []*AXProperty `json:"properties,omitempty"`
 
 	// IDs for each of this node's child nodes. (optional)
-	ChildIds []*AXNodeId `json:"childIds,omitempty"`
+	ChildIds []AXNodeId `json:"childIds,omitempty"`
 
 	// The backend ID for the associated DOM node, if any. (optional)
 	BackendDOMNodeId interface{} `json:"backendDOMNodeId,omitempty"`

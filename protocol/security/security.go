@@ -25,7 +25,7 @@ type SecurityState string
 
 type SecurityStateExplanation struct {
 	// Security state representing the severity of the factor being explained.
-	SecurityState *SecurityState `json:"securityState"`
+	SecurityState SecurityState `json:"securityState"`
 
 	// Short phrase describing the type of factor.
 	Summary string `json:"summary"`
@@ -56,10 +56,10 @@ type InsecureContentStatus struct {
 	DisplayedContentWithCertErrors bool `json:"displayedContentWithCertErrors"`
 
 	// Security state representing a page that ran insecure content.
-	RanInsecureContentStyle *SecurityState `json:"ranInsecureContentStyle"`
+	RanInsecureContentStyle SecurityState `json:"ranInsecureContentStyle"`
 
 	// Security state representing a page that displayed insecure content.
-	DisplayedInsecureContentStyle *SecurityState `json:"displayedInsecureContentStyle"`
+	DisplayedInsecureContentStyle SecurityState `json:"displayedInsecureContentStyle"`
 }
 
 // The action to take when a certificate error occurs. continue will continue processing the request and cancel will cancel the request.
@@ -86,7 +86,7 @@ type HandleCertificateErrorOpts struct {
 	EventId int `json:"eventId"`
 
 	// The action to take on the certificate error.
-	Action *CertificateErrorAction `json:"action"`
+	Action CertificateErrorAction `json:"action"`
 }
 
 // Handles a certificate error that fired a certificateError event.
@@ -106,7 +106,7 @@ func (d *Domain) SetOverrideCertificateErrors(opts *SetOverrideCertificateErrors
 
 type SecurityStateChangedEvent struct {
 	// Security state.
-	SecurityState *SecurityState `json:"securityState"`
+	SecurityState SecurityState `json:"securityState"`
 
 	// True if the page was loaded over cryptographic transport such as HTTPS.
 	SchemeIsCryptographic bool `json:"schemeIsCryptographic"`

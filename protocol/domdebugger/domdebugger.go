@@ -53,7 +53,7 @@ type SetDOMBreakpointOpts struct {
 	NodeId interface{} `json:"nodeId"`
 
 	// Type of the operation to stop upon.
-	Type *DOMBreakpointType `json:"type"`
+	Type DOMBreakpointType `json:"type"`
 }
 
 // Sets breakpoint on particular operation with DOM.
@@ -66,7 +66,7 @@ type RemoveDOMBreakpointOpts struct {
 	NodeId interface{} `json:"nodeId"`
 
 	// Type of the breakpoint to remove.
-	Type *DOMBreakpointType `json:"type"`
+	Type DOMBreakpointType `json:"type"`
 }
 
 // Removes DOM breakpoint that was set using <code>setDOMBreakpoint</code>.

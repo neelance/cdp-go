@@ -73,7 +73,7 @@ type SelectorList struct {
 
 type CSSStyleSheetHeader struct {
 	// The stylesheet identifier.
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	// Owner frame identifier.
 	FrameId interface{} `json:"frameId"`
@@ -85,7 +85,7 @@ type CSSStyleSheetHeader struct {
 	SourceMapURL string `json:"sourceMapURL,omitempty"`
 
 	// Stylesheet origin.
-	Origin *StyleSheetOrigin `json:"origin"`
+	Origin StyleSheetOrigin `json:"origin"`
 
 	// Stylesheet title.
 	Title string `json:"title"`
@@ -116,13 +116,13 @@ type CSSStyleSheetHeader struct {
 
 type CSSRule struct {
 	// The css style sheet identifier (absent for user agent stylesheet and user-specified stylesheet rules) this rule came from. (optional)
-	StyleSheetId *StyleSheetId `json:"styleSheetId,omitempty"`
+	StyleSheetId StyleSheetId `json:"styleSheetId,omitempty"`
 
 	// Rule selector data.
 	SelectorList *SelectorList `json:"selectorList"`
 
 	// Parent stylesheet's origin.
-	Origin *StyleSheetOrigin `json:"origin"`
+	Origin StyleSheetOrigin `json:"origin"`
 
 	// Associated style declaration.
 	Style *CSSStyle `json:"style"`
@@ -135,7 +135,7 @@ type CSSRule struct {
 
 type RuleUsage struct {
 	// The css style sheet identifier (absent for user agent stylesheet and user-specified stylesheet rules) this rule came from.
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	// Offset of the start of the rule (including selector) from the beginning of the stylesheet.
 	StartOffset float64 `json:"startOffset"`
@@ -186,7 +186,7 @@ type CSSComputedStyleProperty struct {
 
 type CSSStyle struct {
 	// The css style sheet identifier (absent for user agent stylesheet and user-specified stylesheet rules) this rule came from. (optional)
-	StyleSheetId *StyleSheetId `json:"styleSheetId,omitempty"`
+	StyleSheetId StyleSheetId `json:"styleSheetId,omitempty"`
 
 	// CSS properties in the style.
 	CssProperties []*CSSProperty `json:"cssProperties"`
@@ -245,7 +245,7 @@ type CSSMedia struct {
 	Range *SourceRange `json:"range,omitempty"`
 
 	// Identifier of the stylesheet containing this object (if exists). (optional)
-	StyleSheetId *StyleSheetId `json:"styleSheetId,omitempty"`
+	StyleSheetId StyleSheetId `json:"styleSheetId,omitempty"`
 
 	// Array of media queries. (optional, experimental)
 	MediaList []*MediaQuery `json:"mediaList,omitempty"`
@@ -307,10 +307,10 @@ type CSSKeyframesRule struct {
 
 type CSSKeyframeRule struct {
 	// The css style sheet identifier (absent for user agent stylesheet and user-specified stylesheet rules) this rule came from. (optional)
-	StyleSheetId *StyleSheetId `json:"styleSheetId,omitempty"`
+	StyleSheetId StyleSheetId `json:"styleSheetId,omitempty"`
 
 	// Parent stylesheet's origin.
-	Origin *StyleSheetOrigin `json:"origin"`
+	Origin StyleSheetOrigin `json:"origin"`
 
 	// Associated key text.
 	KeyText *Value `json:"keyText"`
@@ -323,7 +323,7 @@ type CSSKeyframeRule struct {
 
 type StyleDeclarationEdit struct {
 	// The css style sheet identifier.
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	// The range of the style text in the enclosing stylesheet.
 	Range *SourceRange `json:"range"`
@@ -463,7 +463,7 @@ func (d *Domain) GetPlatformFontsForNode(opts *GetPlatformFontsForNodeOpts) (*Ge
 }
 
 type GetStyleSheetTextOpts struct {
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 }
 
 type GetStyleSheetTextResult struct {
@@ -479,7 +479,7 @@ func (d *Domain) GetStyleSheetText(opts *GetStyleSheetTextOpts) (*GetStyleSheetT
 }
 
 type CollectClassNamesOpts struct {
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 }
 
 type CollectClassNamesResult struct {
@@ -495,7 +495,7 @@ func (d *Domain) CollectClassNames(opts *CollectClassNamesOpts) (*CollectClassNa
 }
 
 type SetStyleSheetTextOpts struct {
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	Text string `json:"text"`
 }
@@ -513,7 +513,7 @@ func (d *Domain) SetStyleSheetText(opts *SetStyleSheetTextOpts) (*SetStyleSheetT
 }
 
 type SetRuleSelectorOpts struct {
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	Range *SourceRange `json:"range"`
 
@@ -533,7 +533,7 @@ func (d *Domain) SetRuleSelector(opts *SetRuleSelectorOpts) (*SetRuleSelectorRes
 }
 
 type SetKeyframeKeyOpts struct {
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	Range *SourceRange `json:"range"`
 
@@ -569,7 +569,7 @@ func (d *Domain) SetStyleTexts(opts *SetStyleTextsOpts) (*SetStyleTextsResult, e
 }
 
 type SetMediaTextOpts struct {
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	Range *SourceRange `json:"range"`
 
@@ -595,7 +595,7 @@ type CreateStyleSheetOpts struct {
 
 type CreateStyleSheetResult struct {
 	// Identifier of the created "via-inspector" stylesheet.
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 }
 
 // Creates a new special "via-inspector" stylesheet in the frame with given <code>frameId</code>.
@@ -607,7 +607,7 @@ func (d *Domain) CreateStyleSheet(opts *CreateStyleSheetOpts) (*CreateStyleSheet
 
 type AddRuleOpts struct {
 	// The css style sheet identifier where a new rule should be inserted.
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	// The text of a new rule.
 	RuleText string `json:"ruleText"`
@@ -759,7 +759,7 @@ func (d *Domain) OnFontsUpdated(listener func(*FontsUpdatedEvent)) {
 }
 
 type StyleSheetChangedEvent struct {
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 }
 
 // Fired whenever a stylesheet is changed as a result of the client operation.
@@ -793,7 +793,7 @@ func (d *Domain) OnStyleSheetAdded(listener func(*StyleSheetAddedEvent)) {
 
 type StyleSheetRemovedEvent struct {
 	// Identifier of the removed stylesheet.
-	StyleSheetId *StyleSheetId `json:"styleSheetId"`
+	StyleSheetId StyleSheetId `json:"styleSheetId"`
 }
 
 // Fired whenever an active document stylesheet is removed.

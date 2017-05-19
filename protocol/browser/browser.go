@@ -32,7 +32,7 @@ type Bounds struct {
 	Height int `json:"height,omitempty"`
 
 	// The window state. Default to normal. (optional)
-	WindowState *WindowState `json:"windowState,omitempty"`
+	WindowState WindowState `json:"windowState,omitempty"`
 }
 
 type GetWindowForTargetOpts struct {
@@ -42,7 +42,7 @@ type GetWindowForTargetOpts struct {
 
 type GetWindowForTargetResult struct {
 	// Browser window id.
-	WindowId *WindowID `json:"windowId"`
+	WindowId WindowID `json:"windowId"`
 
 	// Bounds information of the window. When window state is 'minimized', the restored window position and size are returned.
 	Bounds *Bounds `json:"bounds"`
@@ -57,7 +57,7 @@ func (d *Domain) GetWindowForTarget(opts *GetWindowForTargetOpts) (*GetWindowFor
 
 type SetWindowBoundsOpts struct {
 	// Browser window id.
-	WindowId *WindowID `json:"windowId"`
+	WindowId WindowID `json:"windowId"`
 
 	// New window bounds. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined with 'left', 'top', 'width' or 'height'. Leaves unspecified fields unchanged.
 	Bounds *Bounds `json:"bounds"`
@@ -70,7 +70,7 @@ func (d *Domain) SetWindowBounds(opts *SetWindowBoundsOpts) error {
 
 type GetWindowBoundsOpts struct {
 	// Browser window id.
-	WindowId *WindowID `json:"windowId"`
+	WindowId WindowID `json:"windowId"`
 }
 
 type GetWindowBoundsResult struct {

@@ -113,7 +113,7 @@ type Request struct {
 	MixedContentType string `json:"mixedContentType,omitempty"`
 
 	// Priority of the resource request at the time request is sent.
-	InitialPriority *ResourcePriority `json:"initialPriority"`
+	InitialPriority ResourcePriority `json:"initialPriority"`
 
 	// The referrer policy of the request, as defined in https://www.w3.org/TR/referrer-policy/
 	ReferrerPolicy string `json:"referrerPolicy"`
@@ -138,7 +138,7 @@ type SignedCertificateTimestamp struct {
 	LogId string `json:"logId"`
 
 	// Issuance date.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// Hash algorithm.
 	HashAlgorithm string `json:"hashAlgorithm"`
@@ -181,10 +181,10 @@ type SecurityDetails struct {
 	Issuer string `json:"issuer"`
 
 	// Certificate valid from date.
-	ValidFrom *Timestamp `json:"validFrom"`
+	ValidFrom Timestamp `json:"validFrom"`
 
 	// Certificate valid to (expiration) date
-	ValidTo *Timestamp `json:"validTo"`
+	ValidTo Timestamp `json:"validTo"`
 
 	// List of signed certificate timestamps (SCTs).
 	SignedCertificateTimestampList []*SignedCertificateTimestamp `json:"signedCertificateTimestampList"`
@@ -360,7 +360,7 @@ type Cookie struct {
 	Session bool `json:"session"`
 
 	// Cookie SameSite type. (optional)
-	SameSite *CookieSameSite `json:"sameSite,omitempty"`
+	SameSite CookieSameSite `json:"sameSite,omitempty"`
 }
 
 type EnableOpts struct {
@@ -403,7 +403,7 @@ func (d *Domain) SetExtraHTTPHeaders(opts *SetExtraHTTPHeadersOpts) error {
 
 type GetResponseBodyOpts struct {
 	// Identifier of the network request to get content for.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 }
 
 type GetResponseBodyResult struct {
@@ -433,7 +433,7 @@ func (d *Domain) SetBlockedURLs(opts *SetBlockedURLsOpts) error {
 
 type ReplayXHROpts struct {
 	// Identifier of XHR to replay.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 }
 
 // This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password. (experimental)
@@ -540,10 +540,10 @@ type SetCookieOpts struct {
 	HttpOnly bool `json:"httpOnly,omitempty"`
 
 	// Defaults to browser default behavior. (optional)
-	SameSite *CookieSameSite `json:"sameSite,omitempty"`
+	SameSite CookieSameSite `json:"sameSite,omitempty"`
 
 	// If omitted, the cookie becomes a session cookie. (optional)
-	ExpirationDate *Timestamp `json:"expirationDate,omitempty"`
+	ExpirationDate Timestamp `json:"expirationDate,omitempty"`
 }
 
 type SetCookieResult struct {
@@ -584,7 +584,7 @@ type EmulateNetworkConditionsOpts struct {
 	UploadThroughput float64 `json:"uploadThroughput"`
 
 	// Connection type if known. (optional)
-	ConnectionType *ConnectionType `json:"connectionType,omitempty"`
+	ConnectionType ConnectionType `json:"connectionType,omitempty"`
 }
 
 // Activates emulation of network conditions.
@@ -643,13 +643,13 @@ func (d *Domain) GetCertificate(opts *GetCertificateOpts) (*GetCertificateResult
 
 type ResourceChangedPriorityEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// New priority
-	NewPriority *ResourcePriority `json:"newPriority"`
+	NewPriority ResourcePriority `json:"newPriority"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 }
 
 // Fired when resource loading priority is changed (experimental)
@@ -666,13 +666,13 @@ func (d *Domain) OnResourceChangedPriority(listener func(*ResourceChangedPriorit
 
 type RequestWillBeSentEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Frame identifier.
 	FrameId interface{} `json:"frameId"`
 
 	// Loader identifier.
-	LoaderId *LoaderId `json:"loaderId"`
+	LoaderId LoaderId `json:"loaderId"`
 
 	// URL of the document this request is loaded for.
 	DocumentURL string `json:"documentURL"`
@@ -681,10 +681,10 @@ type RequestWillBeSentEvent struct {
 	Request *Request `json:"request"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// UTC Timestamp.
-	WallTime *Timestamp `json:"wallTime"`
+	WallTime Timestamp `json:"wallTime"`
 
 	// Request initiator.
 	Initiator *Initiator `json:"initiator"`
@@ -710,7 +710,7 @@ func (d *Domain) OnRequestWillBeSent(listener func(*RequestWillBeSentEvent)) {
 
 type RequestServedFromCacheEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 }
 
 // Fired if request ended up loading from cache.
@@ -727,16 +727,16 @@ func (d *Domain) OnRequestServedFromCache(listener func(*RequestServedFromCacheE
 
 type ResponseReceivedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Frame identifier.
 	FrameId interface{} `json:"frameId"`
 
 	// Loader identifier.
-	LoaderId *LoaderId `json:"loaderId"`
+	LoaderId LoaderId `json:"loaderId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// Resource type.
 	Type interface{} `json:"type"`
@@ -759,10 +759,10 @@ func (d *Domain) OnResponseReceived(listener func(*ResponseReceivedEvent)) {
 
 type DataReceivedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// Data chunk length.
 	DataLength int `json:"dataLength"`
@@ -785,10 +785,10 @@ func (d *Domain) OnDataReceived(listener func(*DataReceivedEvent)) {
 
 type LoadingFinishedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// Total number of bytes received for this request.
 	EncodedDataLength float64 `json:"encodedDataLength"`
@@ -808,10 +808,10 @@ func (d *Domain) OnLoadingFinished(listener func(*LoadingFinishedEvent)) {
 
 type LoadingFailedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// Resource type.
 	Type interface{} `json:"type"`
@@ -823,7 +823,7 @@ type LoadingFailedEvent struct {
 	Canceled bool `json:"canceled"`
 
 	// The reason why loading was blocked, if any. (optional, experimental)
-	BlockedReason *BlockedReason `json:"blockedReason"`
+	BlockedReason BlockedReason `json:"blockedReason"`
 }
 
 // Fired when HTTP request has failed to load.
@@ -840,13 +840,13 @@ func (d *Domain) OnLoadingFailed(listener func(*LoadingFailedEvent)) {
 
 type WebSocketWillSendHandshakeRequestEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// UTC Timestamp.
-	WallTime *Timestamp `json:"wallTime"`
+	WallTime Timestamp `json:"wallTime"`
 
 	// WebSocket request data.
 	Request *WebSocketRequest `json:"request"`
@@ -866,10 +866,10 @@ func (d *Domain) OnWebSocketWillSendHandshakeRequest(listener func(*WebSocketWil
 
 type WebSocketHandshakeResponseReceivedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// WebSocket response data.
 	Response *WebSocketResponse `json:"response"`
@@ -889,7 +889,7 @@ func (d *Domain) OnWebSocketHandshakeResponseReceived(listener func(*WebSocketHa
 
 type WebSocketCreatedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// WebSocket request URL.
 	URL string `json:"url"`
@@ -912,10 +912,10 @@ func (d *Domain) OnWebSocketCreated(listener func(*WebSocketCreatedEvent)) {
 
 type WebSocketClosedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 }
 
 // Fired when WebSocket is closed. (experimental)
@@ -932,10 +932,10 @@ func (d *Domain) OnWebSocketClosed(listener func(*WebSocketClosedEvent)) {
 
 type WebSocketFrameReceivedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// WebSocket response data.
 	Response *WebSocketFrame `json:"response"`
@@ -955,10 +955,10 @@ func (d *Domain) OnWebSocketFrameReceived(listener func(*WebSocketFrameReceivedE
 
 type WebSocketFrameErrorEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// WebSocket frame error message.
 	ErrorMessage string `json:"errorMessage"`
@@ -978,10 +978,10 @@ func (d *Domain) OnWebSocketFrameError(listener func(*WebSocketFrameErrorEvent))
 
 type WebSocketFrameSentEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// WebSocket response data.
 	Response *WebSocketFrame `json:"response"`
@@ -1001,10 +1001,10 @@ func (d *Domain) OnWebSocketFrameSent(listener func(*WebSocketFrameSentEvent)) {
 
 type EventSourceMessageReceivedEvent struct {
 	// Request identifier.
-	RequestId *RequestId `json:"requestId"`
+	RequestId RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp *Timestamp `json:"timestamp"`
+	Timestamp Timestamp `json:"timestamp"`
 
 	// Message type.
 	EventName string `json:"eventName"`

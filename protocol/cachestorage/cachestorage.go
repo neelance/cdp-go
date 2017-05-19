@@ -28,7 +28,7 @@ type DataEntry struct {
 
 type Cache struct {
 	// An opaque unique id of the cache.
-	CacheId *CacheId `json:"cacheId"`
+	CacheId CacheId `json:"cacheId"`
 
 	// Security origin of the cache.
 	SecurityOrigin string `json:"securityOrigin"`
@@ -56,7 +56,7 @@ func (d *Domain) RequestCacheNames(opts *RequestCacheNamesOpts) (*RequestCacheNa
 
 type RequestEntriesOpts struct {
 	// ID of cache to get entries from.
-	CacheId *CacheId `json:"cacheId"`
+	CacheId CacheId `json:"cacheId"`
 
 	// Number of records to skip.
 	SkipCount int `json:"skipCount"`
@@ -82,7 +82,7 @@ func (d *Domain) RequestEntries(opts *RequestEntriesOpts) (*RequestEntriesResult
 
 type DeleteCacheOpts struct {
 	// Id of cache for deletion.
-	CacheId *CacheId `json:"cacheId"`
+	CacheId CacheId `json:"cacheId"`
 }
 
 // Deletes a cache.
@@ -92,7 +92,7 @@ func (d *Domain) DeleteCache(opts *DeleteCacheOpts) error {
 
 type DeleteEntryOpts struct {
 	// Id of cache where the entry will be deleted.
-	CacheId *CacheId `json:"cacheId"`
+	CacheId CacheId `json:"cacheId"`
 
 	// URL spec of the request.
 	Request string `json:"request"`

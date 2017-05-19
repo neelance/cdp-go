@@ -204,7 +204,7 @@ func (d *Domain) CanEmulate() (*CanEmulateResult, error) {
 }
 
 type SetVirtualTimePolicyOpts struct {
-	Policy *VirtualTimePolicy `json:"policy"`
+	Policy VirtualTimePolicy `json:"policy"`
 
 	// If set, after this many virtual milliseconds have elapsed virtual time will be paused and a virtualTimeBudgetExpired event is sent. (optional)
 	Budget int `json:"budget,omitempty"`

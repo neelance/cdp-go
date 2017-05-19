@@ -40,7 +40,7 @@ func (d *Domain) SetPressureNotificationsSuppressed(opts *SetPressureNotificatio
 
 type SimulatePressureNotificationOpts struct {
 	// Memory pressure level of the notification.
-	Level *PressureLevel `json:"level"`
+	Level PressureLevel `json:"level"`
 }
 
 // Simulate a memory pressure notification in all processes.

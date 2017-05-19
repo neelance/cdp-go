@@ -18,7 +18,7 @@ type TargetID string
 type BrowserContextID string
 
 type TargetInfo struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 
 	Type string `json:"type"`
 
@@ -76,7 +76,7 @@ func (d *Domain) SetRemoteLocations(opts *SetRemoteLocationsOpts) error {
 }
 
 type SendMessageToTargetOpts struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 
 	Message string `json:"message"`
 }
@@ -87,7 +87,7 @@ func (d *Domain) SendMessageToTarget(opts *SendMessageToTargetOpts) error {
 }
 
 type GetTargetInfoOpts struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 }
 
 type GetTargetInfoResult struct {
@@ -102,7 +102,7 @@ func (d *Domain) GetTargetInfo(opts *GetTargetInfoOpts) (*GetTargetInfoResult, e
 }
 
 type ActivateTargetOpts struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 }
 
 // Activates (focuses) the target.
@@ -111,7 +111,7 @@ func (d *Domain) ActivateTarget(opts *ActivateTargetOpts) error {
 }
 
 type CloseTargetOpts struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 }
 
 type CloseTargetResult struct {
@@ -126,7 +126,7 @@ func (d *Domain) CloseTarget(opts *CloseTargetOpts) (*CloseTargetResult, error) 
 }
 
 type AttachToTargetOpts struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 }
 
 type AttachToTargetResult struct {
@@ -142,7 +142,7 @@ func (d *Domain) AttachToTarget(opts *AttachToTargetOpts) (*AttachToTargetResult
 }
 
 type DetachFromTargetOpts struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 }
 
 // Detaches from the target with given id.
@@ -152,7 +152,7 @@ func (d *Domain) DetachFromTarget(opts *DetachFromTargetOpts) error {
 
 type CreateBrowserContextResult struct {
 	// The id of the context created.
-	BrowserContextId *BrowserContextID `json:"browserContextId"`
+	BrowserContextId BrowserContextID `json:"browserContextId"`
 }
 
 // Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than one.
@@ -163,7 +163,7 @@ func (d *Domain) CreateBrowserContext() (*CreateBrowserContextResult, error) {
 }
 
 type DisposeBrowserContextOpts struct {
-	BrowserContextId *BrowserContextID `json:"browserContextId"`
+	BrowserContextId BrowserContextID `json:"browserContextId"`
 }
 
 type DisposeBrowserContextResult struct {
@@ -188,12 +188,12 @@ type CreateTargetOpts struct {
 	Height int `json:"height,omitempty"`
 
 	// The browser context to create the page in (headless chrome only). (optional)
-	BrowserContextId *BrowserContextID `json:"browserContextId,omitempty"`
+	BrowserContextId BrowserContextID `json:"browserContextId,omitempty"`
 }
 
 type CreateTargetResult struct {
 	// The id of the page opened.
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 }
 
 // Creates a new page.
@@ -232,7 +232,7 @@ func (d *Domain) OnTargetCreated(listener func(*TargetCreatedEvent)) {
 }
 
 type TargetDestroyedEvent struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 }
 
 // Issued when a target is destroyed.
@@ -266,7 +266,7 @@ func (d *Domain) OnAttachedToTarget(listener func(*AttachedToTargetEvent)) {
 }
 
 type DetachedFromTargetEvent struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 }
 
 // Issued when detached from target for any reason (including <code>detachFromTarget</code> command).
@@ -282,7 +282,7 @@ func (d *Domain) OnDetachedFromTarget(listener func(*DetachedFromTargetEvent)) {
 }
 
 type ReceivedMessageFromTargetEvent struct {
-	TargetId *TargetID `json:"targetId"`
+	TargetId TargetID `json:"targetId"`
 
 	Message string `json:"message"`
 }

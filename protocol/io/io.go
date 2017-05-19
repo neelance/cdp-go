@@ -14,7 +14,7 @@ type StreamHandle string
 
 type ReadOpts struct {
 	// Handle of the stream to read.
-	Handle *StreamHandle `json:"handle"`
+	Handle StreamHandle `json:"handle"`
 
 	// Seek to the specified offset before reading (if not specificed, proceed with offset following the last read). (optional)
 	Offset int `json:"offset,omitempty"`
@@ -40,7 +40,7 @@ func (d *Domain) Read(opts *ReadOpts) (*ReadResult, error) {
 
 type CloseOpts struct {
 	// Handle of the stream to close.
-	Handle *StreamHandle `json:"handle"`
+	Handle StreamHandle `json:"handle"`
 }
 
 // Close the stream, discard any temporary backing storage.

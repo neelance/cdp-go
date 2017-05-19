@@ -146,12 +146,12 @@ type TypeRef struct {
 	Items *TypeRef
 }
 
-func (t *TypeRef) GoType() string {
+func goType(d *Domain, t *TypeRef) string {
 	if t.Ref != "" {
 		if strings.Contains(t.Ref, ".") {
 			return "interface{}" // TODO
 		}
-		if lookupType(t.Ref).Type == "object" {
+		if d.lookupType(t.Ref).Type == "object" {
 			return "*" + t.Ref
 		}
 		return t.Ref
@@ -167,7 +167,7 @@ func (t *TypeRef) GoType() string {
 	case "number":
 		return "float64"
 	case "array":
-		return "[]" + t.Items.GoType()
+		return "[]" + goType(d, t.Items)
 	case "any", "object":
 		return "interface{}"
 	default:
@@ -204,10 +204,12 @@ func main() {
 
 }
 
-var t = template.Must(template.New("").Parse(`
+var t = template.Must(template.New("").Funcs(template.FuncMap{
+	"goType": goType,
+}).Parse(`
 {{if .Doc}}// {{.Doc}}{{end}}
 package {{.GoPackage}}
-{{$domain := .Domain}}
+{{$domain := .}}
 import (
 	{{if .Events}}
 		"encoding/json"
@@ -227,11 +229,11 @@ type Domain struct {
 		type {{.ID}} struct {
 			{{- range .Properties}}
 				{{if .Doc}}// {{.Doc}}{{end}}
-				{{.GoField}} {{.GoType}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
+				{{.GoField}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
 			{{end}}
 		}
 	{{else}}
-		type {{.ID}} {{.GoType}}
+		type {{.ID}} {{goType $domain .TypeRef}}
 	{{end}}
 {{end}}
 
@@ -240,7 +242,7 @@ type Domain struct {
 		type {{.GoOptsType}} struct {
 			{{- range .Parameters}}
 				{{if .Doc}}// {{.Doc}}{{end}}
-				{{.GoField}} {{.GoType}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
+				{{.GoField}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
 			{{end}}
 		}
 	{{end}}
@@ -249,20 +251,20 @@ type Domain struct {
 		type {{.GoResultType}} struct {
 			{{- range .Returns}}
 				{{if .Doc}}// {{.Doc}}{{end}}
-				{{.GoField}} {{.GoType}} ` + "`" + `json:"{{.Name}}"` + "`" + `
+				{{.GoField}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
 			{{end}}
 		}
 
 		{{if .Doc}}// {{.Doc}}{{end}}
 		func (d *Domain) {{.GoName}}({{if .Parameters}}opts *{{.GoOptsType}}{{end}}) (*{{.GoResultType}}, error) {
 			var result {{.GoResultType}}
-			err := d.Client.Call("{{$domain}}.{{.Name}}", {{if .Parameters}}opts{{else}}nil{{end}}, &result)
+			err := d.Client.Call("{{$domain.Domain}}.{{.Name}}", {{if .Parameters}}opts{{else}}nil{{end}}, &result)
 			return &result, err
 		}
 	{{else}}
 		{{if .Doc}}// {{.Doc}}{{end}}
 		func (d *Domain) {{.GoName}}({{if .Parameters}}opts *{{.GoOptsType}}{{end}}) error {
-			return d.Client.Call("{{$domain}}.{{.Name}}", {{if .Parameters}}opts{{else}}nil{{end}}, nil)
+			return d.Client.Call("{{$domain.Domain}}.{{.Name}}", {{if .Parameters}}opts{{else}}nil{{end}}, nil)
 		}
 	{{end}}
 {{end}}
@@ -271,13 +273,13 @@ type Domain struct {
 	type {{.GoType}} struct {
 		{{- range .Parameters}}
 			{{if .Doc}}// {{.Doc}}{{end}}
-			{{.GoField}} {{.GoType}} ` + "`" + `json:"{{.Name}}"` + "`" + `
+			{{.GoField}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
 		{{end}}
 	}
 
 	{{if .Doc}}// {{.Doc}}{{end}}
 	func (d *Domain) On{{.GoName}}(listener func(*{{.GoType}})) {
-		d.Client.AddListener("{{$domain}}.{{.Name}}", func(params json.RawMessage) {
+		d.Client.AddListener("{{$domain.Domain}}.{{.Name}}", func(params json.RawMessage) {
 			var event {{.GoType}}
 			if err := json.Unmarshal(params, &event); err != nil {
 				log.Print(err)

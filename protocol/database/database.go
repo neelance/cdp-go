@@ -21,7 +21,7 @@ type DatabaseId string
 
 type Database struct {
 	// Database ID.
-	Id *DatabaseId `json:"id"`
+	Id DatabaseId `json:"id"`
 
 	// Database domain.
 	Domain string `json:"domain"`
@@ -54,7 +54,7 @@ func (d *Domain) Disable() error {
 }
 
 type GetDatabaseTableNamesOpts struct {
-	DatabaseId *DatabaseId `json:"databaseId"`
+	DatabaseId DatabaseId `json:"databaseId"`
 }
 
 type GetDatabaseTableNamesResult struct {
@@ -68,7 +68,7 @@ func (d *Domain) GetDatabaseTableNames(opts *GetDatabaseTableNamesOpts) (*GetDat
 }
 
 type ExecuteSQLOpts struct {
-	DatabaseId *DatabaseId `json:"databaseId"`
+	DatabaseId DatabaseId `json:"databaseId"`
 
 	Query string `json:"query"`
 }
