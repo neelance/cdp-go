@@ -3,14 +3,15 @@ package rpc
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"math"
 	"net/rpc"
 )
 
+var EventTypes = make(map[string](func() interface{}))
+
 type Client struct {
 	*rpc.Client
-	listeners map[string][]Listener
+	Events chan<- interface{}
 }
 
 type Listener func(params json.RawMessage)
@@ -24,9 +25,7 @@ type clientCodec struct {
 }
 
 func NewClient(conn io.ReadWriteCloser) *Client {
-	cl := &Client{
-		listeners: make(map[string][]Listener),
-	}
+	cl := &Client{}
 	cl.Client = rpc.NewClientWithCodec(&clientCodec{
 		client: cl,
 		dec:    json.NewDecoder(conn),
@@ -34,10 +33,6 @@ func NewClient(conn io.ReadWriteCloser) *Client {
 		c:      conn,
 	})
 	return cl
-}
-
-func (cl *Client) AddListener(event string, listener Listener) {
-	cl.listeners[event] = append(cl.listeners[event], listener)
 }
 
 func (c *clientCodec) WriteRequest(r *rpc.Request, param interface{}) error {
@@ -68,9 +63,12 @@ func (c *clientCodec) ReadResponseHeader(r *rpc.Response) error {
 	}
 
 	if resp.Method != "" {
-		log.Println(resp.Method)
-		for _, l := range c.client.listeners[resp.Method] {
-			l(resp.Params)
+		if c.client.Events != nil {
+			e := EventTypes[resp.Method]()
+			if err := json.Unmarshal(resp.Params, e); err != nil {
+				return err
+			}
+			c.client.Events <- e
 		}
 		r.Seq = math.MaxUint64 // ignore
 		return nil

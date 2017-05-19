@@ -2,9 +2,6 @@
 package security
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -67,43 +64,104 @@ type InsecureContentStatus struct {
 type CertificateErrorAction string
 
 // Enables tracking security state changes.
-func (d *Domain) Enable() error {
-	return d.Client.Call("Security.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables tracking security state changes.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("Security.enable", r.opts, nil)
 }
 
 // Disables tracking security state changes.
-func (d *Domain) Disable() error {
-	return d.Client.Call("Security.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables tracking security state changes.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("Security.disable", r.opts, nil)
 }
 
 // Displays native dialog with the certificate details.
-func (d *Domain) ShowCertificateViewer() error {
-	return d.Client.Call("Security.showCertificateViewer", nil, nil)
+type ShowCertificateViewerRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type HandleCertificateErrorOpts struct {
-	// The ID of the event.
-	EventId int `json:"eventId"`
+func (d *Domain) ShowCertificateViewer() *ShowCertificateViewerRequest {
+	return &ShowCertificateViewerRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// The action to take on the certificate error.
-	Action CertificateErrorAction `json:"action"`
+// Displays native dialog with the certificate details.
+func (r *ShowCertificateViewerRequest) Do() error {
+	return r.client.Call("Security.showCertificateViewer", r.opts, nil)
 }
 
 // Handles a certificate error that fired a certificateError event.
-func (d *Domain) HandleCertificateError(opts *HandleCertificateErrorOpts) error {
-	return d.Client.Call("Security.handleCertificateError", opts, nil)
+type HandleCertificateErrorRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetOverrideCertificateErrorsOpts struct {
-	// If true, certificate errors will be overridden.
-	Override bool `json:"override"`
+func (d *Domain) HandleCertificateError() *HandleCertificateErrorRequest {
+	return &HandleCertificateErrorRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The ID of the event.
+func (r *HandleCertificateErrorRequest) EventId(v int) *HandleCertificateErrorRequest {
+	r.opts["eventId"] = v
+	return r
+}
+
+// The action to take on the certificate error.
+func (r *HandleCertificateErrorRequest) Action(v CertificateErrorAction) *HandleCertificateErrorRequest {
+	r.opts["action"] = v
+	return r
+}
+
+// Handles a certificate error that fired a certificateError event.
+func (r *HandleCertificateErrorRequest) Do() error {
+	return r.client.Call("Security.handleCertificateError", r.opts, nil)
 }
 
 // Enable/disable overriding certificate errors. If enabled, all certificate error events need to be handled by the DevTools client and should be answered with handleCertificateError commands.
-func (d *Domain) SetOverrideCertificateErrors(opts *SetOverrideCertificateErrorsOpts) error {
-	return d.Client.Call("Security.setOverrideCertificateErrors", opts, nil)
+type SetOverrideCertificateErrorsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
+func (d *Domain) SetOverrideCertificateErrors() *SetOverrideCertificateErrorsRequest {
+	return &SetOverrideCertificateErrorsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// If true, certificate errors will be overridden.
+func (r *SetOverrideCertificateErrorsRequest) Override(v bool) *SetOverrideCertificateErrorsRequest {
+	r.opts["override"] = v
+	return r
+}
+
+// Enable/disable overriding certificate errors. If enabled, all certificate error events need to be handled by the DevTools client and should be answered with handleCertificateError commands.
+func (r *SetOverrideCertificateErrorsRequest) Do() error {
+	return r.client.Call("Security.setOverrideCertificateErrors", r.opts, nil)
+}
+
+func init() {
+	rpc.EventTypes["Security.securityStateChanged"] = func() interface{} { return new(SecurityStateChangedEvent) }
+	rpc.EventTypes["Security.certificateError"] = func() interface{} { return new(CertificateErrorEvent) }
+}
+
+// The security state of the page changed.
 type SecurityStateChangedEvent struct {
 	// Security state.
 	SecurityState SecurityState `json:"securityState"`
@@ -121,18 +179,7 @@ type SecurityStateChangedEvent struct {
 	Summary string `json:"summary"`
 }
 
-// The security state of the page changed.
-func (d *Domain) OnSecurityStateChanged(listener func(*SecurityStateChangedEvent)) {
-	d.Client.AddListener("Security.securityStateChanged", func(params json.RawMessage) {
-		var event SecurityStateChangedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// There is a certificate error. If overriding certificate errors is enabled, then it should be handled with the handleCertificateError command. Note: this event does not fire if the certificate error has been allowed internally.
 type CertificateErrorEvent struct {
 	// The ID of the event.
 	EventId int `json:"eventId"`
@@ -142,16 +189,4 @@ type CertificateErrorEvent struct {
 
 	// The url that was requested.
 	RequestURL string `json:"requestURL"`
-}
-
-// There is a certificate error. If overriding certificate errors is enabled, then it should be handled with the handleCertificateError command. Note: this event does not fire if the certificate error has been allowed internally.
-func (d *Domain) OnCertificateError(listener func(*CertificateErrorEvent)) {
-	d.Client.AddListener("Security.certificateError", func(params json.RawMessage) {
-		var event CertificateErrorEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

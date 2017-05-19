@@ -36,6 +36,8 @@ import (
 )
 
 type Client struct {
+	*rpc.Client
+
 	Accessibility     accessibility.Domain
 	Animation         animation.Domain
 	ApplicationCache  applicationcache.Domain
@@ -75,6 +77,8 @@ func Dial(url string) *Client {
 
 	cl := rpc.NewClient(conn)
 	return &Client{
+		Client: cl,
+
 		Accessibility:     accessibility.Domain{Client: cl},
 		Animation:         animation.Domain{Client: cl},
 		ApplicationCache:  applicationcache.Domain{Client: cl},

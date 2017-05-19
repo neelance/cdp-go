@@ -117,18 +117,49 @@ type KeyPath struct {
 }
 
 // Enables events from backend.
-func (d *Domain) Enable() error {
-	return d.Client.Call("IndexedDB.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables events from backend.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("IndexedDB.enable", r.opts, nil)
 }
 
 // Disables events from backend.
-func (d *Domain) Disable() error {
-	return d.Client.Call("IndexedDB.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type RequestDatabaseNamesOpts struct {
-	// Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables events from backend.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("IndexedDB.disable", r.opts, nil)
+}
+
+// Requests database names for given security origin.
+type RequestDatabaseNamesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) RequestDatabaseNames() *RequestDatabaseNamesRequest {
+	return &RequestDatabaseNamesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Security origin.
+func (r *RequestDatabaseNamesRequest) SecurityOrigin(v string) *RequestDatabaseNamesRequest {
+	r.opts["securityOrigin"] = v
+	return r
 }
 
 type RequestDatabaseNamesResult struct {
@@ -136,19 +167,32 @@ type RequestDatabaseNamesResult struct {
 	DatabaseNames []string `json:"databaseNames"`
 }
 
-// Requests database names for given security origin.
-func (d *Domain) RequestDatabaseNames(opts *RequestDatabaseNamesOpts) (*RequestDatabaseNamesResult, error) {
+func (r *RequestDatabaseNamesRequest) Do() (*RequestDatabaseNamesResult, error) {
 	var result RequestDatabaseNamesResult
-	err := d.Client.Call("IndexedDB.requestDatabaseNames", opts, &result)
+	err := r.client.Call("IndexedDB.requestDatabaseNames", r.opts, &result)
 	return &result, err
 }
 
-type RequestDatabaseOpts struct {
-	// Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+// Requests database with given name in given frame.
+type RequestDatabaseRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Database name.
-	DatabaseName string `json:"databaseName"`
+func (d *Domain) RequestDatabase() *RequestDatabaseRequest {
+	return &RequestDatabaseRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Security origin.
+func (r *RequestDatabaseRequest) SecurityOrigin(v string) *RequestDatabaseRequest {
+	r.opts["securityOrigin"] = v
+	return r
+}
+
+// Database name.
+func (r *RequestDatabaseRequest) DatabaseName(v string) *RequestDatabaseRequest {
+	r.opts["databaseName"] = v
+	return r
 }
 
 type RequestDatabaseResult struct {
@@ -156,34 +200,62 @@ type RequestDatabaseResult struct {
 	DatabaseWithObjectStores *DatabaseWithObjectStores `json:"databaseWithObjectStores"`
 }
 
-// Requests database with given name in given frame.
-func (d *Domain) RequestDatabase(opts *RequestDatabaseOpts) (*RequestDatabaseResult, error) {
+func (r *RequestDatabaseRequest) Do() (*RequestDatabaseResult, error) {
 	var result RequestDatabaseResult
-	err := d.Client.Call("IndexedDB.requestDatabase", opts, &result)
+	err := r.client.Call("IndexedDB.requestDatabase", r.opts, &result)
 	return &result, err
 }
 
-type RequestDataOpts struct {
-	// Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+// Requests data from object store or index.
+type RequestDataRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Database name.
-	DatabaseName string `json:"databaseName"`
+func (d *Domain) RequestData() *RequestDataRequest {
+	return &RequestDataRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Object store name.
-	ObjectStoreName string `json:"objectStoreName"`
+// Security origin.
+func (r *RequestDataRequest) SecurityOrigin(v string) *RequestDataRequest {
+	r.opts["securityOrigin"] = v
+	return r
+}
 
-	// Index name, empty string for object store data requests.
-	IndexName string `json:"indexName"`
+// Database name.
+func (r *RequestDataRequest) DatabaseName(v string) *RequestDataRequest {
+	r.opts["databaseName"] = v
+	return r
+}
 
-	// Number of records to skip.
-	SkipCount int `json:"skipCount"`
+// Object store name.
+func (r *RequestDataRequest) ObjectStoreName(v string) *RequestDataRequest {
+	r.opts["objectStoreName"] = v
+	return r
+}
 
-	// Number of records to fetch.
-	PageSize int `json:"pageSize"`
+// Index name, empty string for object store data requests.
+func (r *RequestDataRequest) IndexName(v string) *RequestDataRequest {
+	r.opts["indexName"] = v
+	return r
+}
 
-	// Key range. (optional)
-	KeyRange *KeyRange `json:"keyRange,omitempty"`
+// Number of records to skip.
+func (r *RequestDataRequest) SkipCount(v int) *RequestDataRequest {
+	r.opts["skipCount"] = v
+	return r
+}
+
+// Number of records to fetch.
+func (r *RequestDataRequest) PageSize(v int) *RequestDataRequest {
+	r.opts["pageSize"] = v
+	return r
+}
+
+// Key range. (optional)
+func (r *RequestDataRequest) KeyRange(v *KeyRange) *RequestDataRequest {
+	r.opts["keyRange"] = v
+	return r
 }
 
 type RequestDataResult struct {
@@ -194,38 +266,71 @@ type RequestDataResult struct {
 	HasMore bool `json:"hasMore"`
 }
 
-// Requests data from object store or index.
-func (d *Domain) RequestData(opts *RequestDataOpts) (*RequestDataResult, error) {
+func (r *RequestDataRequest) Do() (*RequestDataResult, error) {
 	var result RequestDataResult
-	err := d.Client.Call("IndexedDB.requestData", opts, &result)
+	err := r.client.Call("IndexedDB.requestData", r.opts, &result)
 	return &result, err
 }
 
-type ClearObjectStoreOpts struct {
-	// Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+// Clears all entries from an object store.
+type ClearObjectStoreRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Database name.
-	DatabaseName string `json:"databaseName"`
+func (d *Domain) ClearObjectStore() *ClearObjectStoreRequest {
+	return &ClearObjectStoreRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Object store name.
-	ObjectStoreName string `json:"objectStoreName"`
+// Security origin.
+func (r *ClearObjectStoreRequest) SecurityOrigin(v string) *ClearObjectStoreRequest {
+	r.opts["securityOrigin"] = v
+	return r
+}
+
+// Database name.
+func (r *ClearObjectStoreRequest) DatabaseName(v string) *ClearObjectStoreRequest {
+	r.opts["databaseName"] = v
+	return r
+}
+
+// Object store name.
+func (r *ClearObjectStoreRequest) ObjectStoreName(v string) *ClearObjectStoreRequest {
+	r.opts["objectStoreName"] = v
+	return r
 }
 
 // Clears all entries from an object store.
-func (d *Domain) ClearObjectStore(opts *ClearObjectStoreOpts) error {
-	return d.Client.Call("IndexedDB.clearObjectStore", opts, nil)
-}
-
-type DeleteDatabaseOpts struct {
-	// Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
-
-	// Database name.
-	DatabaseName string `json:"databaseName"`
+func (r *ClearObjectStoreRequest) Do() error {
+	return r.client.Call("IndexedDB.clearObjectStore", r.opts, nil)
 }
 
 // Deletes a database.
-func (d *Domain) DeleteDatabase(opts *DeleteDatabaseOpts) error {
-	return d.Client.Call("IndexedDB.deleteDatabase", opts, nil)
+type DeleteDatabaseRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) DeleteDatabase() *DeleteDatabaseRequest {
+	return &DeleteDatabaseRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Security origin.
+func (r *DeleteDatabaseRequest) SecurityOrigin(v string) *DeleteDatabaseRequest {
+	r.opts["securityOrigin"] = v
+	return r
+}
+
+// Database name.
+func (r *DeleteDatabaseRequest) DatabaseName(v string) *DeleteDatabaseRequest {
+	r.opts["databaseName"] = v
+	return r
+}
+
+// Deletes a database.
+func (r *DeleteDatabaseRequest) Do() error {
+	return r.client.Call("IndexedDB.deleteDatabase", r.opts, nil)
+}
+
+func init() {
 }

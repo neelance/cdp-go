@@ -42,6 +42,16 @@ type GPUInfo struct {
 	DriverBugWorkarounds []string `json:"driverBugWorkarounds"`
 }
 
+// Returns information about the system.
+type GetInfoRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetInfo() *GetInfoRequest {
+	return &GetInfoRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
 type GetInfoResult struct {
 	// Information about the GPUs on the system.
 	Gpu *GPUInfo `json:"gpu"`
@@ -56,9 +66,11 @@ type GetInfoResult struct {
 	CommandLine string `json:"commandLine"`
 }
 
-// Returns information about the system.
-func (d *Domain) GetInfo() (*GetInfoResult, error) {
+func (r *GetInfoRequest) Do() (*GetInfoResult, error) {
 	var result GetInfoResult
-	err := d.Client.Call("SystemInfo.getInfo", nil, &result)
+	err := r.client.Call("SystemInfo.getInfo", r.opts, &result)
 	return &result, err
+}
+
+func init() {
 }

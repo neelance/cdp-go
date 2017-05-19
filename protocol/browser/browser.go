@@ -35,9 +35,20 @@ type Bounds struct {
 	WindowState WindowState `json:"windowState,omitempty"`
 }
 
-type GetWindowForTargetOpts struct {
-	// Devtools agent host id.
-	TargetId interface{} `json:"targetId"`
+// Get the browser window that contains the devtools target.
+type GetWindowForTargetRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetWindowForTarget() *GetWindowForTargetRequest {
+	return &GetWindowForTargetRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Devtools agent host id.
+func (r *GetWindowForTargetRequest) TargetId(v interface{}) *GetWindowForTargetRequest {
+	r.opts["targetId"] = v
+	return r
 }
 
 type GetWindowForTargetResult struct {
@@ -48,29 +59,53 @@ type GetWindowForTargetResult struct {
 	Bounds *Bounds `json:"bounds"`
 }
 
-// Get the browser window that contains the devtools target.
-func (d *Domain) GetWindowForTarget(opts *GetWindowForTargetOpts) (*GetWindowForTargetResult, error) {
+func (r *GetWindowForTargetRequest) Do() (*GetWindowForTargetResult, error) {
 	var result GetWindowForTargetResult
-	err := d.Client.Call("Browser.getWindowForTarget", opts, &result)
+	err := r.client.Call("Browser.getWindowForTarget", r.opts, &result)
 	return &result, err
 }
 
-type SetWindowBoundsOpts struct {
-	// Browser window id.
-	WindowId WindowID `json:"windowId"`
+// Set position and/or size of the browser window.
+type SetWindowBoundsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// New window bounds. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined with 'left', 'top', 'width' or 'height'. Leaves unspecified fields unchanged.
-	Bounds *Bounds `json:"bounds"`
+func (d *Domain) SetWindowBounds() *SetWindowBoundsRequest {
+	return &SetWindowBoundsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Browser window id.
+func (r *SetWindowBoundsRequest) WindowId(v WindowID) *SetWindowBoundsRequest {
+	r.opts["windowId"] = v
+	return r
+}
+
+// New window bounds. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined with 'left', 'top', 'width' or 'height'. Leaves unspecified fields unchanged.
+func (r *SetWindowBoundsRequest) Bounds(v *Bounds) *SetWindowBoundsRequest {
+	r.opts["bounds"] = v
+	return r
 }
 
 // Set position and/or size of the browser window.
-func (d *Domain) SetWindowBounds(opts *SetWindowBoundsOpts) error {
-	return d.Client.Call("Browser.setWindowBounds", opts, nil)
+func (r *SetWindowBoundsRequest) Do() error {
+	return r.client.Call("Browser.setWindowBounds", r.opts, nil)
 }
 
-type GetWindowBoundsOpts struct {
-	// Browser window id.
-	WindowId WindowID `json:"windowId"`
+// Get position and size of the browser window.
+type GetWindowBoundsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetWindowBounds() *GetWindowBoundsRequest {
+	return &GetWindowBoundsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Browser window id.
+func (r *GetWindowBoundsRequest) WindowId(v WindowID) *GetWindowBoundsRequest {
+	r.opts["windowId"] = v
+	return r
 }
 
 type GetWindowBoundsResult struct {
@@ -78,9 +113,11 @@ type GetWindowBoundsResult struct {
 	Bounds *Bounds `json:"bounds"`
 }
 
-// Get position and size of the browser window.
-func (d *Domain) GetWindowBounds(opts *GetWindowBoundsOpts) (*GetWindowBoundsResult, error) {
+func (r *GetWindowBoundsRequest) Do() (*GetWindowBoundsResult, error) {
 	var result GetWindowBoundsResult
-	err := d.Client.Call("Browser.getWindowBounds", opts, &result)
+	err := r.client.Call("Browser.getWindowBounds", r.opts, &result)
 	return &result, err
+}
+
+func init() {
 }

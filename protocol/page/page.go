@@ -2,9 +2,6 @@
 package page
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -192,17 +189,48 @@ type VisualViewport struct {
 }
 
 // Enables page domain notifications.
-func (d *Domain) Enable() error {
-	return d.Client.Call("Page.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables page domain notifications.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("Page.enable", r.opts, nil)
 }
 
 // Disables page domain notifications.
-func (d *Domain) Disable() error {
-	return d.Client.Call("Page.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type AddScriptToEvaluateOnLoadOpts struct {
-	ScriptSource string `json:"scriptSource"`
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables page domain notifications.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("Page.disable", r.opts, nil)
+}
+
+// (experimental)
+type AddScriptToEvaluateOnLoadRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) AddScriptToEvaluateOnLoad() *AddScriptToEvaluateOnLoadRequest {
+	return &AddScriptToEvaluateOnLoadRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *AddScriptToEvaluateOnLoadRequest) ScriptSource(v string) *AddScriptToEvaluateOnLoadRequest {
+	r.opts["scriptSource"] = v
+	return r
 }
 
 type AddScriptToEvaluateOnLoadResult struct {
@@ -210,51 +238,100 @@ type AddScriptToEvaluateOnLoadResult struct {
 	Identifier ScriptIdentifier `json:"identifier"`
 }
 
-// (experimental)
-func (d *Domain) AddScriptToEvaluateOnLoad(opts *AddScriptToEvaluateOnLoadOpts) (*AddScriptToEvaluateOnLoadResult, error) {
+func (r *AddScriptToEvaluateOnLoadRequest) Do() (*AddScriptToEvaluateOnLoadResult, error) {
 	var result AddScriptToEvaluateOnLoadResult
-	err := d.Client.Call("Page.addScriptToEvaluateOnLoad", opts, &result)
+	err := r.client.Call("Page.addScriptToEvaluateOnLoad", r.opts, &result)
 	return &result, err
 }
 
-type RemoveScriptToEvaluateOnLoadOpts struct {
-	Identifier ScriptIdentifier `json:"identifier"`
+// (experimental)
+type RemoveScriptToEvaluateOnLoadRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) RemoveScriptToEvaluateOnLoad() *RemoveScriptToEvaluateOnLoadRequest {
+	return &RemoveScriptToEvaluateOnLoadRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *RemoveScriptToEvaluateOnLoadRequest) Identifier(v ScriptIdentifier) *RemoveScriptToEvaluateOnLoadRequest {
+	r.opts["identifier"] = v
+	return r
 }
 
 // (experimental)
-func (d *Domain) RemoveScriptToEvaluateOnLoad(opts *RemoveScriptToEvaluateOnLoadOpts) error {
-	return d.Client.Call("Page.removeScriptToEvaluateOnLoad", opts, nil)
-}
-
-type SetAutoAttachToCreatedPagesOpts struct {
-	// If true, browser will open a new inspector window for every page created from this one.
-	AutoAttach bool `json:"autoAttach"`
+func (r *RemoveScriptToEvaluateOnLoadRequest) Do() error {
+	return r.client.Call("Page.removeScriptToEvaluateOnLoad", r.opts, nil)
 }
 
 // Controls whether browser will open a new inspector window for connected pages. (experimental)
-func (d *Domain) SetAutoAttachToCreatedPages(opts *SetAutoAttachToCreatedPagesOpts) error {
-	return d.Client.Call("Page.setAutoAttachToCreatedPages", opts, nil)
+type SetAutoAttachToCreatedPagesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type ReloadOpts struct {
-	// If true, browser cache is ignored (as if the user pressed Shift+refresh). (optional)
-	IgnoreCache bool `json:"ignoreCache,omitempty"`
+func (d *Domain) SetAutoAttachToCreatedPages() *SetAutoAttachToCreatedPagesRequest {
+	return &SetAutoAttachToCreatedPagesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// If set, the script will be injected into all frames of the inspected page after reload. (optional)
-	ScriptToEvaluateOnLoad string `json:"scriptToEvaluateOnLoad,omitempty"`
+// If true, browser will open a new inspector window for every page created from this one.
+func (r *SetAutoAttachToCreatedPagesRequest) AutoAttach(v bool) *SetAutoAttachToCreatedPagesRequest {
+	r.opts["autoAttach"] = v
+	return r
+}
+
+// Controls whether browser will open a new inspector window for connected pages. (experimental)
+func (r *SetAutoAttachToCreatedPagesRequest) Do() error {
+	return r.client.Call("Page.setAutoAttachToCreatedPages", r.opts, nil)
 }
 
 // Reloads given page optionally ignoring the cache.
-func (d *Domain) Reload(opts *ReloadOpts) error {
-	return d.Client.Call("Page.reload", opts, nil)
+type ReloadRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type NavigateOpts struct {
-	// URL to navigate the page to.
-	URL string `json:"url"`
+func (d *Domain) Reload() *ReloadRequest {
+	return &ReloadRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Referrer URL. (optional, experimental)
-	Referrer string `json:"referrer,omitempty"`
+// If true, browser cache is ignored (as if the user pressed Shift+refresh). (optional)
+func (r *ReloadRequest) IgnoreCache(v bool) *ReloadRequest {
+	r.opts["ignoreCache"] = v
+	return r
+}
+
+// If set, the script will be injected into all frames of the inspected page after reload. (optional)
+func (r *ReloadRequest) ScriptToEvaluateOnLoad(v string) *ReloadRequest {
+	r.opts["scriptToEvaluateOnLoad"] = v
+	return r
+}
+
+// Reloads given page optionally ignoring the cache.
+func (r *ReloadRequest) Do() error {
+	return r.client.Call("Page.reload", r.opts, nil)
+}
+
+// Navigates current page to the given URL.
+type NavigateRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Navigate() *NavigateRequest {
+	return &NavigateRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// URL to navigate the page to.
+func (r *NavigateRequest) URL(v string) *NavigateRequest {
+	r.opts["url"] = v
+	return r
+}
+
+// Referrer URL. (optional, experimental)
+func (r *NavigateRequest) Referrer(v string) *NavigateRequest {
+	r.opts["referrer"] = v
+	return r
 }
 
 type NavigateResult struct {
@@ -262,16 +339,35 @@ type NavigateResult struct {
 	FrameId FrameId `json:"frameId"`
 }
 
-// Navigates current page to the given URL.
-func (d *Domain) Navigate(opts *NavigateOpts) (*NavigateResult, error) {
+func (r *NavigateRequest) Do() (*NavigateResult, error) {
 	var result NavigateResult
-	err := d.Client.Call("Page.navigate", opts, &result)
+	err := r.client.Call("Page.navigate", r.opts, &result)
 	return &result, err
 }
 
 // Force the page stop all navigations and pending resource fetches. (experimental)
-func (d *Domain) StopLoading() error {
-	return d.Client.Call("Page.stopLoading", nil, nil)
+type StopLoadingRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) StopLoading() *StopLoadingRequest {
+	return &StopLoadingRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Force the page stop all navigations and pending resource fetches. (experimental)
+func (r *StopLoadingRequest) Do() error {
+	return r.client.Call("Page.stopLoading", r.opts, nil)
+}
+
+// Returns navigation history for the current page. (experimental)
+type GetNavigationHistoryRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetNavigationHistory() *GetNavigationHistoryRequest {
+	return &GetNavigationHistoryRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetNavigationHistoryResult struct {
@@ -282,21 +378,41 @@ type GetNavigationHistoryResult struct {
 	Entries []*NavigationEntry `json:"entries"`
 }
 
-// Returns navigation history for the current page. (experimental)
-func (d *Domain) GetNavigationHistory() (*GetNavigationHistoryResult, error) {
+func (r *GetNavigationHistoryRequest) Do() (*GetNavigationHistoryResult, error) {
 	var result GetNavigationHistoryResult
-	err := d.Client.Call("Page.getNavigationHistory", nil, &result)
+	err := r.client.Call("Page.getNavigationHistory", r.opts, &result)
 	return &result, err
 }
 
-type NavigateToHistoryEntryOpts struct {
-	// Unique id of the entry to navigate to.
-	EntryId int `json:"entryId"`
+// Navigates current page to the given history entry. (experimental)
+type NavigateToHistoryEntryRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) NavigateToHistoryEntry() *NavigateToHistoryEntryRequest {
+	return &NavigateToHistoryEntryRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Unique id of the entry to navigate to.
+func (r *NavigateToHistoryEntryRequest) EntryId(v int) *NavigateToHistoryEntryRequest {
+	r.opts["entryId"] = v
+	return r
 }
 
 // Navigates current page to the given history entry. (experimental)
-func (d *Domain) NavigateToHistoryEntry(opts *NavigateToHistoryEntryOpts) error {
-	return d.Client.Call("Page.navigateToHistoryEntry", opts, nil)
+func (r *NavigateToHistoryEntryRequest) Do() error {
+	return r.client.Call("Page.navigateToHistoryEntry", r.opts, nil)
+}
+
+// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
+type GetCookiesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetCookies() *GetCookiesRequest {
+	return &GetCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetCookiesResult struct {
@@ -304,24 +420,47 @@ type GetCookiesResult struct {
 	Cookies []interface{} `json:"cookies"`
 }
 
-// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
-func (d *Domain) GetCookies() (*GetCookiesResult, error) {
+func (r *GetCookiesRequest) Do() (*GetCookiesResult, error) {
 	var result GetCookiesResult
-	err := d.Client.Call("Page.getCookies", nil, &result)
+	err := r.client.Call("Page.getCookies", r.opts, &result)
 	return &result, err
 }
 
-type DeleteCookieOpts struct {
-	// Name of the cookie to remove.
-	CookieName string `json:"cookieName"`
+// Deletes browser cookie with given name, domain and path. (experimental)
+type DeleteCookieRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// URL to match cooke domain and path.
-	URL string `json:"url"`
+func (d *Domain) DeleteCookie() *DeleteCookieRequest {
+	return &DeleteCookieRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Name of the cookie to remove.
+func (r *DeleteCookieRequest) CookieName(v string) *DeleteCookieRequest {
+	r.opts["cookieName"] = v
+	return r
+}
+
+// URL to match cooke domain and path.
+func (r *DeleteCookieRequest) URL(v string) *DeleteCookieRequest {
+	r.opts["url"] = v
+	return r
 }
 
 // Deletes browser cookie with given name, domain and path. (experimental)
-func (d *Domain) DeleteCookie(opts *DeleteCookieOpts) error {
-	return d.Client.Call("Page.deleteCookie", opts, nil)
+func (r *DeleteCookieRequest) Do() error {
+	return r.client.Call("Page.deleteCookie", r.opts, nil)
+}
+
+// Returns present frame / resource tree structure. (experimental)
+type GetResourceTreeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetResourceTree() *GetResourceTreeRequest {
+	return &GetResourceTreeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetResourceTreeResult struct {
@@ -329,19 +468,32 @@ type GetResourceTreeResult struct {
 	FrameTree *FrameResourceTree `json:"frameTree"`
 }
 
-// Returns present frame / resource tree structure. (experimental)
-func (d *Domain) GetResourceTree() (*GetResourceTreeResult, error) {
+func (r *GetResourceTreeRequest) Do() (*GetResourceTreeResult, error) {
 	var result GetResourceTreeResult
-	err := d.Client.Call("Page.getResourceTree", nil, &result)
+	err := r.client.Call("Page.getResourceTree", r.opts, &result)
 	return &result, err
 }
 
-type GetResourceContentOpts struct {
-	// Frame id to get resource for.
-	FrameId FrameId `json:"frameId"`
+// Returns content of the given resource. (experimental)
+type GetResourceContentRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// URL of the resource to get content for.
-	URL string `json:"url"`
+func (d *Domain) GetResourceContent() *GetResourceContentRequest {
+	return &GetResourceContentRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Frame id to get resource for.
+func (r *GetResourceContentRequest) FrameId(v FrameId) *GetResourceContentRequest {
+	r.opts["frameId"] = v
+	return r
+}
+
+// URL of the resource to get content for.
+func (r *GetResourceContentRequest) URL(v string) *GetResourceContentRequest {
+	r.opts["url"] = v
+	return r
 }
 
 type GetResourceContentResult struct {
@@ -352,28 +504,50 @@ type GetResourceContentResult struct {
 	Base64Encoded bool `json:"base64Encoded"`
 }
 
-// Returns content of the given resource. (experimental)
-func (d *Domain) GetResourceContent(opts *GetResourceContentOpts) (*GetResourceContentResult, error) {
+func (r *GetResourceContentRequest) Do() (*GetResourceContentResult, error) {
 	var result GetResourceContentResult
-	err := d.Client.Call("Page.getResourceContent", opts, &result)
+	err := r.client.Call("Page.getResourceContent", r.opts, &result)
 	return &result, err
 }
 
-type SearchInResourceOpts struct {
-	// Frame id for resource to search in.
-	FrameId FrameId `json:"frameId"`
+// Searches for given string in resource content. (experimental)
+type SearchInResourceRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// URL of the resource to search in.
-	URL string `json:"url"`
+func (d *Domain) SearchInResource() *SearchInResourceRequest {
+	return &SearchInResourceRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// String to search for.
-	Query string `json:"query"`
+// Frame id for resource to search in.
+func (r *SearchInResourceRequest) FrameId(v FrameId) *SearchInResourceRequest {
+	r.opts["frameId"] = v
+	return r
+}
 
-	// If true, search is case sensitive. (optional)
-	CaseSensitive bool `json:"caseSensitive,omitempty"`
+// URL of the resource to search in.
+func (r *SearchInResourceRequest) URL(v string) *SearchInResourceRequest {
+	r.opts["url"] = v
+	return r
+}
 
-	// If true, treats string parameter as regex. (optional)
-	IsRegex bool `json:"isRegex,omitempty"`
+// String to search for.
+func (r *SearchInResourceRequest) Query(v string) *SearchInResourceRequest {
+	r.opts["query"] = v
+	return r
+}
+
+// If true, search is case sensitive. (optional)
+func (r *SearchInResourceRequest) CaseSensitive(v bool) *SearchInResourceRequest {
+	r.opts["caseSensitive"] = v
+	return r
+}
+
+// If true, treats string parameter as regex. (optional)
+func (r *SearchInResourceRequest) IsRegex(v bool) *SearchInResourceRequest {
+	r.opts["isRegex"] = v
+	return r
 }
 
 type SearchInResourceResult struct {
@@ -381,141 +555,296 @@ type SearchInResourceResult struct {
 	Result []interface{} `json:"result"`
 }
 
-// Searches for given string in resource content. (experimental)
-func (d *Domain) SearchInResource(opts *SearchInResourceOpts) (*SearchInResourceResult, error) {
+func (r *SearchInResourceRequest) Do() (*SearchInResourceResult, error) {
 	var result SearchInResourceResult
-	err := d.Client.Call("Page.searchInResource", opts, &result)
+	err := r.client.Call("Page.searchInResource", r.opts, &result)
 	return &result, err
 }
 
-type SetDocumentContentOpts struct {
-	// Frame id to set HTML for.
-	FrameId FrameId `json:"frameId"`
+// Sets given markup as the document's HTML. (experimental)
+type SetDocumentContentRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// HTML content to set.
-	Html string `json:"html"`
+func (d *Domain) SetDocumentContent() *SetDocumentContentRequest {
+	return &SetDocumentContentRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Frame id to set HTML for.
+func (r *SetDocumentContentRequest) FrameId(v FrameId) *SetDocumentContentRequest {
+	r.opts["frameId"] = v
+	return r
+}
+
+// HTML content to set.
+func (r *SetDocumentContentRequest) Html(v string) *SetDocumentContentRequest {
+	r.opts["html"] = v
+	return r
 }
 
 // Sets given markup as the document's HTML. (experimental)
-func (d *Domain) SetDocumentContent(opts *SetDocumentContentOpts) error {
-	return d.Client.Call("Page.setDocumentContent", opts, nil)
-}
-
-type SetDeviceMetricsOverrideOpts struct {
-	// Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-	Width int `json:"width"`
-
-	// Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-	Height int `json:"height"`
-
-	// Overriding device scale factor value. 0 disables the override.
-	DeviceScaleFactor float64 `json:"deviceScaleFactor"`
-
-	// Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text autosizing and more.
-	Mobile bool `json:"mobile"`
-
-	// Whether a view that exceeds the available browser window area should be scaled down to fit.
-	FitWindow bool `json:"fitWindow"`
-
-	// Scale to apply to resulting view image. Ignored in |fitWindow| mode. (optional)
-	Scale float64 `json:"scale,omitempty"`
-
-	// X offset to shift resulting view image by. Ignored in |fitWindow| mode. (optional)
-	OffsetX float64 `json:"offsetX,omitempty"`
-
-	// Y offset to shift resulting view image by. Ignored in |fitWindow| mode. (optional)
-	OffsetY float64 `json:"offsetY,omitempty"`
-
-	// Overriding screen width value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional)
-	ScreenWidth int `json:"screenWidth,omitempty"`
-
-	// Overriding screen height value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional)
-	ScreenHeight int `json:"screenHeight,omitempty"`
-
-	// Overriding view X position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional)
-	PositionX int `json:"positionX,omitempty"`
-
-	// Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional)
-	PositionY int `json:"positionY,omitempty"`
-
-	// Screen orientation override. (optional)
-	ScreenOrientation interface{} `json:"screenOrientation,omitempty"`
+func (r *SetDocumentContentRequest) Do() error {
+	return r.client.Call("Page.setDocumentContent", r.opts, nil)
 }
 
 // Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results). (experimental)
-func (d *Domain) SetDeviceMetricsOverride(opts *SetDeviceMetricsOverrideOpts) error {
-	return d.Client.Call("Page.setDeviceMetricsOverride", opts, nil)
+type SetDeviceMetricsOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetDeviceMetricsOverride() *SetDeviceMetricsOverrideRequest {
+	return &SetDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
+func (r *SetDeviceMetricsOverrideRequest) Width(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["width"] = v
+	return r
+}
+
+// Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
+func (r *SetDeviceMetricsOverrideRequest) Height(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["height"] = v
+	return r
+}
+
+// Overriding device scale factor value. 0 disables the override.
+func (r *SetDeviceMetricsOverrideRequest) DeviceScaleFactor(v float64) *SetDeviceMetricsOverrideRequest {
+	r.opts["deviceScaleFactor"] = v
+	return r
+}
+
+// Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text autosizing and more.
+func (r *SetDeviceMetricsOverrideRequest) Mobile(v bool) *SetDeviceMetricsOverrideRequest {
+	r.opts["mobile"] = v
+	return r
+}
+
+// Whether a view that exceeds the available browser window area should be scaled down to fit.
+func (r *SetDeviceMetricsOverrideRequest) FitWindow(v bool) *SetDeviceMetricsOverrideRequest {
+	r.opts["fitWindow"] = v
+	return r
+}
+
+// Scale to apply to resulting view image. Ignored in |fitWindow| mode. (optional)
+func (r *SetDeviceMetricsOverrideRequest) Scale(v float64) *SetDeviceMetricsOverrideRequest {
+	r.opts["scale"] = v
+	return r
+}
+
+// X offset to shift resulting view image by. Ignored in |fitWindow| mode. (optional)
+func (r *SetDeviceMetricsOverrideRequest) OffsetX(v float64) *SetDeviceMetricsOverrideRequest {
+	r.opts["offsetX"] = v
+	return r
+}
+
+// Y offset to shift resulting view image by. Ignored in |fitWindow| mode. (optional)
+func (r *SetDeviceMetricsOverrideRequest) OffsetY(v float64) *SetDeviceMetricsOverrideRequest {
+	r.opts["offsetY"] = v
+	return r
+}
+
+// Overriding screen width value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional)
+func (r *SetDeviceMetricsOverrideRequest) ScreenWidth(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["screenWidth"] = v
+	return r
+}
+
+// Overriding screen height value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional)
+func (r *SetDeviceMetricsOverrideRequest) ScreenHeight(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["screenHeight"] = v
+	return r
+}
+
+// Overriding view X position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional)
+func (r *SetDeviceMetricsOverrideRequest) PositionX(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["positionX"] = v
+	return r
+}
+
+// Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional)
+func (r *SetDeviceMetricsOverrideRequest) PositionY(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["positionY"] = v
+	return r
+}
+
+// Screen orientation override. (optional)
+func (r *SetDeviceMetricsOverrideRequest) ScreenOrientation(v interface{}) *SetDeviceMetricsOverrideRequest {
+	r.opts["screenOrientation"] = v
+	return r
+}
+
+// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results). (experimental)
+func (r *SetDeviceMetricsOverrideRequest) Do() error {
+	return r.client.Call("Page.setDeviceMetricsOverride", r.opts, nil)
 }
 
 // Clears the overriden device metrics. (experimental)
-func (d *Domain) ClearDeviceMetricsOverride() error {
-	return d.Client.Call("Page.clearDeviceMetricsOverride", nil, nil)
+type ClearDeviceMetricsOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetGeolocationOverrideOpts struct {
-	// Mock latitude (optional)
-	Latitude float64 `json:"latitude,omitempty"`
+func (d *Domain) ClearDeviceMetricsOverride() *ClearDeviceMetricsOverrideRequest {
+	return &ClearDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Mock longitude (optional)
-	Longitude float64 `json:"longitude,omitempty"`
-
-	// Mock accuracy (optional)
-	Accuracy float64 `json:"accuracy,omitempty"`
+// Clears the overriden device metrics. (experimental)
+func (r *ClearDeviceMetricsOverrideRequest) Do() error {
+	return r.client.Call("Page.clearDeviceMetricsOverride", r.opts, nil)
 }
 
 // Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
-func (d *Domain) SetGeolocationOverride(opts *SetGeolocationOverrideOpts) error {
-	return d.Client.Call("Page.setGeolocationOverride", opts, nil)
+type SetGeolocationOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetGeolocationOverride() *SetGeolocationOverrideRequest {
+	return &SetGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Mock latitude (optional)
+func (r *SetGeolocationOverrideRequest) Latitude(v float64) *SetGeolocationOverrideRequest {
+	r.opts["latitude"] = v
+	return r
+}
+
+// Mock longitude (optional)
+func (r *SetGeolocationOverrideRequest) Longitude(v float64) *SetGeolocationOverrideRequest {
+	r.opts["longitude"] = v
+	return r
+}
+
+// Mock accuracy (optional)
+func (r *SetGeolocationOverrideRequest) Accuracy(v float64) *SetGeolocationOverrideRequest {
+	r.opts["accuracy"] = v
+	return r
+}
+
+// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
+func (r *SetGeolocationOverrideRequest) Do() error {
+	return r.client.Call("Page.setGeolocationOverride", r.opts, nil)
 }
 
 // Clears the overriden Geolocation Position and Error.
-func (d *Domain) ClearGeolocationOverride() error {
-	return d.Client.Call("Page.clearGeolocationOverride", nil, nil)
+type ClearGeolocationOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetDeviceOrientationOverrideOpts struct {
-	// Mock alpha
-	Alpha float64 `json:"alpha"`
+func (d *Domain) ClearGeolocationOverride() *ClearGeolocationOverrideRequest {
+	return &ClearGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Mock beta
-	Beta float64 `json:"beta"`
-
-	// Mock gamma
-	Gamma float64 `json:"gamma"`
+// Clears the overriden Geolocation Position and Error.
+func (r *ClearGeolocationOverrideRequest) Do() error {
+	return r.client.Call("Page.clearGeolocationOverride", r.opts, nil)
 }
 
 // Overrides the Device Orientation. (experimental)
-func (d *Domain) SetDeviceOrientationOverride(opts *SetDeviceOrientationOverrideOpts) error {
-	return d.Client.Call("Page.setDeviceOrientationOverride", opts, nil)
+type SetDeviceOrientationOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetDeviceOrientationOverride() *SetDeviceOrientationOverrideRequest {
+	return &SetDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Mock alpha
+func (r *SetDeviceOrientationOverrideRequest) Alpha(v float64) *SetDeviceOrientationOverrideRequest {
+	r.opts["alpha"] = v
+	return r
+}
+
+// Mock beta
+func (r *SetDeviceOrientationOverrideRequest) Beta(v float64) *SetDeviceOrientationOverrideRequest {
+	r.opts["beta"] = v
+	return r
+}
+
+// Mock gamma
+func (r *SetDeviceOrientationOverrideRequest) Gamma(v float64) *SetDeviceOrientationOverrideRequest {
+	r.opts["gamma"] = v
+	return r
+}
+
+// Overrides the Device Orientation. (experimental)
+func (r *SetDeviceOrientationOverrideRequest) Do() error {
+	return r.client.Call("Page.setDeviceOrientationOverride", r.opts, nil)
 }
 
 // Clears the overridden Device Orientation. (experimental)
-func (d *Domain) ClearDeviceOrientationOverride() error {
-	return d.Client.Call("Page.clearDeviceOrientationOverride", nil, nil)
+type ClearDeviceOrientationOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetTouchEmulationEnabledOpts struct {
-	// Whether the touch event emulation should be enabled.
-	Enabled bool `json:"enabled"`
+func (d *Domain) ClearDeviceOrientationOverride() *ClearDeviceOrientationOverrideRequest {
+	return &ClearDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Touch/gesture events configuration. Default: current platform. (optional)
-	Configuration string `json:"configuration,omitempty"`
+// Clears the overridden Device Orientation. (experimental)
+func (r *ClearDeviceOrientationOverrideRequest) Do() error {
+	return r.client.Call("Page.clearDeviceOrientationOverride", r.opts, nil)
 }
 
 // Toggles mouse event-based touch event emulation. (experimental)
-func (d *Domain) SetTouchEmulationEnabled(opts *SetTouchEmulationEnabledOpts) error {
-	return d.Client.Call("Page.setTouchEmulationEnabled", opts, nil)
+type SetTouchEmulationEnabledRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type CaptureScreenshotOpts struct {
-	// Image compression format (defaults to png). (optional)
-	Format string `json:"format,omitempty"`
+func (d *Domain) SetTouchEmulationEnabled() *SetTouchEmulationEnabledRequest {
+	return &SetTouchEmulationEnabledRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Compression quality from range [0..100] (jpeg only). (optional)
-	Quality int `json:"quality,omitempty"`
+// Whether the touch event emulation should be enabled.
+func (r *SetTouchEmulationEnabledRequest) Enabled(v bool) *SetTouchEmulationEnabledRequest {
+	r.opts["enabled"] = v
+	return r
+}
 
-	// Capture the screenshot from the surface, rather than the view. Defaults to false. (optional, experimental)
-	FromSurface bool `json:"fromSurface,omitempty"`
+// Touch/gesture events configuration. Default: current platform. (optional)
+func (r *SetTouchEmulationEnabledRequest) Configuration(v string) *SetTouchEmulationEnabledRequest {
+	r.opts["configuration"] = v
+	return r
+}
+
+// Toggles mouse event-based touch event emulation. (experimental)
+func (r *SetTouchEmulationEnabledRequest) Do() error {
+	return r.client.Call("Page.setTouchEmulationEnabled", r.opts, nil)
+}
+
+// Capture page screenshot. (experimental)
+type CaptureScreenshotRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CaptureScreenshot() *CaptureScreenshotRequest {
+	return &CaptureScreenshotRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Image compression format (defaults to png). (optional)
+func (r *CaptureScreenshotRequest) Format(v string) *CaptureScreenshotRequest {
+	r.opts["format"] = v
+	return r
+}
+
+// Compression quality from range [0..100] (jpeg only). (optional)
+func (r *CaptureScreenshotRequest) Quality(v int) *CaptureScreenshotRequest {
+	r.opts["quality"] = v
+	return r
+}
+
+// Capture the screenshot from the surface, rather than the view. Defaults to false. (optional, experimental)
+func (r *CaptureScreenshotRequest) FromSurface(v bool) *CaptureScreenshotRequest {
+	r.opts["fromSurface"] = v
+	return r
 }
 
 type CaptureScreenshotResult struct {
@@ -523,46 +852,86 @@ type CaptureScreenshotResult struct {
 	Data string `json:"data"`
 }
 
-// Capture page screenshot. (experimental)
-func (d *Domain) CaptureScreenshot(opts *CaptureScreenshotOpts) (*CaptureScreenshotResult, error) {
+func (r *CaptureScreenshotRequest) Do() (*CaptureScreenshotResult, error) {
 	var result CaptureScreenshotResult
-	err := d.Client.Call("Page.captureScreenshot", opts, &result)
+	err := r.client.Call("Page.captureScreenshot", r.opts, &result)
 	return &result, err
 }
 
-type PrintToPDFOpts struct {
-	// Paper orientation. Defaults to false. (optional)
-	Landscape bool `json:"landscape,omitempty"`
+// Print page as PDF. (experimental)
+type PrintToPDFRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Display header and footer. Defaults to false. (optional)
-	DisplayHeaderFooter bool `json:"displayHeaderFooter,omitempty"`
+func (d *Domain) PrintToPDF() *PrintToPDFRequest {
+	return &PrintToPDFRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Print background graphics. Defaults to false. (optional)
-	PrintBackground bool `json:"printBackground,omitempty"`
+// Paper orientation. Defaults to false. (optional)
+func (r *PrintToPDFRequest) Landscape(v bool) *PrintToPDFRequest {
+	r.opts["landscape"] = v
+	return r
+}
 
-	// Scale of the webpage rendering. Defaults to 1. (optional)
-	Scale float64 `json:"scale,omitempty"`
+// Display header and footer. Defaults to false. (optional)
+func (r *PrintToPDFRequest) DisplayHeaderFooter(v bool) *PrintToPDFRequest {
+	r.opts["displayHeaderFooter"] = v
+	return r
+}
 
-	// Paper width in inches. Defaults to 8.5 inches. (optional)
-	PaperWidth float64 `json:"paperWidth,omitempty"`
+// Print background graphics. Defaults to false. (optional)
+func (r *PrintToPDFRequest) PrintBackground(v bool) *PrintToPDFRequest {
+	r.opts["printBackground"] = v
+	return r
+}
 
-	// Paper height in inches. Defaults to 11 inches. (optional)
-	PaperHeight float64 `json:"paperHeight,omitempty"`
+// Scale of the webpage rendering. Defaults to 1. (optional)
+func (r *PrintToPDFRequest) Scale(v float64) *PrintToPDFRequest {
+	r.opts["scale"] = v
+	return r
+}
 
-	// Top margin in inches. Defaults to 1cm (~0.4 inches). (optional)
-	MarginTop float64 `json:"marginTop,omitempty"`
+// Paper width in inches. Defaults to 8.5 inches. (optional)
+func (r *PrintToPDFRequest) PaperWidth(v float64) *PrintToPDFRequest {
+	r.opts["paperWidth"] = v
+	return r
+}
 
-	// Bottom margin in inches. Defaults to 1cm (~0.4 inches). (optional)
-	MarginBottom float64 `json:"marginBottom,omitempty"`
+// Paper height in inches. Defaults to 11 inches. (optional)
+func (r *PrintToPDFRequest) PaperHeight(v float64) *PrintToPDFRequest {
+	r.opts["paperHeight"] = v
+	return r
+}
 
-	// Left margin in inches. Defaults to 1cm (~0.4 inches). (optional)
-	MarginLeft float64 `json:"marginLeft,omitempty"`
+// Top margin in inches. Defaults to 1cm (~0.4 inches). (optional)
+func (r *PrintToPDFRequest) MarginTop(v float64) *PrintToPDFRequest {
+	r.opts["marginTop"] = v
+	return r
+}
 
-	// Right margin in inches. Defaults to 1cm (~0.4 inches). (optional)
-	MarginRight float64 `json:"marginRight,omitempty"`
+// Bottom margin in inches. Defaults to 1cm (~0.4 inches). (optional)
+func (r *PrintToPDFRequest) MarginBottom(v float64) *PrintToPDFRequest {
+	r.opts["marginBottom"] = v
+	return r
+}
 
-	// Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages. (optional)
-	PageRanges string `json:"pageRanges,omitempty"`
+// Left margin in inches. Defaults to 1cm (~0.4 inches). (optional)
+func (r *PrintToPDFRequest) MarginLeft(v float64) *PrintToPDFRequest {
+	r.opts["marginLeft"] = v
+	return r
+}
+
+// Right margin in inches. Defaults to 1cm (~0.4 inches). (optional)
+func (r *PrintToPDFRequest) MarginRight(v float64) *PrintToPDFRequest {
+	r.opts["marginRight"] = v
+	return r
+}
+
+// Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages. (optional)
+func (r *PrintToPDFRequest) PageRanges(v string) *PrintToPDFRequest {
+	r.opts["pageRanges"] = v
+	return r
 }
 
 type PrintToPDFResult struct {
@@ -570,61 +939,128 @@ type PrintToPDFResult struct {
 	Data string `json:"data"`
 }
 
-// Print page as PDF. (experimental)
-func (d *Domain) PrintToPDF(opts *PrintToPDFOpts) (*PrintToPDFResult, error) {
+func (r *PrintToPDFRequest) Do() (*PrintToPDFResult, error) {
 	var result PrintToPDFResult
-	err := d.Client.Call("Page.printToPDF", opts, &result)
+	err := r.client.Call("Page.printToPDF", r.opts, &result)
 	return &result, err
 }
 
-type StartScreencastOpts struct {
-	// Image compression format. (optional)
-	Format string `json:"format,omitempty"`
+// Starts sending each frame using the <code>screencastFrame</code> event. (experimental)
+type StartScreencastRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Compression quality from range [0..100]. (optional)
-	Quality int `json:"quality,omitempty"`
+func (d *Domain) StartScreencast() *StartScreencastRequest {
+	return &StartScreencastRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Maximum screenshot width. (optional)
-	MaxWidth int `json:"maxWidth,omitempty"`
+// Image compression format. (optional)
+func (r *StartScreencastRequest) Format(v string) *StartScreencastRequest {
+	r.opts["format"] = v
+	return r
+}
 
-	// Maximum screenshot height. (optional)
-	MaxHeight int `json:"maxHeight,omitempty"`
+// Compression quality from range [0..100]. (optional)
+func (r *StartScreencastRequest) Quality(v int) *StartScreencastRequest {
+	r.opts["quality"] = v
+	return r
+}
 
-	// Send every n-th frame. (optional)
-	EveryNthFrame int `json:"everyNthFrame,omitempty"`
+// Maximum screenshot width. (optional)
+func (r *StartScreencastRequest) MaxWidth(v int) *StartScreencastRequest {
+	r.opts["maxWidth"] = v
+	return r
+}
+
+// Maximum screenshot height. (optional)
+func (r *StartScreencastRequest) MaxHeight(v int) *StartScreencastRequest {
+	r.opts["maxHeight"] = v
+	return r
+}
+
+// Send every n-th frame. (optional)
+func (r *StartScreencastRequest) EveryNthFrame(v int) *StartScreencastRequest {
+	r.opts["everyNthFrame"] = v
+	return r
 }
 
 // Starts sending each frame using the <code>screencastFrame</code> event. (experimental)
-func (d *Domain) StartScreencast(opts *StartScreencastOpts) error {
-	return d.Client.Call("Page.startScreencast", opts, nil)
+func (r *StartScreencastRequest) Do() error {
+	return r.client.Call("Page.startScreencast", r.opts, nil)
 }
 
 // Stops sending each frame in the <code>screencastFrame</code>. (experimental)
-func (d *Domain) StopScreencast() error {
-	return d.Client.Call("Page.stopScreencast", nil, nil)
+type StopScreencastRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type ScreencastFrameAckOpts struct {
-	// Frame number.
-	SessionId int `json:"sessionId"`
+func (d *Domain) StopScreencast() *StopScreencastRequest {
+	return &StopScreencastRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Stops sending each frame in the <code>screencastFrame</code>. (experimental)
+func (r *StopScreencastRequest) Do() error {
+	return r.client.Call("Page.stopScreencast", r.opts, nil)
 }
 
 // Acknowledges that a screencast frame has been received by the frontend. (experimental)
-func (d *Domain) ScreencastFrameAck(opts *ScreencastFrameAckOpts) error {
-	return d.Client.Call("Page.screencastFrameAck", opts, nil)
+type ScreencastFrameAckRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type HandleJavaScriptDialogOpts struct {
-	// Whether to accept or dismiss the dialog.
-	Accept bool `json:"accept"`
+func (d *Domain) ScreencastFrameAck() *ScreencastFrameAckRequest {
+	return &ScreencastFrameAckRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// The text to enter into the dialog prompt before accepting. Used only if this is a prompt dialog. (optional)
-	PromptText string `json:"promptText,omitempty"`
+// Frame number.
+func (r *ScreencastFrameAckRequest) SessionId(v int) *ScreencastFrameAckRequest {
+	r.opts["sessionId"] = v
+	return r
+}
+
+// Acknowledges that a screencast frame has been received by the frontend. (experimental)
+func (r *ScreencastFrameAckRequest) Do() error {
+	return r.client.Call("Page.screencastFrameAck", r.opts, nil)
 }
 
 // Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
-func (d *Domain) HandleJavaScriptDialog(opts *HandleJavaScriptDialogOpts) error {
-	return d.Client.Call("Page.handleJavaScriptDialog", opts, nil)
+type HandleJavaScriptDialogRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) HandleJavaScriptDialog() *HandleJavaScriptDialogRequest {
+	return &HandleJavaScriptDialogRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Whether to accept or dismiss the dialog.
+func (r *HandleJavaScriptDialogRequest) Accept(v bool) *HandleJavaScriptDialogRequest {
+	r.opts["accept"] = v
+	return r
+}
+
+// The text to enter into the dialog prompt before accepting. Used only if this is a prompt dialog. (optional)
+func (r *HandleJavaScriptDialogRequest) PromptText(v string) *HandleJavaScriptDialogRequest {
+	r.opts["promptText"] = v
+	return r
+}
+
+// Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
+func (r *HandleJavaScriptDialogRequest) Do() error {
+	return r.client.Call("Page.handleJavaScriptDialog", r.opts, nil)
+}
+
+// (experimental)
+type GetAppManifestRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetAppManifest() *GetAppManifestRequest {
+	return &GetAppManifestRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetAppManifestResult struct {
@@ -637,36 +1073,80 @@ type GetAppManifestResult struct {
 	Data string `json:"data"`
 }
 
-// (experimental)
-func (d *Domain) GetAppManifest() (*GetAppManifestResult, error) {
+func (r *GetAppManifestRequest) Do() (*GetAppManifestResult, error) {
 	var result GetAppManifestResult
-	err := d.Client.Call("Page.getAppManifest", nil, &result)
+	err := r.client.Call("Page.getAppManifest", r.opts, &result)
 	return &result, err
 }
 
 // (experimental)
-func (d *Domain) RequestAppBanner() error {
-	return d.Client.Call("Page.requestAppBanner", nil, nil)
+type RequestAppBannerRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetControlNavigationsOpts struct {
-	Enabled bool `json:"enabled"`
+func (d *Domain) RequestAppBanner() *RequestAppBannerRequest {
+	return &RequestAppBannerRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// (experimental)
+func (r *RequestAppBannerRequest) Do() error {
+	return r.client.Call("Page.requestAppBanner", r.opts, nil)
 }
 
 // Toggles navigation throttling which allows programatic control over navigation and redirect response. (experimental)
-func (d *Domain) SetControlNavigations(opts *SetControlNavigationsOpts) error {
-	return d.Client.Call("Page.setControlNavigations", opts, nil)
+type SetControlNavigationsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type ProcessNavigationOpts struct {
-	Response NavigationResponse `json:"response"`
+func (d *Domain) SetControlNavigations() *SetControlNavigationsRequest {
+	return &SetControlNavigationsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	NavigationId int `json:"navigationId"`
+func (r *SetControlNavigationsRequest) Enabled(v bool) *SetControlNavigationsRequest {
+	r.opts["enabled"] = v
+	return r
+}
+
+// Toggles navigation throttling which allows programatic control over navigation and redirect response. (experimental)
+func (r *SetControlNavigationsRequest) Do() error {
+	return r.client.Call("Page.setControlNavigations", r.opts, nil)
 }
 
 // Should be sent in response to a navigationRequested or a redirectRequested event, telling the browser how to handle the navigation. (experimental)
-func (d *Domain) ProcessNavigation(opts *ProcessNavigationOpts) error {
-	return d.Client.Call("Page.processNavigation", opts, nil)
+type ProcessNavigationRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ProcessNavigation() *ProcessNavigationRequest {
+	return &ProcessNavigationRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *ProcessNavigationRequest) Response(v NavigationResponse) *ProcessNavigationRequest {
+	r.opts["response"] = v
+	return r
+}
+
+func (r *ProcessNavigationRequest) NavigationId(v int) *ProcessNavigationRequest {
+	r.opts["navigationId"] = v
+	return r
+}
+
+// Should be sent in response to a navigationRequested or a redirectRequested event, telling the browser how to handle the navigation. (experimental)
+func (r *ProcessNavigationRequest) Do() error {
+	return r.client.Call("Page.processNavigation", r.opts, nil)
+}
+
+// Returns metrics relating to the layouting of the page, such as viewport bounds/scale. (experimental)
+type GetLayoutMetricsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetLayoutMetrics() *GetLayoutMetricsRequest {
+	return &GetLayoutMetricsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetLayoutMetricsResult struct {
@@ -680,59 +1160,74 @@ type GetLayoutMetricsResult struct {
 	ContentSize interface{} `json:"contentSize"`
 }
 
-// Returns metrics relating to the layouting of the page, such as viewport bounds/scale. (experimental)
-func (d *Domain) GetLayoutMetrics() (*GetLayoutMetricsResult, error) {
+func (r *GetLayoutMetricsRequest) Do() (*GetLayoutMetricsResult, error) {
 	var result GetLayoutMetricsResult
-	err := d.Client.Call("Page.getLayoutMetrics", nil, &result)
+	err := r.client.Call("Page.getLayoutMetrics", r.opts, &result)
 	return &result, err
 }
 
-type CreateIsolatedWorldOpts struct {
-	// Id of the frame in which the isolated world should be created.
-	FrameId FrameId `json:"frameId"`
+// Creates an isolated world for the given frame. (experimental)
+type CreateIsolatedWorldRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// An optional name which is reported in the Execution Context. (optional)
-	WorldName string `json:"worldName,omitempty"`
+func (d *Domain) CreateIsolatedWorld() *CreateIsolatedWorldRequest {
+	return &CreateIsolatedWorldRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Whether or not universal access should be granted to the isolated world. This is a powerful option, use with caution. (optional)
-	GrantUniveralAccess bool `json:"grantUniveralAccess,omitempty"`
+// Id of the frame in which the isolated world should be created.
+func (r *CreateIsolatedWorldRequest) FrameId(v FrameId) *CreateIsolatedWorldRequest {
+	r.opts["frameId"] = v
+	return r
+}
+
+// An optional name which is reported in the Execution Context. (optional)
+func (r *CreateIsolatedWorldRequest) WorldName(v string) *CreateIsolatedWorldRequest {
+	r.opts["worldName"] = v
+	return r
+}
+
+// Whether or not universal access should be granted to the isolated world. This is a powerful option, use with caution. (optional)
+func (r *CreateIsolatedWorldRequest) GrantUniveralAccess(v bool) *CreateIsolatedWorldRequest {
+	r.opts["grantUniveralAccess"] = v
+	return r
 }
 
 // Creates an isolated world for the given frame. (experimental)
-func (d *Domain) CreateIsolatedWorld(opts *CreateIsolatedWorldOpts) error {
-	return d.Client.Call("Page.createIsolatedWorld", opts, nil)
+func (r *CreateIsolatedWorldRequest) Do() error {
+	return r.client.Call("Page.createIsolatedWorld", r.opts, nil)
+}
+
+func init() {
+	rpc.EventTypes["Page.domContentEventFired"] = func() interface{} { return new(DomContentEventFiredEvent) }
+	rpc.EventTypes["Page.loadEventFired"] = func() interface{} { return new(LoadEventFiredEvent) }
+	rpc.EventTypes["Page.frameAttached"] = func() interface{} { return new(FrameAttachedEvent) }
+	rpc.EventTypes["Page.frameNavigated"] = func() interface{} { return new(FrameNavigatedEvent) }
+	rpc.EventTypes["Page.frameDetached"] = func() interface{} { return new(FrameDetachedEvent) }
+	rpc.EventTypes["Page.frameStartedLoading"] = func() interface{} { return new(FrameStartedLoadingEvent) }
+	rpc.EventTypes["Page.frameStoppedLoading"] = func() interface{} { return new(FrameStoppedLoadingEvent) }
+	rpc.EventTypes["Page.frameScheduledNavigation"] = func() interface{} { return new(FrameScheduledNavigationEvent) }
+	rpc.EventTypes["Page.frameClearedScheduledNavigation"] = func() interface{} { return new(FrameClearedScheduledNavigationEvent) }
+	rpc.EventTypes["Page.frameResized"] = func() interface{} { return new(FrameResizedEvent) }
+	rpc.EventTypes["Page.javascriptDialogOpening"] = func() interface{} { return new(JavascriptDialogOpeningEvent) }
+	rpc.EventTypes["Page.javascriptDialogClosed"] = func() interface{} { return new(JavascriptDialogClosedEvent) }
+	rpc.EventTypes["Page.screencastFrame"] = func() interface{} { return new(ScreencastFrameEvent) }
+	rpc.EventTypes["Page.screencastVisibilityChanged"] = func() interface{} { return new(ScreencastVisibilityChangedEvent) }
+	rpc.EventTypes["Page.interstitialShown"] = func() interface{} { return new(InterstitialShownEvent) }
+	rpc.EventTypes["Page.interstitialHidden"] = func() interface{} { return new(InterstitialHiddenEvent) }
+	rpc.EventTypes["Page.navigationRequested"] = func() interface{} { return new(NavigationRequestedEvent) }
 }
 
 type DomContentEventFiredEvent struct {
 	Timestamp float64 `json:"timestamp"`
 }
 
-func (d *Domain) OnDomContentEventFired(listener func(*DomContentEventFiredEvent)) {
-	d.Client.AddListener("Page.domContentEventFired", func(params json.RawMessage) {
-		var event DomContentEventFiredEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
 type LoadEventFiredEvent struct {
 	Timestamp float64 `json:"timestamp"`
 }
 
-func (d *Domain) OnLoadEventFired(listener func(*LoadEventFiredEvent)) {
-	d.Client.AddListener("Page.loadEventFired", func(params json.RawMessage) {
-		var event LoadEventFiredEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when frame has been attached to its parent.
 type FrameAttachedEvent struct {
 	// Id of the frame that has been attached.
 	FrameId FrameId `json:"frameId"`
@@ -744,86 +1239,31 @@ type FrameAttachedEvent struct {
 	Stack interface{} `json:"stack"`
 }
 
-// Fired when frame has been attached to its parent.
-func (d *Domain) OnFrameAttached(listener func(*FrameAttachedEvent)) {
-	d.Client.AddListener("Page.frameAttached", func(params json.RawMessage) {
-		var event FrameAttachedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired once navigation of the frame has completed. Frame is now associated with the new loader.
 type FrameNavigatedEvent struct {
 	// Frame object.
 	Frame *Frame `json:"frame"`
 }
 
-// Fired once navigation of the frame has completed. Frame is now associated with the new loader.
-func (d *Domain) OnFrameNavigated(listener func(*FrameNavigatedEvent)) {
-	d.Client.AddListener("Page.frameNavigated", func(params json.RawMessage) {
-		var event FrameNavigatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when frame has been detached from its parent.
 type FrameDetachedEvent struct {
 	// Id of the frame that has been detached.
 	FrameId FrameId `json:"frameId"`
 }
 
-// Fired when frame has been detached from its parent.
-func (d *Domain) OnFrameDetached(listener func(*FrameDetachedEvent)) {
-	d.Client.AddListener("Page.frameDetached", func(params json.RawMessage) {
-		var event FrameDetachedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when frame has started loading. (experimental)
 type FrameStartedLoadingEvent struct {
 	// Id of the frame that has started loading.
 	FrameId FrameId `json:"frameId"`
 }
 
-// Fired when frame has started loading. (experimental)
-func (d *Domain) OnFrameStartedLoading(listener func(*FrameStartedLoadingEvent)) {
-	d.Client.AddListener("Page.frameStartedLoading", func(params json.RawMessage) {
-		var event FrameStartedLoadingEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when frame has stopped loading. (experimental)
 type FrameStoppedLoadingEvent struct {
 	// Id of the frame that has stopped loading.
 	FrameId FrameId `json:"frameId"`
 }
 
-// Fired when frame has stopped loading. (experimental)
-func (d *Domain) OnFrameStoppedLoading(listener func(*FrameStoppedLoadingEvent)) {
-	d.Client.AddListener("Page.frameStoppedLoading", func(params json.RawMessage) {
-		var event FrameStoppedLoadingEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when frame schedules a potential navigation. (experimental)
 type FrameScheduledNavigationEvent struct {
 	// Id of the frame that has scheduled a navigation.
 	FrameId FrameId `json:"frameId"`
@@ -832,50 +1272,17 @@ type FrameScheduledNavigationEvent struct {
 	Delay float64 `json:"delay"`
 }
 
-// Fired when frame schedules a potential navigation. (experimental)
-func (d *Domain) OnFrameScheduledNavigation(listener func(*FrameScheduledNavigationEvent)) {
-	d.Client.AddListener("Page.frameScheduledNavigation", func(params json.RawMessage) {
-		var event FrameScheduledNavigationEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when frame no longer has a scheduled navigation. (experimental)
 type FrameClearedScheduledNavigationEvent struct {
 	// Id of the frame that has cleared its scheduled navigation.
 	FrameId FrameId `json:"frameId"`
 }
 
-// Fired when frame no longer has a scheduled navigation. (experimental)
-func (d *Domain) OnFrameClearedScheduledNavigation(listener func(*FrameClearedScheduledNavigationEvent)) {
-	d.Client.AddListener("Page.frameClearedScheduledNavigation", func(params json.RawMessage) {
-		var event FrameClearedScheduledNavigationEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// (experimental)
 type FrameResizedEvent struct {
 }
 
-// (experimental)
-func (d *Domain) OnFrameResized(listener func(*FrameResizedEvent)) {
-	d.Client.AddListener("Page.frameResized", func(params json.RawMessage) {
-		var event FrameResizedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to open.
 type JavascriptDialogOpeningEvent struct {
 	// Message that will be displayed by the dialog.
 	Message string `json:"message"`
@@ -884,35 +1291,13 @@ type JavascriptDialogOpeningEvent struct {
 	Type DialogType `json:"type"`
 }
 
-// Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) is about to open.
-func (d *Domain) OnJavascriptDialogOpening(listener func(*JavascriptDialogOpeningEvent)) {
-	d.Client.AddListener("Page.javascriptDialogOpening", func(params json.RawMessage) {
-		var event JavascriptDialogOpeningEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) has been closed.
 type JavascriptDialogClosedEvent struct {
 	// Whether dialog was confirmed.
 	Result bool `json:"result"`
 }
 
-// Fired when a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload) has been closed.
-func (d *Domain) OnJavascriptDialogClosed(listener func(*JavascriptDialogClosedEvent)) {
-	d.Client.AddListener("Page.javascriptDialogClosed", func(params json.RawMessage) {
-		var event JavascriptDialogClosedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Compressed image data requested by the <code>startScreencast</code>. (experimental)
 type ScreencastFrameEvent struct {
 	// Base64-encoded compressed image.
 	Data string `json:"data"`
@@ -924,65 +1309,21 @@ type ScreencastFrameEvent struct {
 	SessionId int `json:"sessionId"`
 }
 
-// Compressed image data requested by the <code>startScreencast</code>. (experimental)
-func (d *Domain) OnScreencastFrame(listener func(*ScreencastFrameEvent)) {
-	d.Client.AddListener("Page.screencastFrame", func(params json.RawMessage) {
-		var event ScreencastFrameEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when the page with currently enabled screencast was shown or hidden </code>. (experimental)
 type ScreencastVisibilityChangedEvent struct {
 	// True if the page is visible.
 	Visible bool `json:"visible"`
 }
 
-// Fired when the page with currently enabled screencast was shown or hidden </code>. (experimental)
-func (d *Domain) OnScreencastVisibilityChanged(listener func(*ScreencastVisibilityChangedEvent)) {
-	d.Client.AddListener("Page.screencastVisibilityChanged", func(params json.RawMessage) {
-		var event ScreencastVisibilityChangedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when interstitial page was shown
 type InterstitialShownEvent struct {
 }
 
-// Fired when interstitial page was shown
-func (d *Domain) OnInterstitialShown(listener func(*InterstitialShownEvent)) {
-	d.Client.AddListener("Page.interstitialShown", func(params json.RawMessage) {
-		var event InterstitialShownEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when interstitial page was hidden
 type InterstitialHiddenEvent struct {
 }
 
-// Fired when interstitial page was hidden
-func (d *Domain) OnInterstitialHidden(listener func(*InterstitialHiddenEvent)) {
-	d.Client.AddListener("Page.interstitialHidden", func(params json.RawMessage) {
-		var event InterstitialHiddenEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when a navigation is started if navigation throttles are enabled.  The navigation will be deferred until processNavigation is called.
 type NavigationRequestedEvent struct {
 	// Whether the navigation is taking place in the main frame or in a subframe.
 	IsInMainFrame bool `json:"isInMainFrame"`
@@ -994,16 +1335,4 @@ type NavigationRequestedEvent struct {
 
 	// URL of requested navigation.
 	URL string `json:"url"`
-}
-
-// Fired when a navigation is started if navigation throttles are enabled.  The navigation will be deferred until processNavigation is called.
-func (d *Domain) OnNavigationRequested(listener func(*NavigationRequestedEvent)) {
-	d.Client.AddListener("Page.navigationRequested", func(params json.RawMessage) {
-		var event NavigationRequestedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

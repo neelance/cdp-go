@@ -146,12 +146,26 @@ type AXNode struct {
 	BackendDOMNodeId interface{} `json:"backendDOMNodeId,omitempty"`
 }
 
-type GetPartialAXTreeOpts struct {
-	// ID of node to get the partial accessibility tree for.
-	NodeId interface{} `json:"nodeId"`
+// Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists. (experimental)
+type GetPartialAXTreeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Whether to fetch this nodes ancestors, siblings and children. Defaults to true. (optional)
-	FetchRelatives bool `json:"fetchRelatives,omitempty"`
+func (d *Domain) GetPartialAXTree() *GetPartialAXTreeRequest {
+	return &GetPartialAXTreeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// ID of node to get the partial accessibility tree for.
+func (r *GetPartialAXTreeRequest) NodeId(v interface{}) *GetPartialAXTreeRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Whether to fetch this nodes ancestors, siblings and children. Defaults to true. (optional)
+func (r *GetPartialAXTreeRequest) FetchRelatives(v bool) *GetPartialAXTreeRequest {
+	r.opts["fetchRelatives"] = v
+	return r
 }
 
 type GetPartialAXTreeResult struct {
@@ -159,9 +173,11 @@ type GetPartialAXTreeResult struct {
 	Nodes []*AXNode `json:"nodes"`
 }
 
-// Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists. (experimental)
-func (d *Domain) GetPartialAXTree(opts *GetPartialAXTreeOpts) (*GetPartialAXTreeResult, error) {
+func (r *GetPartialAXTreeRequest) Do() (*GetPartialAXTreeResult, error) {
 	var result GetPartialAXTreeResult
-	err := d.Client.Call("Accessibility.getPartialAXTree", opts, &result)
+	err := r.client.Call("Accessibility.getPartialAXTree", r.opts, &result)
 	return &result, err
+}
+
+func init() {
 }

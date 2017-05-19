@@ -2,9 +2,6 @@
 package dom
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -204,21 +201,55 @@ type Rect struct {
 }
 
 // Enables DOM agent for the given page.
-func (d *Domain) Enable() error {
-	return d.Client.Call("DOM.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables DOM agent for the given page.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("DOM.enable", r.opts, nil)
 }
 
 // Disables DOM agent for the given page.
-func (d *Domain) Disable() error {
-	return d.Client.Call("DOM.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetDocumentOpts struct {
-	// The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
-	Depth int `json:"depth,omitempty"`
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Whether or not iframes and shadow roots should be traversed when returning the subtree (default is false). (optional, experimental)
-	Pierce bool `json:"pierce,omitempty"`
+// Disables DOM agent for the given page.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("DOM.disable", r.opts, nil)
+}
+
+// Returns the root DOM node (and optionally the subtree) to the caller.
+type GetDocumentRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetDocument() *GetDocumentRequest {
+	return &GetDocumentRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
+func (r *GetDocumentRequest) Depth(v int) *GetDocumentRequest {
+	r.opts["depth"] = v
+	return r
+}
+
+// Whether or not iframes and shadow roots should be traversed when returning the subtree (default is false). (optional, experimental)
+func (r *GetDocumentRequest) Pierce(v bool) *GetDocumentRequest {
+	r.opts["pierce"] = v
+	return r
 }
 
 type GetDocumentResult struct {
@@ -226,19 +257,32 @@ type GetDocumentResult struct {
 	Root *Node `json:"root"`
 }
 
-// Returns the root DOM node (and optionally the subtree) to the caller.
-func (d *Domain) GetDocument(opts *GetDocumentOpts) (*GetDocumentResult, error) {
+func (r *GetDocumentRequest) Do() (*GetDocumentResult, error) {
 	var result GetDocumentResult
-	err := d.Client.Call("DOM.getDocument", opts, &result)
+	err := r.client.Call("DOM.getDocument", r.opts, &result)
 	return &result, err
 }
 
-type GetFlattenedDocumentOpts struct {
-	// The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
-	Depth int `json:"depth,omitempty"`
+// Returns the root DOM node (and optionally the subtree) to the caller.
+type GetFlattenedDocumentRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Whether or not iframes and shadow roots should be traversed when returning the subtree (default is false). (optional, experimental)
-	Pierce bool `json:"pierce,omitempty"`
+func (d *Domain) GetFlattenedDocument() *GetFlattenedDocumentRequest {
+	return &GetFlattenedDocumentRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
+func (r *GetFlattenedDocumentRequest) Depth(v int) *GetFlattenedDocumentRequest {
+	r.opts["depth"] = v
+	return r
+}
+
+// Whether or not iframes and shadow roots should be traversed when returning the subtree (default is false). (optional, experimental)
+func (r *GetFlattenedDocumentRequest) Pierce(v bool) *GetFlattenedDocumentRequest {
+	r.opts["pierce"] = v
+	return r
 }
 
 type GetFlattenedDocumentResult struct {
@@ -246,16 +290,26 @@ type GetFlattenedDocumentResult struct {
 	Nodes []*Node `json:"nodes"`
 }
 
-// Returns the root DOM node (and optionally the subtree) to the caller.
-func (d *Domain) GetFlattenedDocument(opts *GetFlattenedDocumentOpts) (*GetFlattenedDocumentResult, error) {
+func (r *GetFlattenedDocumentRequest) Do() (*GetFlattenedDocumentResult, error) {
 	var result GetFlattenedDocumentResult
-	err := d.Client.Call("DOM.getFlattenedDocument", opts, &result)
+	err := r.client.Call("DOM.getFlattenedDocument", r.opts, &result)
 	return &result, err
 }
 
-type CollectClassNamesFromSubtreeOpts struct {
-	// Id of the node to collect class names.
-	NodeId NodeId `json:"nodeId"`
+// Collects class names for the node with given id and all of it's child nodes. (experimental)
+type CollectClassNamesFromSubtreeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CollectClassNamesFromSubtree() *CollectClassNamesFromSubtreeRequest {
+	return &CollectClassNamesFromSubtreeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to collect class names.
+func (r *CollectClassNamesFromSubtreeRequest) NodeId(v NodeId) *CollectClassNamesFromSubtreeRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type CollectClassNamesFromSubtreeResult struct {
@@ -263,35 +317,65 @@ type CollectClassNamesFromSubtreeResult struct {
 	ClassNames []string `json:"classNames"`
 }
 
-// Collects class names for the node with given id and all of it's child nodes. (experimental)
-func (d *Domain) CollectClassNamesFromSubtree(opts *CollectClassNamesFromSubtreeOpts) (*CollectClassNamesFromSubtreeResult, error) {
+func (r *CollectClassNamesFromSubtreeRequest) Do() (*CollectClassNamesFromSubtreeResult, error) {
 	var result CollectClassNamesFromSubtreeResult
-	err := d.Client.Call("DOM.collectClassNamesFromSubtree", opts, &result)
+	err := r.client.Call("DOM.collectClassNamesFromSubtree", r.opts, &result)
 	return &result, err
 }
 
-type RequestChildNodesOpts struct {
-	// Id of the node to get children for.
-	NodeId NodeId `json:"nodeId"`
+// Requests that children of the node with given id are returned to the caller in form of <code>setChildNodes</code> events where not only immediate children are retrieved, but all children down to the specified depth.
+type RequestChildNodesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
-	Depth int `json:"depth,omitempty"`
+func (d *Domain) RequestChildNodes() *RequestChildNodesRequest {
+	return &RequestChildNodesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Whether or not iframes and shadow roots should be traversed when returning the sub-tree (default is false). (optional, experimental)
-	Pierce bool `json:"pierce,omitempty"`
+// Id of the node to get children for.
+func (r *RequestChildNodesRequest) NodeId(v NodeId) *RequestChildNodesRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
+func (r *RequestChildNodesRequest) Depth(v int) *RequestChildNodesRequest {
+	r.opts["depth"] = v
+	return r
+}
+
+// Whether or not iframes and shadow roots should be traversed when returning the sub-tree (default is false). (optional, experimental)
+func (r *RequestChildNodesRequest) Pierce(v bool) *RequestChildNodesRequest {
+	r.opts["pierce"] = v
+	return r
 }
 
 // Requests that children of the node with given id are returned to the caller in form of <code>setChildNodes</code> events where not only immediate children are retrieved, but all children down to the specified depth.
-func (d *Domain) RequestChildNodes(opts *RequestChildNodesOpts) error {
-	return d.Client.Call("DOM.requestChildNodes", opts, nil)
+func (r *RequestChildNodesRequest) Do() error {
+	return r.client.Call("DOM.requestChildNodes", r.opts, nil)
 }
 
-type QuerySelectorOpts struct {
-	// Id of the node to query upon.
-	NodeId NodeId `json:"nodeId"`
+// Executes <code>querySelector</code> on a given node.
+type QuerySelectorRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Selector string.
-	Selector string `json:"selector"`
+func (d *Domain) QuerySelector() *QuerySelectorRequest {
+	return &QuerySelectorRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to query upon.
+func (r *QuerySelectorRequest) NodeId(v NodeId) *QuerySelectorRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Selector string.
+func (r *QuerySelectorRequest) Selector(v string) *QuerySelectorRequest {
+	r.opts["selector"] = v
+	return r
 }
 
 type QuerySelectorResult struct {
@@ -299,19 +383,32 @@ type QuerySelectorResult struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Executes <code>querySelector</code> on a given node.
-func (d *Domain) QuerySelector(opts *QuerySelectorOpts) (*QuerySelectorResult, error) {
+func (r *QuerySelectorRequest) Do() (*QuerySelectorResult, error) {
 	var result QuerySelectorResult
-	err := d.Client.Call("DOM.querySelector", opts, &result)
+	err := r.client.Call("DOM.querySelector", r.opts, &result)
 	return &result, err
 }
 
-type QuerySelectorAllOpts struct {
-	// Id of the node to query upon.
-	NodeId NodeId `json:"nodeId"`
+// Executes <code>querySelectorAll</code> on a given node.
+type QuerySelectorAllRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Selector string.
-	Selector string `json:"selector"`
+func (d *Domain) QuerySelectorAll() *QuerySelectorAllRequest {
+	return &QuerySelectorAllRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to query upon.
+func (r *QuerySelectorAllRequest) NodeId(v NodeId) *QuerySelectorAllRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Selector string.
+func (r *QuerySelectorAllRequest) Selector(v string) *QuerySelectorAllRequest {
+	r.opts["selector"] = v
+	return r
 }
 
 type QuerySelectorAllResult struct {
@@ -319,19 +416,32 @@ type QuerySelectorAllResult struct {
 	NodeIds []NodeId `json:"nodeIds"`
 }
 
-// Executes <code>querySelectorAll</code> on a given node.
-func (d *Domain) QuerySelectorAll(opts *QuerySelectorAllOpts) (*QuerySelectorAllResult, error) {
+func (r *QuerySelectorAllRequest) Do() (*QuerySelectorAllResult, error) {
 	var result QuerySelectorAllResult
-	err := d.Client.Call("DOM.querySelectorAll", opts, &result)
+	err := r.client.Call("DOM.querySelectorAll", r.opts, &result)
 	return &result, err
 }
 
-type SetNodeNameOpts struct {
-	// Id of the node to set name for.
-	NodeId NodeId `json:"nodeId"`
+// Sets node name for a node with given id.
+type SetNodeNameRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// New node's name.
-	Name string `json:"name"`
+func (d *Domain) SetNodeName() *SetNodeNameRequest {
+	return &SetNodeNameRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to set name for.
+func (r *SetNodeNameRequest) NodeId(v NodeId) *SetNodeNameRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// New node's name.
+func (r *SetNodeNameRequest) Name(v string) *SetNodeNameRequest {
+	r.opts["name"] = v
+	return r
 }
 
 type SetNodeNameResult struct {
@@ -339,84 +449,167 @@ type SetNodeNameResult struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Sets node name for a node with given id.
-func (d *Domain) SetNodeName(opts *SetNodeNameOpts) (*SetNodeNameResult, error) {
+func (r *SetNodeNameRequest) Do() (*SetNodeNameResult, error) {
 	var result SetNodeNameResult
-	err := d.Client.Call("DOM.setNodeName", opts, &result)
+	err := r.client.Call("DOM.setNodeName", r.opts, &result)
 	return &result, err
 }
 
-type SetNodeValueOpts struct {
-	// Id of the node to set value for.
-	NodeId NodeId `json:"nodeId"`
+// Sets node value for a node with given id.
+type SetNodeValueRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// New node's value.
-	Value string `json:"value"`
+func (d *Domain) SetNodeValue() *SetNodeValueRequest {
+	return &SetNodeValueRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to set value for.
+func (r *SetNodeValueRequest) NodeId(v NodeId) *SetNodeValueRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// New node's value.
+func (r *SetNodeValueRequest) Value(v string) *SetNodeValueRequest {
+	r.opts["value"] = v
+	return r
 }
 
 // Sets node value for a node with given id.
-func (d *Domain) SetNodeValue(opts *SetNodeValueOpts) error {
-	return d.Client.Call("DOM.setNodeValue", opts, nil)
-}
-
-type RemoveNodeOpts struct {
-	// Id of the node to remove.
-	NodeId NodeId `json:"nodeId"`
+func (r *SetNodeValueRequest) Do() error {
+	return r.client.Call("DOM.setNodeValue", r.opts, nil)
 }
 
 // Removes node with given id.
-func (d *Domain) RemoveNode(opts *RemoveNodeOpts) error {
-	return d.Client.Call("DOM.removeNode", opts, nil)
+type RemoveNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetAttributeValueOpts struct {
-	// Id of the element to set attribute for.
-	NodeId NodeId `json:"nodeId"`
+func (d *Domain) RemoveNode() *RemoveNodeRequest {
+	return &RemoveNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Attribute name.
-	Name string `json:"name"`
+// Id of the node to remove.
+func (r *RemoveNodeRequest) NodeId(v NodeId) *RemoveNodeRequest {
+	r.opts["nodeId"] = v
+	return r
+}
 
-	// Attribute value.
-	Value string `json:"value"`
+// Removes node with given id.
+func (r *RemoveNodeRequest) Do() error {
+	return r.client.Call("DOM.removeNode", r.opts, nil)
 }
 
 // Sets attribute for an element with given id.
-func (d *Domain) SetAttributeValue(opts *SetAttributeValueOpts) error {
-	return d.Client.Call("DOM.setAttributeValue", opts, nil)
+type SetAttributeValueRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetAttributesAsTextOpts struct {
-	// Id of the element to set attributes for.
-	NodeId NodeId `json:"nodeId"`
+func (d *Domain) SetAttributeValue() *SetAttributeValueRequest {
+	return &SetAttributeValueRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Text with a number of attributes. Will parse this text using HTML parser.
-	Text string `json:"text"`
+// Id of the element to set attribute for.
+func (r *SetAttributeValueRequest) NodeId(v NodeId) *SetAttributeValueRequest {
+	r.opts["nodeId"] = v
+	return r
+}
 
-	// Attribute name to replace with new attributes derived from text in case text parsed successfully. (optional)
-	Name string `json:"name,omitempty"`
+// Attribute name.
+func (r *SetAttributeValueRequest) Name(v string) *SetAttributeValueRequest {
+	r.opts["name"] = v
+	return r
+}
+
+// Attribute value.
+func (r *SetAttributeValueRequest) Value(v string) *SetAttributeValueRequest {
+	r.opts["value"] = v
+	return r
+}
+
+// Sets attribute for an element with given id.
+func (r *SetAttributeValueRequest) Do() error {
+	return r.client.Call("DOM.setAttributeValue", r.opts, nil)
 }
 
 // Sets attributes on element with given id. This method is useful when user edits some existing attribute value and types in several attribute name/value pairs.
-func (d *Domain) SetAttributesAsText(opts *SetAttributesAsTextOpts) error {
-	return d.Client.Call("DOM.setAttributesAsText", opts, nil)
+type SetAttributesAsTextRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type RemoveAttributeOpts struct {
-	// Id of the element to remove attribute from.
-	NodeId NodeId `json:"nodeId"`
+func (d *Domain) SetAttributesAsText() *SetAttributesAsTextRequest {
+	return &SetAttributesAsTextRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Name of the attribute to remove.
-	Name string `json:"name"`
+// Id of the element to set attributes for.
+func (r *SetAttributesAsTextRequest) NodeId(v NodeId) *SetAttributesAsTextRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Text with a number of attributes. Will parse this text using HTML parser.
+func (r *SetAttributesAsTextRequest) Text(v string) *SetAttributesAsTextRequest {
+	r.opts["text"] = v
+	return r
+}
+
+// Attribute name to replace with new attributes derived from text in case text parsed successfully. (optional)
+func (r *SetAttributesAsTextRequest) Name(v string) *SetAttributesAsTextRequest {
+	r.opts["name"] = v
+	return r
+}
+
+// Sets attributes on element with given id. This method is useful when user edits some existing attribute value and types in several attribute name/value pairs.
+func (r *SetAttributesAsTextRequest) Do() error {
+	return r.client.Call("DOM.setAttributesAsText", r.opts, nil)
 }
 
 // Removes attribute with given name from an element with given id.
-func (d *Domain) RemoveAttribute(opts *RemoveAttributeOpts) error {
-	return d.Client.Call("DOM.removeAttribute", opts, nil)
+type RemoveAttributeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetOuterHTMLOpts struct {
-	// Id of the node to get markup for.
-	NodeId NodeId `json:"nodeId"`
+func (d *Domain) RemoveAttribute() *RemoveAttributeRequest {
+	return &RemoveAttributeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the element to remove attribute from.
+func (r *RemoveAttributeRequest) NodeId(v NodeId) *RemoveAttributeRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Name of the attribute to remove.
+func (r *RemoveAttributeRequest) Name(v string) *RemoveAttributeRequest {
+	r.opts["name"] = v
+	return r
+}
+
+// Removes attribute with given name from an element with given id.
+func (r *RemoveAttributeRequest) Do() error {
+	return r.client.Call("DOM.removeAttribute", r.opts, nil)
+}
+
+// Returns node's HTML markup.
+type GetOuterHTMLRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetOuterHTML() *GetOuterHTMLRequest {
+	return &GetOuterHTMLRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to get markup for.
+func (r *GetOuterHTMLRequest) NodeId(v NodeId) *GetOuterHTMLRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetOuterHTMLResult struct {
@@ -424,32 +617,59 @@ type GetOuterHTMLResult struct {
 	OuterHTML string `json:"outerHTML"`
 }
 
-// Returns node's HTML markup.
-func (d *Domain) GetOuterHTML(opts *GetOuterHTMLOpts) (*GetOuterHTMLResult, error) {
+func (r *GetOuterHTMLRequest) Do() (*GetOuterHTMLResult, error) {
 	var result GetOuterHTMLResult
-	err := d.Client.Call("DOM.getOuterHTML", opts, &result)
+	err := r.client.Call("DOM.getOuterHTML", r.opts, &result)
 	return &result, err
 }
 
-type SetOuterHTMLOpts struct {
-	// Id of the node to set markup for.
-	NodeId NodeId `json:"nodeId"`
+// Sets node HTML markup, returns new node id.
+type SetOuterHTMLRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Outer HTML markup to set.
-	OuterHTML string `json:"outerHTML"`
+func (d *Domain) SetOuterHTML() *SetOuterHTMLRequest {
+	return &SetOuterHTMLRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to set markup for.
+func (r *SetOuterHTMLRequest) NodeId(v NodeId) *SetOuterHTMLRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Outer HTML markup to set.
+func (r *SetOuterHTMLRequest) OuterHTML(v string) *SetOuterHTMLRequest {
+	r.opts["outerHTML"] = v
+	return r
 }
 
 // Sets node HTML markup, returns new node id.
-func (d *Domain) SetOuterHTML(opts *SetOuterHTMLOpts) error {
-	return d.Client.Call("DOM.setOuterHTML", opts, nil)
+func (r *SetOuterHTMLRequest) Do() error {
+	return r.client.Call("DOM.setOuterHTML", r.opts, nil)
 }
 
-type PerformSearchOpts struct {
-	// Plain text or query selector or XPath search query.
-	Query string `json:"query"`
+// Searches for a given string in the DOM tree. Use <code>getSearchResults</code> to access search results or <code>cancelSearch</code> to end this search session. (experimental)
+type PerformSearchRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// True to search in user agent shadow DOM. (optional, experimental)
-	IncludeUserAgentShadowDOM bool `json:"includeUserAgentShadowDOM,omitempty"`
+func (d *Domain) PerformSearch() *PerformSearchRequest {
+	return &PerformSearchRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Plain text or query selector or XPath search query.
+func (r *PerformSearchRequest) Query(v string) *PerformSearchRequest {
+	r.opts["query"] = v
+	return r
+}
+
+// True to search in user agent shadow DOM. (optional, experimental)
+func (r *PerformSearchRequest) IncludeUserAgentShadowDOM(v bool) *PerformSearchRequest {
+	r.opts["includeUserAgentShadowDOM"] = v
+	return r
 }
 
 type PerformSearchResult struct {
@@ -460,22 +680,38 @@ type PerformSearchResult struct {
 	ResultCount int `json:"resultCount"`
 }
 
-// Searches for a given string in the DOM tree. Use <code>getSearchResults</code> to access search results or <code>cancelSearch</code> to end this search session. (experimental)
-func (d *Domain) PerformSearch(opts *PerformSearchOpts) (*PerformSearchResult, error) {
+func (r *PerformSearchRequest) Do() (*PerformSearchResult, error) {
 	var result PerformSearchResult
-	err := d.Client.Call("DOM.performSearch", opts, &result)
+	err := r.client.Call("DOM.performSearch", r.opts, &result)
 	return &result, err
 }
 
-type GetSearchResultsOpts struct {
-	// Unique search session identifier.
-	SearchId string `json:"searchId"`
+// Returns search results from given <code>fromIndex</code> to given <code>toIndex</code> from the sarch with the given identifier. (experimental)
+type GetSearchResultsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Start index of the search result to be returned.
-	FromIndex int `json:"fromIndex"`
+func (d *Domain) GetSearchResults() *GetSearchResultsRequest {
+	return &GetSearchResultsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// End index of the search result to be returned.
-	ToIndex int `json:"toIndex"`
+// Unique search session identifier.
+func (r *GetSearchResultsRequest) SearchId(v string) *GetSearchResultsRequest {
+	r.opts["searchId"] = v
+	return r
+}
+
+// Start index of the search result to be returned.
+func (r *GetSearchResultsRequest) FromIndex(v int) *GetSearchResultsRequest {
+	r.opts["fromIndex"] = v
+	return r
+}
+
+// End index of the search result to be returned.
+func (r *GetSearchResultsRequest) ToIndex(v int) *GetSearchResultsRequest {
+	r.opts["toIndex"] = v
+	return r
 }
 
 type GetSearchResultsResult struct {
@@ -483,26 +719,47 @@ type GetSearchResultsResult struct {
 	NodeIds []NodeId `json:"nodeIds"`
 }
 
-// Returns search results from given <code>fromIndex</code> to given <code>toIndex</code> from the sarch with the given identifier. (experimental)
-func (d *Domain) GetSearchResults(opts *GetSearchResultsOpts) (*GetSearchResultsResult, error) {
+func (r *GetSearchResultsRequest) Do() (*GetSearchResultsResult, error) {
 	var result GetSearchResultsResult
-	err := d.Client.Call("DOM.getSearchResults", opts, &result)
+	err := r.client.Call("DOM.getSearchResults", r.opts, &result)
 	return &result, err
 }
 
-type DiscardSearchResultsOpts struct {
-	// Unique search session identifier.
-	SearchId string `json:"searchId"`
+// Discards search results from the session with the given id. <code>getSearchResults</code> should no longer be called for that search. (experimental)
+type DiscardSearchResultsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) DiscardSearchResults() *DiscardSearchResultsRequest {
+	return &DiscardSearchResultsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Unique search session identifier.
+func (r *DiscardSearchResultsRequest) SearchId(v string) *DiscardSearchResultsRequest {
+	r.opts["searchId"] = v
+	return r
 }
 
 // Discards search results from the session with the given id. <code>getSearchResults</code> should no longer be called for that search. (experimental)
-func (d *Domain) DiscardSearchResults(opts *DiscardSearchResultsOpts) error {
-	return d.Client.Call("DOM.discardSearchResults", opts, nil)
+func (r *DiscardSearchResultsRequest) Do() error {
+	return r.client.Call("DOM.discardSearchResults", r.opts, nil)
 }
 
-type RequestNodeOpts struct {
-	// JavaScript object id to convert into node.
-	ObjectId interface{} `json:"objectId"`
+// Requests that the node is sent to the caller given the JavaScript node object reference. All nodes that form the path from the node to the root are also sent to the client as a series of <code>setChildNodes</code> notifications.
+type RequestNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) RequestNode() *RequestNodeRequest {
+	return &RequestNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// JavaScript object id to convert into node.
+func (r *RequestNodeRequest) ObjectId(v interface{}) *RequestNodeRequest {
+	r.opts["objectId"] = v
+	return r
 }
 
 type RequestNodeResult struct {
@@ -510,31 +767,71 @@ type RequestNodeResult struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Requests that the node is sent to the caller given the JavaScript node object reference. All nodes that form the path from the node to the root are also sent to the client as a series of <code>setChildNodes</code> notifications.
-func (d *Domain) RequestNode(opts *RequestNodeOpts) (*RequestNodeResult, error) {
+func (r *RequestNodeRequest) Do() (*RequestNodeResult, error) {
 	var result RequestNodeResult
-	err := d.Client.Call("DOM.requestNode", opts, &result)
+	err := r.client.Call("DOM.requestNode", r.opts, &result)
 	return &result, err
 }
 
 // Highlights given rectangle.
-func (d *Domain) HighlightRect() error {
-	return d.Client.Call("DOM.highlightRect", nil, nil)
+type HighlightRectRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) HighlightRect() *HighlightRectRequest {
+	return &HighlightRectRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Highlights given rectangle.
+func (r *HighlightRectRequest) Do() error {
+	return r.client.Call("DOM.highlightRect", r.opts, nil)
 }
 
 // Highlights DOM node.
-func (d *Domain) HighlightNode() error {
-	return d.Client.Call("DOM.highlightNode", nil, nil)
+type HighlightNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) HighlightNode() *HighlightNodeRequest {
+	return &HighlightNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Highlights DOM node.
+func (r *HighlightNodeRequest) Do() error {
+	return r.client.Call("DOM.highlightNode", r.opts, nil)
 }
 
 // Hides any highlight.
-func (d *Domain) HideHighlight() error {
-	return d.Client.Call("DOM.hideHighlight", nil, nil)
+type HideHighlightRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type PushNodeByPathToFrontendOpts struct {
-	// Path to node in the proprietary format.
-	Path string `json:"path"`
+func (d *Domain) HideHighlight() *HideHighlightRequest {
+	return &HideHighlightRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Hides any highlight.
+func (r *HideHighlightRequest) Do() error {
+	return r.client.Call("DOM.hideHighlight", r.opts, nil)
+}
+
+// Requests that the node is sent to the caller given its path. // FIXME, use XPath (experimental)
+type PushNodeByPathToFrontendRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) PushNodeByPathToFrontend() *PushNodeByPathToFrontendRequest {
+	return &PushNodeByPathToFrontendRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Path to node in the proprietary format.
+func (r *PushNodeByPathToFrontendRequest) Path(v string) *PushNodeByPathToFrontendRequest {
+	r.opts["path"] = v
+	return r
 }
 
 type PushNodeByPathToFrontendResult struct {
@@ -542,16 +839,26 @@ type PushNodeByPathToFrontendResult struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Requests that the node is sent to the caller given its path. // FIXME, use XPath (experimental)
-func (d *Domain) PushNodeByPathToFrontend(opts *PushNodeByPathToFrontendOpts) (*PushNodeByPathToFrontendResult, error) {
+func (r *PushNodeByPathToFrontendRequest) Do() (*PushNodeByPathToFrontendResult, error) {
 	var result PushNodeByPathToFrontendResult
-	err := d.Client.Call("DOM.pushNodeByPathToFrontend", opts, &result)
+	err := r.client.Call("DOM.pushNodeByPathToFrontend", r.opts, &result)
 	return &result, err
 }
 
-type PushNodesByBackendIdsToFrontendOpts struct {
-	// The array of backend node ids.
-	BackendNodeIds []BackendNodeId `json:"backendNodeIds"`
+// Requests that a batch of nodes is sent to the caller given their backend node ids. (experimental)
+type PushNodesByBackendIdsToFrontendRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) PushNodesByBackendIdsToFrontend() *PushNodesByBackendIdsToFrontendRequest {
+	return &PushNodesByBackendIdsToFrontendRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The array of backend node ids.
+func (r *PushNodesByBackendIdsToFrontendRequest) BackendNodeIds(v []BackendNodeId) *PushNodesByBackendIdsToFrontendRequest {
+	r.opts["backendNodeIds"] = v
+	return r
 }
 
 type PushNodesByBackendIdsToFrontendResult struct {
@@ -559,29 +866,53 @@ type PushNodesByBackendIdsToFrontendResult struct {
 	NodeIds []NodeId `json:"nodeIds"`
 }
 
-// Requests that a batch of nodes is sent to the caller given their backend node ids. (experimental)
-func (d *Domain) PushNodesByBackendIdsToFrontend(opts *PushNodesByBackendIdsToFrontendOpts) (*PushNodesByBackendIdsToFrontendResult, error) {
+func (r *PushNodesByBackendIdsToFrontendRequest) Do() (*PushNodesByBackendIdsToFrontendResult, error) {
 	var result PushNodesByBackendIdsToFrontendResult
-	err := d.Client.Call("DOM.pushNodesByBackendIdsToFrontend", opts, &result)
+	err := r.client.Call("DOM.pushNodesByBackendIdsToFrontend", r.opts, &result)
 	return &result, err
 }
 
-type SetInspectedNodeOpts struct {
-	// DOM node id to be accessible by means of $x command line API.
-	NodeId NodeId `json:"nodeId"`
+// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions). (experimental)
+type SetInspectedNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetInspectedNode() *SetInspectedNodeRequest {
+	return &SetInspectedNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// DOM node id to be accessible by means of $x command line API.
+func (r *SetInspectedNodeRequest) NodeId(v NodeId) *SetInspectedNodeRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 // Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions). (experimental)
-func (d *Domain) SetInspectedNode(opts *SetInspectedNodeOpts) error {
-	return d.Client.Call("DOM.setInspectedNode", opts, nil)
+func (r *SetInspectedNodeRequest) Do() error {
+	return r.client.Call("DOM.setInspectedNode", r.opts, nil)
 }
 
-type ResolveNodeOpts struct {
-	// Id of the node to resolve.
-	NodeId NodeId `json:"nodeId"`
+// Resolves JavaScript node object for given node id.
+type ResolveNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Symbolic group name that can be used to release multiple objects. (optional)
-	ObjectGroup string `json:"objectGroup,omitempty"`
+func (d *Domain) ResolveNode() *ResolveNodeRequest {
+	return &ResolveNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to resolve.
+func (r *ResolveNodeRequest) NodeId(v NodeId) *ResolveNodeRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Symbolic group name that can be used to release multiple objects. (optional)
+func (r *ResolveNodeRequest) ObjectGroup(v string) *ResolveNodeRequest {
+	r.opts["objectGroup"] = v
+	return r
 }
 
 type ResolveNodeResult struct {
@@ -589,16 +920,26 @@ type ResolveNodeResult struct {
 	Object interface{} `json:"object"`
 }
 
-// Resolves JavaScript node object for given node id.
-func (d *Domain) ResolveNode(opts *ResolveNodeOpts) (*ResolveNodeResult, error) {
+func (r *ResolveNodeRequest) Do() (*ResolveNodeResult, error) {
 	var result ResolveNodeResult
-	err := d.Client.Call("DOM.resolveNode", opts, &result)
+	err := r.client.Call("DOM.resolveNode", r.opts, &result)
 	return &result, err
 }
 
-type GetAttributesOpts struct {
-	// Id of the node to retrieve attibutes for.
-	NodeId NodeId `json:"nodeId"`
+// Returns attributes for the specified node.
+type GetAttributesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetAttributes() *GetAttributesRequest {
+	return &GetAttributesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to retrieve attibutes for.
+func (r *GetAttributesRequest) NodeId(v NodeId) *GetAttributesRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetAttributesResult struct {
@@ -606,22 +947,38 @@ type GetAttributesResult struct {
 	Attributes []string `json:"attributes"`
 }
 
-// Returns attributes for the specified node.
-func (d *Domain) GetAttributes(opts *GetAttributesOpts) (*GetAttributesResult, error) {
+func (r *GetAttributesRequest) Do() (*GetAttributesResult, error) {
 	var result GetAttributesResult
-	err := d.Client.Call("DOM.getAttributes", opts, &result)
+	err := r.client.Call("DOM.getAttributes", r.opts, &result)
 	return &result, err
 }
 
-type CopyToOpts struct {
-	// Id of the node to copy.
-	NodeId NodeId `json:"nodeId"`
+// Creates a deep copy of the specified node and places it into the target container before the given anchor. (experimental)
+type CopyToRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Id of the element to drop the copy into.
-	TargetNodeId NodeId `json:"targetNodeId"`
+func (d *Domain) CopyTo() *CopyToRequest {
+	return &CopyToRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Drop the copy before this node (if absent, the copy becomes the last child of <code>targetNodeId</code>). (optional)
-	InsertBeforeNodeId NodeId `json:"insertBeforeNodeId,omitempty"`
+// Id of the node to copy.
+func (r *CopyToRequest) NodeId(v NodeId) *CopyToRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Id of the element to drop the copy into.
+func (r *CopyToRequest) TargetNodeId(v NodeId) *CopyToRequest {
+	r.opts["targetNodeId"] = v
+	return r
+}
+
+// Drop the copy before this node (if absent, the copy becomes the last child of <code>targetNodeId</code>). (optional)
+func (r *CopyToRequest) InsertBeforeNodeId(v NodeId) *CopyToRequest {
+	r.opts["insertBeforeNodeId"] = v
+	return r
 }
 
 type CopyToResult struct {
@@ -629,22 +986,38 @@ type CopyToResult struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Creates a deep copy of the specified node and places it into the target container before the given anchor. (experimental)
-func (d *Domain) CopyTo(opts *CopyToOpts) (*CopyToResult, error) {
+func (r *CopyToRequest) Do() (*CopyToResult, error) {
 	var result CopyToResult
-	err := d.Client.Call("DOM.copyTo", opts, &result)
+	err := r.client.Call("DOM.copyTo", r.opts, &result)
 	return &result, err
 }
 
-type MoveToOpts struct {
-	// Id of the node to move.
-	NodeId NodeId `json:"nodeId"`
+// Moves node into the new container, places it before the given anchor.
+type MoveToRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Id of the element to drop the moved node into.
-	TargetNodeId NodeId `json:"targetNodeId"`
+func (d *Domain) MoveTo() *MoveToRequest {
+	return &MoveToRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Drop node before this one (if absent, the moved node becomes the last child of <code>targetNodeId</code>). (optional)
-	InsertBeforeNodeId NodeId `json:"insertBeforeNodeId,omitempty"`
+// Id of the node to move.
+func (r *MoveToRequest) NodeId(v NodeId) *MoveToRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Id of the element to drop the moved node into.
+func (r *MoveToRequest) TargetNodeId(v NodeId) *MoveToRequest {
+	r.opts["targetNodeId"] = v
+	return r
+}
+
+// Drop node before this one (if absent, the moved node becomes the last child of <code>targetNodeId</code>). (optional)
+func (r *MoveToRequest) InsertBeforeNodeId(v NodeId) *MoveToRequest {
+	r.opts["insertBeforeNodeId"] = v
+	return r
 }
 
 type MoveToResult struct {
@@ -652,54 +1025,119 @@ type MoveToResult struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Moves node into the new container, places it before the given anchor.
-func (d *Domain) MoveTo(opts *MoveToOpts) (*MoveToResult, error) {
+func (r *MoveToRequest) Do() (*MoveToResult, error) {
 	var result MoveToResult
-	err := d.Client.Call("DOM.moveTo", opts, &result)
+	err := r.client.Call("DOM.moveTo", r.opts, &result)
 	return &result, err
 }
 
 // Undoes the last performed action. (experimental)
-func (d *Domain) Undo() error {
-	return d.Client.Call("DOM.undo", nil, nil)
+type UndoRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Undo() *UndoRequest {
+	return &UndoRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Undoes the last performed action. (experimental)
+func (r *UndoRequest) Do() error {
+	return r.client.Call("DOM.undo", r.opts, nil)
 }
 
 // Re-does the last undone action. (experimental)
-func (d *Domain) Redo() error {
-	return d.Client.Call("DOM.redo", nil, nil)
+type RedoRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Redo() *RedoRequest {
+	return &RedoRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Re-does the last undone action. (experimental)
+func (r *RedoRequest) Do() error {
+	return r.client.Call("DOM.redo", r.opts, nil)
 }
 
 // Marks last undoable state. (experimental)
-func (d *Domain) MarkUndoableState() error {
-	return d.Client.Call("DOM.markUndoableState", nil, nil)
+type MarkUndoableStateRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type FocusOpts struct {
-	// Id of the node to focus.
-	NodeId NodeId `json:"nodeId"`
+func (d *Domain) MarkUndoableState() *MarkUndoableStateRequest {
+	return &MarkUndoableStateRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Marks last undoable state. (experimental)
+func (r *MarkUndoableStateRequest) Do() error {
+	return r.client.Call("DOM.markUndoableState", r.opts, nil)
 }
 
 // Focuses the given element. (experimental)
-func (d *Domain) Focus(opts *FocusOpts) error {
-	return d.Client.Call("DOM.focus", opts, nil)
+type FocusRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetFileInputFilesOpts struct {
-	// Id of the file input node to set files for.
-	NodeId NodeId `json:"nodeId"`
+func (d *Domain) Focus() *FocusRequest {
+	return &FocusRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Array of file paths to set.
-	Files []string `json:"files"`
+// Id of the node to focus.
+func (r *FocusRequest) NodeId(v NodeId) *FocusRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Focuses the given element. (experimental)
+func (r *FocusRequest) Do() error {
+	return r.client.Call("DOM.focus", r.opts, nil)
 }
 
 // Sets files for the given file input element. (experimental)
-func (d *Domain) SetFileInputFiles(opts *SetFileInputFilesOpts) error {
-	return d.Client.Call("DOM.setFileInputFiles", opts, nil)
+type SetFileInputFilesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetBoxModelOpts struct {
-	// Id of the node to get box model for.
-	NodeId NodeId `json:"nodeId"`
+func (d *Domain) SetFileInputFiles() *SetFileInputFilesRequest {
+	return &SetFileInputFilesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the file input node to set files for.
+func (r *SetFileInputFilesRequest) NodeId(v NodeId) *SetFileInputFilesRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Array of file paths to set.
+func (r *SetFileInputFilesRequest) Files(v []string) *SetFileInputFilesRequest {
+	r.opts["files"] = v
+	return r
+}
+
+// Sets files for the given file input element. (experimental)
+func (r *SetFileInputFilesRequest) Do() error {
+	return r.client.Call("DOM.setFileInputFiles", r.opts, nil)
+}
+
+// Returns boxes for the currently selected nodes. (experimental)
+type GetBoxModelRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetBoxModel() *GetBoxModelRequest {
+	return &GetBoxModelRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to get box model for.
+func (r *GetBoxModelRequest) NodeId(v NodeId) *GetBoxModelRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetBoxModelResult struct {
@@ -707,22 +1145,38 @@ type GetBoxModelResult struct {
 	Model *BoxModel `json:"model"`
 }
 
-// Returns boxes for the currently selected nodes. (experimental)
-func (d *Domain) GetBoxModel(opts *GetBoxModelOpts) (*GetBoxModelResult, error) {
+func (r *GetBoxModelRequest) Do() (*GetBoxModelResult, error) {
 	var result GetBoxModelResult
-	err := d.Client.Call("DOM.getBoxModel", opts, &result)
+	err := r.client.Call("DOM.getBoxModel", r.opts, &result)
 	return &result, err
 }
 
-type GetNodeForLocationOpts struct {
-	// X coordinate.
-	X int `json:"x"`
+// Returns node id at given location. (experimental)
+type GetNodeForLocationRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Y coordinate.
-	Y int `json:"y"`
+func (d *Domain) GetNodeForLocation() *GetNodeForLocationRequest {
+	return &GetNodeForLocationRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// False to skip to the nearest non-UA shadow root ancestor (default: false). (optional)
-	IncludeUserAgentShadowDOM bool `json:"includeUserAgentShadowDOM,omitempty"`
+// X coordinate.
+func (r *GetNodeForLocationRequest) X(v int) *GetNodeForLocationRequest {
+	r.opts["x"] = v
+	return r
+}
+
+// Y coordinate.
+func (r *GetNodeForLocationRequest) Y(v int) *GetNodeForLocationRequest {
+	r.opts["y"] = v
+	return r
+}
+
+// False to skip to the nearest non-UA shadow root ancestor (default: false). (optional)
+func (r *GetNodeForLocationRequest) IncludeUserAgentShadowDOM(v bool) *GetNodeForLocationRequest {
+	r.opts["includeUserAgentShadowDOM"] = v
+	return r
 }
 
 type GetNodeForLocationResult struct {
@@ -730,16 +1184,26 @@ type GetNodeForLocationResult struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Returns node id at given location. (experimental)
-func (d *Domain) GetNodeForLocation(opts *GetNodeForLocationOpts) (*GetNodeForLocationResult, error) {
+func (r *GetNodeForLocationRequest) Do() (*GetNodeForLocationResult, error) {
 	var result GetNodeForLocationResult
-	err := d.Client.Call("DOM.getNodeForLocation", opts, &result)
+	err := r.client.Call("DOM.getNodeForLocation", r.opts, &result)
 	return &result, err
 }
 
-type GetRelayoutBoundaryOpts struct {
-	// Id of the node.
-	NodeId NodeId `json:"nodeId"`
+// Returns the id of the nearest ancestor that is a relayout boundary. (experimental)
+type GetRelayoutBoundaryRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetRelayoutBoundary() *GetRelayoutBoundaryRequest {
+	return &GetRelayoutBoundaryRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node.
+func (r *GetRelayoutBoundaryRequest) NodeId(v NodeId) *GetRelayoutBoundaryRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetRelayoutBoundaryResult struct {
@@ -747,28 +1211,34 @@ type GetRelayoutBoundaryResult struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Returns the id of the nearest ancestor that is a relayout boundary. (experimental)
-func (d *Domain) GetRelayoutBoundary(opts *GetRelayoutBoundaryOpts) (*GetRelayoutBoundaryResult, error) {
+func (r *GetRelayoutBoundaryRequest) Do() (*GetRelayoutBoundaryResult, error) {
 	var result GetRelayoutBoundaryResult
-	err := d.Client.Call("DOM.getRelayoutBoundary", opts, &result)
+	err := r.client.Call("DOM.getRelayoutBoundary", r.opts, &result)
 	return &result, err
 }
 
-type DocumentUpdatedEvent struct {
+func init() {
+	rpc.EventTypes["DOM.documentUpdated"] = func() interface{} { return new(DocumentUpdatedEvent) }
+	rpc.EventTypes["DOM.setChildNodes"] = func() interface{} { return new(SetChildNodesEvent) }
+	rpc.EventTypes["DOM.attributeModified"] = func() interface{} { return new(AttributeModifiedEvent) }
+	rpc.EventTypes["DOM.attributeRemoved"] = func() interface{} { return new(AttributeRemovedEvent) }
+	rpc.EventTypes["DOM.inlineStyleInvalidated"] = func() interface{} { return new(InlineStyleInvalidatedEvent) }
+	rpc.EventTypes["DOM.characterDataModified"] = func() interface{} { return new(CharacterDataModifiedEvent) }
+	rpc.EventTypes["DOM.childNodeCountUpdated"] = func() interface{} { return new(ChildNodeCountUpdatedEvent) }
+	rpc.EventTypes["DOM.childNodeInserted"] = func() interface{} { return new(ChildNodeInsertedEvent) }
+	rpc.EventTypes["DOM.childNodeRemoved"] = func() interface{} { return new(ChildNodeRemovedEvent) }
+	rpc.EventTypes["DOM.shadowRootPushed"] = func() interface{} { return new(ShadowRootPushedEvent) }
+	rpc.EventTypes["DOM.shadowRootPopped"] = func() interface{} { return new(ShadowRootPoppedEvent) }
+	rpc.EventTypes["DOM.pseudoElementAdded"] = func() interface{} { return new(PseudoElementAddedEvent) }
+	rpc.EventTypes["DOM.pseudoElementRemoved"] = func() interface{} { return new(PseudoElementRemovedEvent) }
+	rpc.EventTypes["DOM.distributedNodesUpdated"] = func() interface{} { return new(DistributedNodesUpdatedEvent) }
 }
 
 // Fired when <code>Document</code> has been totally updated. Node ids are no longer valid.
-func (d *Domain) OnDocumentUpdated(listener func(*DocumentUpdatedEvent)) {
-	d.Client.AddListener("DOM.documentUpdated", func(params json.RawMessage) {
-		var event DocumentUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
+type DocumentUpdatedEvent struct {
 }
 
+// Fired when backend wants to provide client with the missing DOM structure. This happens upon most of the calls requesting node ids.
 type SetChildNodesEvent struct {
 	// Parent node id to populate with children.
 	ParentId NodeId `json:"parentId"`
@@ -777,18 +1247,7 @@ type SetChildNodesEvent struct {
 	Nodes []*Node `json:"nodes"`
 }
 
-// Fired when backend wants to provide client with the missing DOM structure. This happens upon most of the calls requesting node ids.
-func (d *Domain) OnSetChildNodes(listener func(*SetChildNodesEvent)) {
-	d.Client.AddListener("DOM.setChildNodes", func(params json.RawMessage) {
-		var event SetChildNodesEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when <code>Element</code>'s attribute is modified.
 type AttributeModifiedEvent struct {
 	// Id of the node that has changed.
 	NodeId NodeId `json:"nodeId"`
@@ -800,18 +1259,7 @@ type AttributeModifiedEvent struct {
 	Value string `json:"value"`
 }
 
-// Fired when <code>Element</code>'s attribute is modified.
-func (d *Domain) OnAttributeModified(listener func(*AttributeModifiedEvent)) {
-	d.Client.AddListener("DOM.attributeModified", func(params json.RawMessage) {
-		var event AttributeModifiedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when <code>Element</code>'s attribute is removed.
 type AttributeRemovedEvent struct {
 	// Id of the node that has changed.
 	NodeId NodeId `json:"nodeId"`
@@ -820,35 +1268,13 @@ type AttributeRemovedEvent struct {
 	Name string `json:"name"`
 }
 
-// Fired when <code>Element</code>'s attribute is removed.
-func (d *Domain) OnAttributeRemoved(listener func(*AttributeRemovedEvent)) {
-	d.Client.AddListener("DOM.attributeRemoved", func(params json.RawMessage) {
-		var event AttributeRemovedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when <code>Element</code>'s inline style is modified via a CSS property modification. (experimental)
 type InlineStyleInvalidatedEvent struct {
 	// Ids of the nodes for which the inline styles have been invalidated.
 	NodeIds []NodeId `json:"nodeIds"`
 }
 
-// Fired when <code>Element</code>'s inline style is modified via a CSS property modification. (experimental)
-func (d *Domain) OnInlineStyleInvalidated(listener func(*InlineStyleInvalidatedEvent)) {
-	d.Client.AddListener("DOM.inlineStyleInvalidated", func(params json.RawMessage) {
-		var event InlineStyleInvalidatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Mirrors <code>DOMCharacterDataModified</code> event.
 type CharacterDataModifiedEvent struct {
 	// Id of the node that has changed.
 	NodeId NodeId `json:"nodeId"`
@@ -857,18 +1283,7 @@ type CharacterDataModifiedEvent struct {
 	CharacterData string `json:"characterData"`
 }
 
-// Mirrors <code>DOMCharacterDataModified</code> event.
-func (d *Domain) OnCharacterDataModified(listener func(*CharacterDataModifiedEvent)) {
-	d.Client.AddListener("DOM.characterDataModified", func(params json.RawMessage) {
-		var event CharacterDataModifiedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when <code>Container</code>'s child node count has changed.
 type ChildNodeCountUpdatedEvent struct {
 	// Id of the node that has changed.
 	NodeId NodeId `json:"nodeId"`
@@ -877,18 +1292,7 @@ type ChildNodeCountUpdatedEvent struct {
 	ChildNodeCount int `json:"childNodeCount"`
 }
 
-// Fired when <code>Container</code>'s child node count has changed.
-func (d *Domain) OnChildNodeCountUpdated(listener func(*ChildNodeCountUpdatedEvent)) {
-	d.Client.AddListener("DOM.childNodeCountUpdated", func(params json.RawMessage) {
-		var event ChildNodeCountUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Mirrors <code>DOMNodeInserted</code> event.
 type ChildNodeInsertedEvent struct {
 	// Id of the node that has changed.
 	ParentNodeId NodeId `json:"parentNodeId"`
@@ -900,18 +1304,7 @@ type ChildNodeInsertedEvent struct {
 	Node *Node `json:"node"`
 }
 
-// Mirrors <code>DOMNodeInserted</code> event.
-func (d *Domain) OnChildNodeInserted(listener func(*ChildNodeInsertedEvent)) {
-	d.Client.AddListener("DOM.childNodeInserted", func(params json.RawMessage) {
-		var event ChildNodeInsertedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Mirrors <code>DOMNodeRemoved</code> event.
 type ChildNodeRemovedEvent struct {
 	// Parent id.
 	ParentNodeId NodeId `json:"parentNodeId"`
@@ -920,18 +1313,7 @@ type ChildNodeRemovedEvent struct {
 	NodeId NodeId `json:"nodeId"`
 }
 
-// Mirrors <code>DOMNodeRemoved</code> event.
-func (d *Domain) OnChildNodeRemoved(listener func(*ChildNodeRemovedEvent)) {
-	d.Client.AddListener("DOM.childNodeRemoved", func(params json.RawMessage) {
-		var event ChildNodeRemovedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Called when shadow root is pushed into the element. (experimental)
 type ShadowRootPushedEvent struct {
 	// Host element id.
 	HostId NodeId `json:"hostId"`
@@ -940,18 +1322,7 @@ type ShadowRootPushedEvent struct {
 	Root *Node `json:"root"`
 }
 
-// Called when shadow root is pushed into the element. (experimental)
-func (d *Domain) OnShadowRootPushed(listener func(*ShadowRootPushedEvent)) {
-	d.Client.AddListener("DOM.shadowRootPushed", func(params json.RawMessage) {
-		var event ShadowRootPushedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Called when shadow root is popped from the element. (experimental)
 type ShadowRootPoppedEvent struct {
 	// Host element id.
 	HostId NodeId `json:"hostId"`
@@ -960,18 +1331,7 @@ type ShadowRootPoppedEvent struct {
 	RootId NodeId `json:"rootId"`
 }
 
-// Called when shadow root is popped from the element. (experimental)
-func (d *Domain) OnShadowRootPopped(listener func(*ShadowRootPoppedEvent)) {
-	d.Client.AddListener("DOM.shadowRootPopped", func(params json.RawMessage) {
-		var event ShadowRootPoppedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Called when a pseudo element is added to an element. (experimental)
 type PseudoElementAddedEvent struct {
 	// Pseudo element's parent element id.
 	ParentId NodeId `json:"parentId"`
@@ -980,18 +1340,7 @@ type PseudoElementAddedEvent struct {
 	PseudoElement *Node `json:"pseudoElement"`
 }
 
-// Called when a pseudo element is added to an element. (experimental)
-func (d *Domain) OnPseudoElementAdded(listener func(*PseudoElementAddedEvent)) {
-	d.Client.AddListener("DOM.pseudoElementAdded", func(params json.RawMessage) {
-		var event PseudoElementAddedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Called when a pseudo element is removed from an element. (experimental)
 type PseudoElementRemovedEvent struct {
 	// Pseudo element's parent element id.
 	ParentId NodeId `json:"parentId"`
@@ -1000,34 +1349,11 @@ type PseudoElementRemovedEvent struct {
 	PseudoElementId NodeId `json:"pseudoElementId"`
 }
 
-// Called when a pseudo element is removed from an element. (experimental)
-func (d *Domain) OnPseudoElementRemoved(listener func(*PseudoElementRemovedEvent)) {
-	d.Client.AddListener("DOM.pseudoElementRemoved", func(params json.RawMessage) {
-		var event PseudoElementRemovedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Called when distrubution is changed. (experimental)
 type DistributedNodesUpdatedEvent struct {
 	// Insertion point where distrubuted nodes were updated.
 	InsertionPointId NodeId `json:"insertionPointId"`
 
 	// Distributed nodes for given insertion point.
 	DistributedNodes []*BackendNode `json:"distributedNodes"`
-}
-
-// Called when distrubution is changed. (experimental)
-func (d *Domain) OnDistributedNodesUpdated(listener func(*DistributedNodesUpdatedEvent)) {
-	d.Client.AddListener("DOM.distributedNodesUpdated", func(params json.RawMessage) {
-		var event DistributedNodesUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

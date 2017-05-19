@@ -72,8 +72,8 @@ func (c *Command) GoName() string {
 	return strings.ToUpper(c.Name[:1]) + c.Name[1:]
 }
 
-func (c *Command) GoOptsType() string {
-	return c.GoName() + "Opts"
+func (c *Command) GoRequestType() string {
+	return c.GoName() + "Request"
 }
 
 func (c *Command) GoResultType() string {
@@ -119,7 +119,7 @@ type Property struct {
 	Experimental bool
 }
 
-func (p *Property) GoField() string {
+func (p *Property) GoName() string {
 	switch p.Name {
 	case "url":
 		return "URL"
@@ -211,10 +211,6 @@ var t = template.Must(template.New("").Funcs(template.FuncMap{
 package {{.GoPackage}}
 {{$domain := .}}
 import (
-	{{if .Events}}
-		"encoding/json"
-		"log"
-	{{end}}
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -229,7 +225,7 @@ type Domain struct {
 		type {{.ID}} struct {
 			{{- range .Properties}}
 				{{if .Doc}}// {{.Doc}}{{end}}
-				{{.GoField}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
+				{{.GoName}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
 			{{end}}
 		}
 	{{else}}
@@ -238,12 +234,22 @@ type Domain struct {
 {{end}}
 
 {{range .Commands}}
-	{{if .Parameters}}
-		type {{.GoOptsType}} struct {
-			{{- range .Parameters}}
-				{{if .Doc}}// {{.Doc}}{{end}}
-				{{.GoField}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
-			{{end}}
+	{{$reqType := .GoRequestType}}
+	{{if .Doc}}// {{.Doc}}{{end}}
+	type {{$reqType}} struct {
+		client *rpc.Client
+		opts map[string]interface{}
+	}
+
+	func (d *Domain) {{.GoName}}() *{{$reqType}} {
+		return &{{$reqType}}{opts: make(map[string]interface{}), client: d.Client}
+	}
+
+	{{- range .Parameters}}
+		{{if .Doc}}// {{.Doc}}{{end}}
+		func (r *{{$reqType}}) {{.GoName}}(v {{goType $domain .TypeRef}}) *{{$reqType}} {
+			r.opts["{{.Name}}"] = v
+			return r
 		}
 	{{end}}
 
@@ -251,42 +257,36 @@ type Domain struct {
 		type {{.GoResultType}} struct {
 			{{- range .Returns}}
 				{{if .Doc}}// {{.Doc}}{{end}}
-				{{.GoField}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
+				{{.GoName}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
 			{{end}}
 		}
 
-		{{if .Doc}}// {{.Doc}}{{end}}
-		func (d *Domain) {{.GoName}}({{if .Parameters}}opts *{{.GoOptsType}}{{end}}) (*{{.GoResultType}}, error) {
+		func (r *{{.GoRequestType}}) Do() (*{{.GoResultType}}, error) {
 			var result {{.GoResultType}}
-			err := d.Client.Call("{{$domain.Domain}}.{{.Name}}", {{if .Parameters}}opts{{else}}nil{{end}}, &result)
+			err := r.client.Call("{{$domain.Domain}}.{{.Name}}", r.opts, &result)
 			return &result, err
 		}
 	{{else}}
 		{{if .Doc}}// {{.Doc}}{{end}}
-		func (d *Domain) {{.GoName}}({{if .Parameters}}opts *{{.GoOptsType}}{{end}}) error {
-			return d.Client.Call("{{$domain.Domain}}.{{.Name}}", {{if .Parameters}}opts{{else}}nil{{end}}, nil)
+		func (r *{{.GoRequestType}}) Do() error {
+			return r.client.Call("{{$domain.Domain}}.{{.Name}}", r.opts, nil)
 		}
 	{{end}}
 {{end}}
 
+func init() {
+	{{- range .Events}}
+		rpc.EventTypes["{{$domain.Domain}}.{{.Name}}"] = func() interface{} { return new({{.GoType}}) }
+	{{- end}}
+}
+
 {{range .Events}}
+	{{if .Doc}}// {{.Doc}}{{end}}
 	type {{.GoType}} struct {
 		{{- range .Parameters}}
 			{{if .Doc}}// {{.Doc}}{{end}}
-			{{.GoField}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
+			{{.GoName}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
 		{{end}}
-	}
-
-	{{if .Doc}}// {{.Doc}}{{end}}
-	func (d *Domain) On{{.GoName}}(listener func(*{{.GoType}})) {
-		d.Client.AddListener("{{$domain.Domain}}.{{.Name}}", func(params json.RawMessage) {
-			var event {{.GoType}}
-			if err := json.Unmarshal(params, &event); err != nil {
-				log.Print(err)
-				return
-			}
-			listener(&event)
-		})
 	}
 {{end}}
 `))

@@ -48,107 +48,224 @@ type EventListener struct {
 	BackendNodeId interface{} `json:"backendNodeId,omitempty"`
 }
 
-type SetDOMBreakpointOpts struct {
-	// Identifier of the node to set breakpoint on.
-	NodeId interface{} `json:"nodeId"`
+// Sets breakpoint on particular operation with DOM.
+type SetDOMBreakpointRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Type of the operation to stop upon.
-	Type DOMBreakpointType `json:"type"`
+func (d *Domain) SetDOMBreakpoint() *SetDOMBreakpointRequest {
+	return &SetDOMBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Identifier of the node to set breakpoint on.
+func (r *SetDOMBreakpointRequest) NodeId(v interface{}) *SetDOMBreakpointRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Type of the operation to stop upon.
+func (r *SetDOMBreakpointRequest) Type(v DOMBreakpointType) *SetDOMBreakpointRequest {
+	r.opts["type"] = v
+	return r
 }
 
 // Sets breakpoint on particular operation with DOM.
-func (d *Domain) SetDOMBreakpoint(opts *SetDOMBreakpointOpts) error {
-	return d.Client.Call("DOMDebugger.setDOMBreakpoint", opts, nil)
-}
-
-type RemoveDOMBreakpointOpts struct {
-	// Identifier of the node to remove breakpoint from.
-	NodeId interface{} `json:"nodeId"`
-
-	// Type of the breakpoint to remove.
-	Type DOMBreakpointType `json:"type"`
+func (r *SetDOMBreakpointRequest) Do() error {
+	return r.client.Call("DOMDebugger.setDOMBreakpoint", r.opts, nil)
 }
 
 // Removes DOM breakpoint that was set using <code>setDOMBreakpoint</code>.
-func (d *Domain) RemoveDOMBreakpoint(opts *RemoveDOMBreakpointOpts) error {
-	return d.Client.Call("DOMDebugger.removeDOMBreakpoint", opts, nil)
+type RemoveDOMBreakpointRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetEventListenerBreakpointOpts struct {
-	// DOM Event name to stop on (any DOM event will do).
-	EventName string `json:"eventName"`
+func (d *Domain) RemoveDOMBreakpoint() *RemoveDOMBreakpointRequest {
+	return &RemoveDOMBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// EventTarget interface name to stop on. If equal to <code>"*"</code> or not provided, will stop on any EventTarget. (optional, experimental)
-	TargetName string `json:"targetName,omitempty"`
+// Identifier of the node to remove breakpoint from.
+func (r *RemoveDOMBreakpointRequest) NodeId(v interface{}) *RemoveDOMBreakpointRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Type of the breakpoint to remove.
+func (r *RemoveDOMBreakpointRequest) Type(v DOMBreakpointType) *RemoveDOMBreakpointRequest {
+	r.opts["type"] = v
+	return r
+}
+
+// Removes DOM breakpoint that was set using <code>setDOMBreakpoint</code>.
+func (r *RemoveDOMBreakpointRequest) Do() error {
+	return r.client.Call("DOMDebugger.removeDOMBreakpoint", r.opts, nil)
 }
 
 // Sets breakpoint on particular DOM event.
-func (d *Domain) SetEventListenerBreakpoint(opts *SetEventListenerBreakpointOpts) error {
-	return d.Client.Call("DOMDebugger.setEventListenerBreakpoint", opts, nil)
+type SetEventListenerBreakpointRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type RemoveEventListenerBreakpointOpts struct {
-	// Event name.
-	EventName string `json:"eventName"`
+func (d *Domain) SetEventListenerBreakpoint() *SetEventListenerBreakpointRequest {
+	return &SetEventListenerBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// EventTarget interface name. (optional, experimental)
-	TargetName string `json:"targetName,omitempty"`
+// DOM Event name to stop on (any DOM event will do).
+func (r *SetEventListenerBreakpointRequest) EventName(v string) *SetEventListenerBreakpointRequest {
+	r.opts["eventName"] = v
+	return r
+}
+
+// EventTarget interface name to stop on. If equal to <code>"*"</code> or not provided, will stop on any EventTarget. (optional, experimental)
+func (r *SetEventListenerBreakpointRequest) TargetName(v string) *SetEventListenerBreakpointRequest {
+	r.opts["targetName"] = v
+	return r
+}
+
+// Sets breakpoint on particular DOM event.
+func (r *SetEventListenerBreakpointRequest) Do() error {
+	return r.client.Call("DOMDebugger.setEventListenerBreakpoint", r.opts, nil)
 }
 
 // Removes breakpoint on particular DOM event.
-func (d *Domain) RemoveEventListenerBreakpoint(opts *RemoveEventListenerBreakpointOpts) error {
-	return d.Client.Call("DOMDebugger.removeEventListenerBreakpoint", opts, nil)
+type RemoveEventListenerBreakpointRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetInstrumentationBreakpointOpts struct {
-	// Instrumentation name to stop on.
-	EventName string `json:"eventName"`
+func (d *Domain) RemoveEventListenerBreakpoint() *RemoveEventListenerBreakpointRequest {
+	return &RemoveEventListenerBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Event name.
+func (r *RemoveEventListenerBreakpointRequest) EventName(v string) *RemoveEventListenerBreakpointRequest {
+	r.opts["eventName"] = v
+	return r
+}
+
+// EventTarget interface name. (optional, experimental)
+func (r *RemoveEventListenerBreakpointRequest) TargetName(v string) *RemoveEventListenerBreakpointRequest {
+	r.opts["targetName"] = v
+	return r
+}
+
+// Removes breakpoint on particular DOM event.
+func (r *RemoveEventListenerBreakpointRequest) Do() error {
+	return r.client.Call("DOMDebugger.removeEventListenerBreakpoint", r.opts, nil)
 }
 
 // Sets breakpoint on particular native event. (experimental)
-func (d *Domain) SetInstrumentationBreakpoint(opts *SetInstrumentationBreakpointOpts) error {
-	return d.Client.Call("DOMDebugger.setInstrumentationBreakpoint", opts, nil)
+type SetInstrumentationBreakpointRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type RemoveInstrumentationBreakpointOpts struct {
-	// Instrumentation name to stop on.
-	EventName string `json:"eventName"`
+func (d *Domain) SetInstrumentationBreakpoint() *SetInstrumentationBreakpointRequest {
+	return &SetInstrumentationBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Instrumentation name to stop on.
+func (r *SetInstrumentationBreakpointRequest) EventName(v string) *SetInstrumentationBreakpointRequest {
+	r.opts["eventName"] = v
+	return r
+}
+
+// Sets breakpoint on particular native event. (experimental)
+func (r *SetInstrumentationBreakpointRequest) Do() error {
+	return r.client.Call("DOMDebugger.setInstrumentationBreakpoint", r.opts, nil)
 }
 
 // Removes breakpoint on particular native event. (experimental)
-func (d *Domain) RemoveInstrumentationBreakpoint(opts *RemoveInstrumentationBreakpointOpts) error {
-	return d.Client.Call("DOMDebugger.removeInstrumentationBreakpoint", opts, nil)
+type RemoveInstrumentationBreakpointRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetXHRBreakpointOpts struct {
-	// Resource URL substring. All XHRs having this substring in the URL will get stopped upon.
-	URL string `json:"url"`
+func (d *Domain) RemoveInstrumentationBreakpoint() *RemoveInstrumentationBreakpointRequest {
+	return &RemoveInstrumentationBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Instrumentation name to stop on.
+func (r *RemoveInstrumentationBreakpointRequest) EventName(v string) *RemoveInstrumentationBreakpointRequest {
+	r.opts["eventName"] = v
+	return r
+}
+
+// Removes breakpoint on particular native event. (experimental)
+func (r *RemoveInstrumentationBreakpointRequest) Do() error {
+	return r.client.Call("DOMDebugger.removeInstrumentationBreakpoint", r.opts, nil)
 }
 
 // Sets breakpoint on XMLHttpRequest.
-func (d *Domain) SetXHRBreakpoint(opts *SetXHRBreakpointOpts) error {
-	return d.Client.Call("DOMDebugger.setXHRBreakpoint", opts, nil)
+type SetXHRBreakpointRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type RemoveXHRBreakpointOpts struct {
-	// Resource URL substring.
-	URL string `json:"url"`
+func (d *Domain) SetXHRBreakpoint() *SetXHRBreakpointRequest {
+	return &SetXHRBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Resource URL substring. All XHRs having this substring in the URL will get stopped upon.
+func (r *SetXHRBreakpointRequest) URL(v string) *SetXHRBreakpointRequest {
+	r.opts["url"] = v
+	return r
+}
+
+// Sets breakpoint on XMLHttpRequest.
+func (r *SetXHRBreakpointRequest) Do() error {
+	return r.client.Call("DOMDebugger.setXHRBreakpoint", r.opts, nil)
 }
 
 // Removes breakpoint from XMLHttpRequest.
-func (d *Domain) RemoveXHRBreakpoint(opts *RemoveXHRBreakpointOpts) error {
-	return d.Client.Call("DOMDebugger.removeXHRBreakpoint", opts, nil)
+type RemoveXHRBreakpointRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetEventListenersOpts struct {
-	// Identifier of the object to return listeners for.
-	ObjectId interface{} `json:"objectId"`
+func (d *Domain) RemoveXHRBreakpoint() *RemoveXHRBreakpointRequest {
+	return &RemoveXHRBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// The maximum depth at which Node children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
-	Depth int `json:"depth,omitempty"`
+// Resource URL substring.
+func (r *RemoveXHRBreakpointRequest) URL(v string) *RemoveXHRBreakpointRequest {
+	r.opts["url"] = v
+	return r
+}
 
-	// Whether or not iframes and shadow roots should be traversed when returning the subtree (default is false). Reports listeners for all contexts if pierce is enabled. (optional, experimental)
-	Pierce bool `json:"pierce,omitempty"`
+// Removes breakpoint from XMLHttpRequest.
+func (r *RemoveXHRBreakpointRequest) Do() error {
+	return r.client.Call("DOMDebugger.removeXHRBreakpoint", r.opts, nil)
+}
+
+// Returns event listeners of the given object. (experimental)
+type GetEventListenersRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetEventListeners() *GetEventListenersRequest {
+	return &GetEventListenersRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Identifier of the object to return listeners for.
+func (r *GetEventListenersRequest) ObjectId(v interface{}) *GetEventListenersRequest {
+	r.opts["objectId"] = v
+	return r
+}
+
+// The maximum depth at which Node children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
+func (r *GetEventListenersRequest) Depth(v int) *GetEventListenersRequest {
+	r.opts["depth"] = v
+	return r
+}
+
+// Whether or not iframes and shadow roots should be traversed when returning the subtree (default is false). Reports listeners for all contexts if pierce is enabled. (optional, experimental)
+func (r *GetEventListenersRequest) Pierce(v bool) *GetEventListenersRequest {
+	r.opts["pierce"] = v
+	return r
 }
 
 type GetEventListenersResult struct {
@@ -156,9 +273,11 @@ type GetEventListenersResult struct {
 	Listeners []*EventListener `json:"listeners"`
 }
 
-// Returns event listeners of the given object. (experimental)
-func (d *Domain) GetEventListeners(opts *GetEventListenersOpts) (*GetEventListenersResult, error) {
+func (r *GetEventListenersRequest) Do() (*GetEventListenersResult, error) {
 	var result GetEventListenersResult
-	err := d.Client.Call("DOMDebugger.getEventListeners", opts, &result)
+	err := r.client.Call("DOMDebugger.getEventListeners", r.opts, &result)
 	return &result, err
+}
+
+func init() {
 }

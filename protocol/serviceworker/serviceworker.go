@@ -2,9 +2,6 @@
 package serviceworker
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -69,137 +66,233 @@ type ServiceWorkerErrorMessage struct {
 	ColumnNumber int `json:"columnNumber"`
 }
 
-func (d *Domain) Enable() error {
-	return d.Client.Call("ServiceWorker.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() error {
-	return d.Client.Call("ServiceWorker.disable", nil, nil)
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-type UnregisterOpts struct {
-	ScopeURL string `json:"scopeURL"`
+func (r *EnableRequest) Do() error {
+	return r.client.Call("ServiceWorker.enable", r.opts, nil)
 }
 
-func (d *Domain) Unregister(opts *UnregisterOpts) error {
-	return d.Client.Call("ServiceWorker.unregister", opts, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type UpdateRegistrationOpts struct {
-	ScopeURL string `json:"scopeURL"`
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-func (d *Domain) UpdateRegistration(opts *UpdateRegistrationOpts) error {
-	return d.Client.Call("ServiceWorker.updateRegistration", opts, nil)
+func (r *DisableRequest) Do() error {
+	return r.client.Call("ServiceWorker.disable", r.opts, nil)
 }
 
-type StartWorkerOpts struct {
-	ScopeURL string `json:"scopeURL"`
+type UnregisterRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-func (d *Domain) StartWorker(opts *StartWorkerOpts) error {
-	return d.Client.Call("ServiceWorker.startWorker", opts, nil)
+func (d *Domain) Unregister() *UnregisterRequest {
+	return &UnregisterRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-type SkipWaitingOpts struct {
-	ScopeURL string `json:"scopeURL"`
+func (r *UnregisterRequest) ScopeURL(v string) *UnregisterRequest {
+	r.opts["scopeURL"] = v
+	return r
 }
 
-func (d *Domain) SkipWaiting(opts *SkipWaitingOpts) error {
-	return d.Client.Call("ServiceWorker.skipWaiting", opts, nil)
+func (r *UnregisterRequest) Do() error {
+	return r.client.Call("ServiceWorker.unregister", r.opts, nil)
 }
 
-type StopWorkerOpts struct {
-	VersionId string `json:"versionId"`
+type UpdateRegistrationRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-func (d *Domain) StopWorker(opts *StopWorkerOpts) error {
-	return d.Client.Call("ServiceWorker.stopWorker", opts, nil)
+func (d *Domain) UpdateRegistration() *UpdateRegistrationRequest {
+	return &UpdateRegistrationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-type InspectWorkerOpts struct {
-	VersionId string `json:"versionId"`
+func (r *UpdateRegistrationRequest) ScopeURL(v string) *UpdateRegistrationRequest {
+	r.opts["scopeURL"] = v
+	return r
 }
 
-func (d *Domain) InspectWorker(opts *InspectWorkerOpts) error {
-	return d.Client.Call("ServiceWorker.inspectWorker", opts, nil)
+func (r *UpdateRegistrationRequest) Do() error {
+	return r.client.Call("ServiceWorker.updateRegistration", r.opts, nil)
 }
 
-type SetForceUpdateOnPageLoadOpts struct {
-	ForceUpdateOnPageLoad bool `json:"forceUpdateOnPageLoad"`
+type StartWorkerRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-func (d *Domain) SetForceUpdateOnPageLoad(opts *SetForceUpdateOnPageLoadOpts) error {
-	return d.Client.Call("ServiceWorker.setForceUpdateOnPageLoad", opts, nil)
+func (d *Domain) StartWorker() *StartWorkerRequest {
+	return &StartWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-type DeliverPushMessageOpts struct {
-	Origin string `json:"origin"`
-
-	RegistrationId string `json:"registrationId"`
-
-	Data string `json:"data"`
+func (r *StartWorkerRequest) ScopeURL(v string) *StartWorkerRequest {
+	r.opts["scopeURL"] = v
+	return r
 }
 
-func (d *Domain) DeliverPushMessage(opts *DeliverPushMessageOpts) error {
-	return d.Client.Call("ServiceWorker.deliverPushMessage", opts, nil)
+func (r *StartWorkerRequest) Do() error {
+	return r.client.Call("ServiceWorker.startWorker", r.opts, nil)
 }
 
-type DispatchSyncEventOpts struct {
-	Origin string `json:"origin"`
-
-	RegistrationId string `json:"registrationId"`
-
-	Tag string `json:"tag"`
-
-	LastChance bool `json:"lastChance"`
+type SkipWaitingRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-func (d *Domain) DispatchSyncEvent(opts *DispatchSyncEventOpts) error {
-	return d.Client.Call("ServiceWorker.dispatchSyncEvent", opts, nil)
+func (d *Domain) SkipWaiting() *SkipWaitingRequest {
+	return &SkipWaitingRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *SkipWaitingRequest) ScopeURL(v string) *SkipWaitingRequest {
+	r.opts["scopeURL"] = v
+	return r
+}
+
+func (r *SkipWaitingRequest) Do() error {
+	return r.client.Call("ServiceWorker.skipWaiting", r.opts, nil)
+}
+
+type StopWorkerRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) StopWorker() *StopWorkerRequest {
+	return &StopWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *StopWorkerRequest) VersionId(v string) *StopWorkerRequest {
+	r.opts["versionId"] = v
+	return r
+}
+
+func (r *StopWorkerRequest) Do() error {
+	return r.client.Call("ServiceWorker.stopWorker", r.opts, nil)
+}
+
+type InspectWorkerRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) InspectWorker() *InspectWorkerRequest {
+	return &InspectWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *InspectWorkerRequest) VersionId(v string) *InspectWorkerRequest {
+	r.opts["versionId"] = v
+	return r
+}
+
+func (r *InspectWorkerRequest) Do() error {
+	return r.client.Call("ServiceWorker.inspectWorker", r.opts, nil)
+}
+
+type SetForceUpdateOnPageLoadRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetForceUpdateOnPageLoad() *SetForceUpdateOnPageLoadRequest {
+	return &SetForceUpdateOnPageLoadRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *SetForceUpdateOnPageLoadRequest) ForceUpdateOnPageLoad(v bool) *SetForceUpdateOnPageLoadRequest {
+	r.opts["forceUpdateOnPageLoad"] = v
+	return r
+}
+
+func (r *SetForceUpdateOnPageLoadRequest) Do() error {
+	return r.client.Call("ServiceWorker.setForceUpdateOnPageLoad", r.opts, nil)
+}
+
+type DeliverPushMessageRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) DeliverPushMessage() *DeliverPushMessageRequest {
+	return &DeliverPushMessageRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *DeliverPushMessageRequest) Origin(v string) *DeliverPushMessageRequest {
+	r.opts["origin"] = v
+	return r
+}
+
+func (r *DeliverPushMessageRequest) RegistrationId(v string) *DeliverPushMessageRequest {
+	r.opts["registrationId"] = v
+	return r
+}
+
+func (r *DeliverPushMessageRequest) Data(v string) *DeliverPushMessageRequest {
+	r.opts["data"] = v
+	return r
+}
+
+func (r *DeliverPushMessageRequest) Do() error {
+	return r.client.Call("ServiceWorker.deliverPushMessage", r.opts, nil)
+}
+
+type DispatchSyncEventRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) DispatchSyncEvent() *DispatchSyncEventRequest {
+	return &DispatchSyncEventRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *DispatchSyncEventRequest) Origin(v string) *DispatchSyncEventRequest {
+	r.opts["origin"] = v
+	return r
+}
+
+func (r *DispatchSyncEventRequest) RegistrationId(v string) *DispatchSyncEventRequest {
+	r.opts["registrationId"] = v
+	return r
+}
+
+func (r *DispatchSyncEventRequest) Tag(v string) *DispatchSyncEventRequest {
+	r.opts["tag"] = v
+	return r
+}
+
+func (r *DispatchSyncEventRequest) LastChance(v bool) *DispatchSyncEventRequest {
+	r.opts["lastChance"] = v
+	return r
+}
+
+func (r *DispatchSyncEventRequest) Do() error {
+	return r.client.Call("ServiceWorker.dispatchSyncEvent", r.opts, nil)
+}
+
+func init() {
+	rpc.EventTypes["ServiceWorker.workerRegistrationUpdated"] = func() interface{} { return new(WorkerRegistrationUpdatedEvent) }
+	rpc.EventTypes["ServiceWorker.workerVersionUpdated"] = func() interface{} { return new(WorkerVersionUpdatedEvent) }
+	rpc.EventTypes["ServiceWorker.workerErrorReported"] = func() interface{} { return new(WorkerErrorReportedEvent) }
 }
 
 type WorkerRegistrationUpdatedEvent struct {
 	Registrations []*ServiceWorkerRegistration `json:"registrations"`
 }
 
-func (d *Domain) OnWorkerRegistrationUpdated(listener func(*WorkerRegistrationUpdatedEvent)) {
-	d.Client.AddListener("ServiceWorker.workerRegistrationUpdated", func(params json.RawMessage) {
-		var event WorkerRegistrationUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
 type WorkerVersionUpdatedEvent struct {
 	Versions []*ServiceWorkerVersion `json:"versions"`
 }
 
-func (d *Domain) OnWorkerVersionUpdated(listener func(*WorkerVersionUpdatedEvent)) {
-	d.Client.AddListener("ServiceWorker.workerVersionUpdated", func(params json.RawMessage) {
-		var event WorkerVersionUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
 type WorkerErrorReportedEvent struct {
 	ErrorMessage *ServiceWorkerErrorMessage `json:"errorMessage"`
-}
-
-func (d *Domain) OnWorkerErrorReported(listener func(*WorkerErrorReportedEvent)) {
-	d.Client.AddListener("ServiceWorker.workerErrorReported", func(params json.RawMessage) {
-		var event WorkerErrorReportedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

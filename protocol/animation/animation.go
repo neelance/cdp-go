@@ -2,9 +2,6 @@
 package animation
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -102,13 +99,43 @@ type KeyframeStyle struct {
 }
 
 // Enables animation domain notifications.
-func (d *Domain) Enable() error {
-	return d.Client.Call("Animation.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables animation domain notifications.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("Animation.enable", r.opts, nil)
 }
 
 // Disables animation domain notifications.
-func (d *Domain) Disable() error {
-	return d.Client.Call("Animation.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables animation domain notifications.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("Animation.disable", r.opts, nil)
+}
+
+// Gets the playback rate of the document timeline.
+type GetPlaybackRateRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetPlaybackRate() *GetPlaybackRateRequest {
+	return &GetPlaybackRateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetPlaybackRateResult struct {
@@ -116,26 +143,47 @@ type GetPlaybackRateResult struct {
 	PlaybackRate float64 `json:"playbackRate"`
 }
 
-// Gets the playback rate of the document timeline.
-func (d *Domain) GetPlaybackRate() (*GetPlaybackRateResult, error) {
+func (r *GetPlaybackRateRequest) Do() (*GetPlaybackRateResult, error) {
 	var result GetPlaybackRateResult
-	err := d.Client.Call("Animation.getPlaybackRate", nil, &result)
+	err := r.client.Call("Animation.getPlaybackRate", r.opts, &result)
 	return &result, err
 }
 
-type SetPlaybackRateOpts struct {
-	// Playback rate for animations on page
-	PlaybackRate float64 `json:"playbackRate"`
+// Sets the playback rate of the document timeline.
+type SetPlaybackRateRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetPlaybackRate() *SetPlaybackRateRequest {
+	return &SetPlaybackRateRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Playback rate for animations on page
+func (r *SetPlaybackRateRequest) PlaybackRate(v float64) *SetPlaybackRateRequest {
+	r.opts["playbackRate"] = v
+	return r
 }
 
 // Sets the playback rate of the document timeline.
-func (d *Domain) SetPlaybackRate(opts *SetPlaybackRateOpts) error {
-	return d.Client.Call("Animation.setPlaybackRate", opts, nil)
+func (r *SetPlaybackRateRequest) Do() error {
+	return r.client.Call("Animation.setPlaybackRate", r.opts, nil)
 }
 
-type GetCurrentTimeOpts struct {
-	// Id of animation.
-	Id string `json:"id"`
+// Returns the current time of the an animation.
+type GetCurrentTimeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetCurrentTime() *GetCurrentTimeRequest {
+	return &GetCurrentTimeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of animation.
+func (r *GetCurrentTimeRequest) Id(v string) *GetCurrentTimeRequest {
+	r.opts["id"] = v
+	return r
 }
 
 type GetCurrentTimeResult struct {
@@ -143,68 +191,134 @@ type GetCurrentTimeResult struct {
 	CurrentTime float64 `json:"currentTime"`
 }
 
-// Returns the current time of the an animation.
-func (d *Domain) GetCurrentTime(opts *GetCurrentTimeOpts) (*GetCurrentTimeResult, error) {
+func (r *GetCurrentTimeRequest) Do() (*GetCurrentTimeResult, error) {
 	var result GetCurrentTimeResult
-	err := d.Client.Call("Animation.getCurrentTime", opts, &result)
+	err := r.client.Call("Animation.getCurrentTime", r.opts, &result)
 	return &result, err
 }
 
-type SetPausedOpts struct {
-	// Animations to set the pause state of.
-	Animations []string `json:"animations"`
+// Sets the paused state of a set of animations.
+type SetPausedRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Paused state to set to.
-	Paused bool `json:"paused"`
+func (d *Domain) SetPaused() *SetPausedRequest {
+	return &SetPausedRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Animations to set the pause state of.
+func (r *SetPausedRequest) Animations(v []string) *SetPausedRequest {
+	r.opts["animations"] = v
+	return r
+}
+
+// Paused state to set to.
+func (r *SetPausedRequest) Paused(v bool) *SetPausedRequest {
+	r.opts["paused"] = v
+	return r
 }
 
 // Sets the paused state of a set of animations.
-func (d *Domain) SetPaused(opts *SetPausedOpts) error {
-	return d.Client.Call("Animation.setPaused", opts, nil)
-}
-
-type SetTimingOpts struct {
-	// Animation id.
-	AnimationId string `json:"animationId"`
-
-	// Duration of the animation.
-	Duration float64 `json:"duration"`
-
-	// Delay of the animation.
-	Delay float64 `json:"delay"`
+func (r *SetPausedRequest) Do() error {
+	return r.client.Call("Animation.setPaused", r.opts, nil)
 }
 
 // Sets the timing of an animation node.
-func (d *Domain) SetTiming(opts *SetTimingOpts) error {
-	return d.Client.Call("Animation.setTiming", opts, nil)
+type SetTimingRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SeekAnimationsOpts struct {
-	// List of animation ids to seek.
-	Animations []string `json:"animations"`
+func (d *Domain) SetTiming() *SetTimingRequest {
+	return &SetTimingRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Set the current time of each animation.
-	CurrentTime float64 `json:"currentTime"`
+// Animation id.
+func (r *SetTimingRequest) AnimationId(v string) *SetTimingRequest {
+	r.opts["animationId"] = v
+	return r
+}
+
+// Duration of the animation.
+func (r *SetTimingRequest) Duration(v float64) *SetTimingRequest {
+	r.opts["duration"] = v
+	return r
+}
+
+// Delay of the animation.
+func (r *SetTimingRequest) Delay(v float64) *SetTimingRequest {
+	r.opts["delay"] = v
+	return r
+}
+
+// Sets the timing of an animation node.
+func (r *SetTimingRequest) Do() error {
+	return r.client.Call("Animation.setTiming", r.opts, nil)
 }
 
 // Seek a set of animations to a particular time within each animation.
-func (d *Domain) SeekAnimations(opts *SeekAnimationsOpts) error {
-	return d.Client.Call("Animation.seekAnimations", opts, nil)
+type SeekAnimationsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type ReleaseAnimationsOpts struct {
-	// List of animation ids to seek.
-	Animations []string `json:"animations"`
+func (d *Domain) SeekAnimations() *SeekAnimationsRequest {
+	return &SeekAnimationsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// List of animation ids to seek.
+func (r *SeekAnimationsRequest) Animations(v []string) *SeekAnimationsRequest {
+	r.opts["animations"] = v
+	return r
+}
+
+// Set the current time of each animation.
+func (r *SeekAnimationsRequest) CurrentTime(v float64) *SeekAnimationsRequest {
+	r.opts["currentTime"] = v
+	return r
+}
+
+// Seek a set of animations to a particular time within each animation.
+func (r *SeekAnimationsRequest) Do() error {
+	return r.client.Call("Animation.seekAnimations", r.opts, nil)
 }
 
 // Releases a set of animations to no longer be manipulated.
-func (d *Domain) ReleaseAnimations(opts *ReleaseAnimationsOpts) error {
-	return d.Client.Call("Animation.releaseAnimations", opts, nil)
+type ReleaseAnimationsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type ResolveAnimationOpts struct {
-	// Animation id.
-	AnimationId string `json:"animationId"`
+func (d *Domain) ReleaseAnimations() *ReleaseAnimationsRequest {
+	return &ReleaseAnimationsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// List of animation ids to seek.
+func (r *ReleaseAnimationsRequest) Animations(v []string) *ReleaseAnimationsRequest {
+	r.opts["animations"] = v
+	return r
+}
+
+// Releases a set of animations to no longer be manipulated.
+func (r *ReleaseAnimationsRequest) Do() error {
+	return r.client.Call("Animation.releaseAnimations", r.opts, nil)
+}
+
+// Gets the remote object of the Animation.
+type ResolveAnimationRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ResolveAnimation() *ResolveAnimationRequest {
+	return &ResolveAnimationRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Animation id.
+func (r *ResolveAnimationRequest) AnimationId(v string) *ResolveAnimationRequest {
+	r.opts["animationId"] = v
+	return r
 }
 
 type ResolveAnimationResult struct {
@@ -212,60 +326,32 @@ type ResolveAnimationResult struct {
 	RemoteObject interface{} `json:"remoteObject"`
 }
 
-// Gets the remote object of the Animation.
-func (d *Domain) ResolveAnimation(opts *ResolveAnimationOpts) (*ResolveAnimationResult, error) {
+func (r *ResolveAnimationRequest) Do() (*ResolveAnimationResult, error) {
 	var result ResolveAnimationResult
-	err := d.Client.Call("Animation.resolveAnimation", opts, &result)
+	err := r.client.Call("Animation.resolveAnimation", r.opts, &result)
 	return &result, err
 }
 
+func init() {
+	rpc.EventTypes["Animation.animationCreated"] = func() interface{} { return new(AnimationCreatedEvent) }
+	rpc.EventTypes["Animation.animationStarted"] = func() interface{} { return new(AnimationStartedEvent) }
+	rpc.EventTypes["Animation.animationCanceled"] = func() interface{} { return new(AnimationCanceledEvent) }
+}
+
+// Event for each animation that has been created.
 type AnimationCreatedEvent struct {
 	// Id of the animation that was created.
 	Id string `json:"id"`
 }
 
-// Event for each animation that has been created.
-func (d *Domain) OnAnimationCreated(listener func(*AnimationCreatedEvent)) {
-	d.Client.AddListener("Animation.animationCreated", func(params json.RawMessage) {
-		var event AnimationCreatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Event for animation that has been started.
 type AnimationStartedEvent struct {
 	// Animation that was started.
 	Animation *Animation `json:"animation"`
 }
 
-// Event for animation that has been started.
-func (d *Domain) OnAnimationStarted(listener func(*AnimationStartedEvent)) {
-	d.Client.AddListener("Animation.animationStarted", func(params json.RawMessage) {
-		var event AnimationStartedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Event for when an animation has been cancelled.
 type AnimationCanceledEvent struct {
 	// Id of the animation that was cancelled.
 	Id string `json:"id"`
-}
-
-// Event for when an animation has been cancelled.
-func (d *Domain) OnAnimationCanceled(listener func(*AnimationCanceledEvent)) {
-	d.Client.AddListener("Animation.animationCanceled", func(params json.RawMessage) {
-		var event AnimationCanceledEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

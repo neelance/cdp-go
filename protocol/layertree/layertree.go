@@ -2,9 +2,6 @@
 package layertree
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -98,18 +95,49 @@ type Layer struct {
 type PaintProfile []float64
 
 // Enables compositing tree inspection.
-func (d *Domain) Enable() error {
-	return d.Client.Call("LayerTree.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables compositing tree inspection.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("LayerTree.enable", r.opts, nil)
 }
 
 // Disables compositing tree inspection.
-func (d *Domain) Disable() error {
-	return d.Client.Call("LayerTree.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type CompositingReasonsOpts struct {
-	// The id of the layer for which we want to get the reasons it was composited.
-	LayerId LayerId `json:"layerId"`
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables compositing tree inspection.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("LayerTree.disable", r.opts, nil)
+}
+
+// Provides the reasons why the given layer was composited.
+type CompositingReasonsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CompositingReasons() *CompositingReasonsRequest {
+	return &CompositingReasonsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The id of the layer for which we want to get the reasons it was composited.
+func (r *CompositingReasonsRequest) LayerId(v LayerId) *CompositingReasonsRequest {
+	r.opts["layerId"] = v
+	return r
 }
 
 type CompositingReasonsResult struct {
@@ -117,16 +145,26 @@ type CompositingReasonsResult struct {
 	CompositingReasons []string `json:"compositingReasons"`
 }
 
-// Provides the reasons why the given layer was composited.
-func (d *Domain) CompositingReasons(opts *CompositingReasonsOpts) (*CompositingReasonsResult, error) {
+func (r *CompositingReasonsRequest) Do() (*CompositingReasonsResult, error) {
 	var result CompositingReasonsResult
-	err := d.Client.Call("LayerTree.compositingReasons", opts, &result)
+	err := r.client.Call("LayerTree.compositingReasons", r.opts, &result)
 	return &result, err
 }
 
-type MakeSnapshotOpts struct {
-	// The id of the layer.
-	LayerId LayerId `json:"layerId"`
+// Returns the layer snapshot identifier.
+type MakeSnapshotRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) MakeSnapshot() *MakeSnapshotRequest {
+	return &MakeSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The id of the layer.
+func (r *MakeSnapshotRequest) LayerId(v LayerId) *MakeSnapshotRequest {
+	r.opts["layerId"] = v
+	return r
 }
 
 type MakeSnapshotResult struct {
@@ -134,16 +172,26 @@ type MakeSnapshotResult struct {
 	SnapshotId SnapshotId `json:"snapshotId"`
 }
 
-// Returns the layer snapshot identifier.
-func (d *Domain) MakeSnapshot(opts *MakeSnapshotOpts) (*MakeSnapshotResult, error) {
+func (r *MakeSnapshotRequest) Do() (*MakeSnapshotResult, error) {
 	var result MakeSnapshotResult
-	err := d.Client.Call("LayerTree.makeSnapshot", opts, &result)
+	err := r.client.Call("LayerTree.makeSnapshot", r.opts, &result)
 	return &result, err
 }
 
-type LoadSnapshotOpts struct {
-	// An array of tiles composing the snapshot.
-	Tiles []*PictureTile `json:"tiles"`
+// Returns the snapshot identifier.
+type LoadSnapshotRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) LoadSnapshot() *LoadSnapshotRequest {
+	return &LoadSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// An array of tiles composing the snapshot.
+func (r *LoadSnapshotRequest) Tiles(v []*PictureTile) *LoadSnapshotRequest {
+	r.opts["tiles"] = v
+	return r
 }
 
 type LoadSnapshotResult struct {
@@ -151,35 +199,64 @@ type LoadSnapshotResult struct {
 	SnapshotId SnapshotId `json:"snapshotId"`
 }
 
-// Returns the snapshot identifier.
-func (d *Domain) LoadSnapshot(opts *LoadSnapshotOpts) (*LoadSnapshotResult, error) {
+func (r *LoadSnapshotRequest) Do() (*LoadSnapshotResult, error) {
 	var result LoadSnapshotResult
-	err := d.Client.Call("LayerTree.loadSnapshot", opts, &result)
+	err := r.client.Call("LayerTree.loadSnapshot", r.opts, &result)
 	return &result, err
 }
 
-type ReleaseSnapshotOpts struct {
-	// The id of the layer snapshot.
-	SnapshotId SnapshotId `json:"snapshotId"`
+// Releases layer snapshot captured by the back-end.
+type ReleaseSnapshotRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ReleaseSnapshot() *ReleaseSnapshotRequest {
+	return &ReleaseSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The id of the layer snapshot.
+func (r *ReleaseSnapshotRequest) SnapshotId(v SnapshotId) *ReleaseSnapshotRequest {
+	r.opts["snapshotId"] = v
+	return r
 }
 
 // Releases layer snapshot captured by the back-end.
-func (d *Domain) ReleaseSnapshot(opts *ReleaseSnapshotOpts) error {
-	return d.Client.Call("LayerTree.releaseSnapshot", opts, nil)
+func (r *ReleaseSnapshotRequest) Do() error {
+	return r.client.Call("LayerTree.releaseSnapshot", r.opts, nil)
 }
 
-type ProfileSnapshotOpts struct {
-	// The id of the layer snapshot.
-	SnapshotId SnapshotId `json:"snapshotId"`
+type ProfileSnapshotRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// The maximum number of times to replay the snapshot (1, if not specified). (optional)
-	MinRepeatCount int `json:"minRepeatCount,omitempty"`
+func (d *Domain) ProfileSnapshot() *ProfileSnapshotRequest {
+	return &ProfileSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// The minimum duration (in seconds) to replay the snapshot. (optional)
-	MinDuration float64 `json:"minDuration,omitempty"`
+// The id of the layer snapshot.
+func (r *ProfileSnapshotRequest) SnapshotId(v SnapshotId) *ProfileSnapshotRequest {
+	r.opts["snapshotId"] = v
+	return r
+}
 
-	// The clip rectangle to apply when replaying the snapshot. (optional)
-	ClipRect interface{} `json:"clipRect,omitempty"`
+// The maximum number of times to replay the snapshot (1, if not specified). (optional)
+func (r *ProfileSnapshotRequest) MinRepeatCount(v int) *ProfileSnapshotRequest {
+	r.opts["minRepeatCount"] = v
+	return r
+}
+
+// The minimum duration (in seconds) to replay the snapshot. (optional)
+func (r *ProfileSnapshotRequest) MinDuration(v float64) *ProfileSnapshotRequest {
+	r.opts["minDuration"] = v
+	return r
+}
+
+// The clip rectangle to apply when replaying the snapshot. (optional)
+func (r *ProfileSnapshotRequest) ClipRect(v interface{}) *ProfileSnapshotRequest {
+	r.opts["clipRect"] = v
+	return r
 }
 
 type ProfileSnapshotResult struct {
@@ -187,24 +264,44 @@ type ProfileSnapshotResult struct {
 	Timings []PaintProfile `json:"timings"`
 }
 
-func (d *Domain) ProfileSnapshot(opts *ProfileSnapshotOpts) (*ProfileSnapshotResult, error) {
+func (r *ProfileSnapshotRequest) Do() (*ProfileSnapshotResult, error) {
 	var result ProfileSnapshotResult
-	err := d.Client.Call("LayerTree.profileSnapshot", opts, &result)
+	err := r.client.Call("LayerTree.profileSnapshot", r.opts, &result)
 	return &result, err
 }
 
-type ReplaySnapshotOpts struct {
-	// The id of the layer snapshot.
-	SnapshotId SnapshotId `json:"snapshotId"`
+// Replays the layer snapshot and returns the resulting bitmap.
+type ReplaySnapshotRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// The first step to replay from (replay from the very start if not specified). (optional)
-	FromStep int `json:"fromStep,omitempty"`
+func (d *Domain) ReplaySnapshot() *ReplaySnapshotRequest {
+	return &ReplaySnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// The last step to replay to (replay till the end if not specified). (optional)
-	ToStep int `json:"toStep,omitempty"`
+// The id of the layer snapshot.
+func (r *ReplaySnapshotRequest) SnapshotId(v SnapshotId) *ReplaySnapshotRequest {
+	r.opts["snapshotId"] = v
+	return r
+}
 
-	// The scale to apply while replaying (defaults to 1). (optional)
-	Scale float64 `json:"scale,omitempty"`
+// The first step to replay from (replay from the very start if not specified). (optional)
+func (r *ReplaySnapshotRequest) FromStep(v int) *ReplaySnapshotRequest {
+	r.opts["fromStep"] = v
+	return r
+}
+
+// The last step to replay to (replay till the end if not specified). (optional)
+func (r *ReplaySnapshotRequest) ToStep(v int) *ReplaySnapshotRequest {
+	r.opts["toStep"] = v
+	return r
+}
+
+// The scale to apply while replaying (defaults to 1). (optional)
+func (r *ReplaySnapshotRequest) Scale(v float64) *ReplaySnapshotRequest {
+	r.opts["scale"] = v
+	return r
 }
 
 type ReplaySnapshotResult struct {
@@ -212,16 +309,26 @@ type ReplaySnapshotResult struct {
 	DataURL string `json:"dataURL"`
 }
 
-// Replays the layer snapshot and returns the resulting bitmap.
-func (d *Domain) ReplaySnapshot(opts *ReplaySnapshotOpts) (*ReplaySnapshotResult, error) {
+func (r *ReplaySnapshotRequest) Do() (*ReplaySnapshotResult, error) {
 	var result ReplaySnapshotResult
-	err := d.Client.Call("LayerTree.replaySnapshot", opts, &result)
+	err := r.client.Call("LayerTree.replaySnapshot", r.opts, &result)
 	return &result, err
 }
 
-type SnapshotCommandLogOpts struct {
-	// The id of the layer snapshot.
-	SnapshotId SnapshotId `json:"snapshotId"`
+// Replays the layer snapshot and returns canvas log.
+type SnapshotCommandLogRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SnapshotCommandLog() *SnapshotCommandLogRequest {
+	return &SnapshotCommandLogRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The id of the layer snapshot.
+func (r *SnapshotCommandLogRequest) SnapshotId(v SnapshotId) *SnapshotCommandLogRequest {
+	r.opts["snapshotId"] = v
+	return r
 }
 
 type SnapshotCommandLogResult struct {
@@ -229,27 +336,20 @@ type SnapshotCommandLogResult struct {
 	CommandLog []interface{} `json:"commandLog"`
 }
 
-// Replays the layer snapshot and returns canvas log.
-func (d *Domain) SnapshotCommandLog(opts *SnapshotCommandLogOpts) (*SnapshotCommandLogResult, error) {
+func (r *SnapshotCommandLogRequest) Do() (*SnapshotCommandLogResult, error) {
 	var result SnapshotCommandLogResult
-	err := d.Client.Call("LayerTree.snapshotCommandLog", opts, &result)
+	err := r.client.Call("LayerTree.snapshotCommandLog", r.opts, &result)
 	return &result, err
+}
+
+func init() {
+	rpc.EventTypes["LayerTree.layerTreeDidChange"] = func() interface{} { return new(LayerTreeDidChangeEvent) }
+	rpc.EventTypes["LayerTree.layerPainted"] = func() interface{} { return new(LayerPaintedEvent) }
 }
 
 type LayerTreeDidChangeEvent struct {
 	// Layer tree, absent if not in the comspositing mode. (optional)
 	Layers []*Layer `json:"layers"`
-}
-
-func (d *Domain) OnLayerTreeDidChange(listener func(*LayerTreeDidChangeEvent)) {
-	d.Client.AddListener("LayerTree.layerTreeDidChange", func(params json.RawMessage) {
-		var event LayerTreeDidChangeEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }
 
 type LayerPaintedEvent struct {
@@ -258,15 +358,4 @@ type LayerPaintedEvent struct {
 
 	// Clip rectangle.
 	Clip interface{} `json:"clip"`
-}
-
-func (d *Domain) OnLayerPainted(listener func(*LayerPaintedEvent)) {
-	d.Client.AddListener("LayerTree.layerPainted", func(params json.RawMessage) {
-		var event LayerPaintedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

@@ -2,9 +2,6 @@
 package applicationcache
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -58,26 +55,56 @@ type FrameWithManifest struct {
 	Status int `json:"status"`
 }
 
+// Returns array of frame identifiers with manifest urls for each frame containing a document associated with some application cache.
+type GetFramesWithManifestsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetFramesWithManifests() *GetFramesWithManifestsRequest {
+	return &GetFramesWithManifestsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
 type GetFramesWithManifestsResult struct {
 	// Array of frame identifiers with manifest urls for each frame containing a document associated with some application cache.
 	FrameIds []*FrameWithManifest `json:"frameIds"`
 }
 
-// Returns array of frame identifiers with manifest urls for each frame containing a document associated with some application cache.
-func (d *Domain) GetFramesWithManifests() (*GetFramesWithManifestsResult, error) {
+func (r *GetFramesWithManifestsRequest) Do() (*GetFramesWithManifestsResult, error) {
 	var result GetFramesWithManifestsResult
-	err := d.Client.Call("ApplicationCache.getFramesWithManifests", nil, &result)
+	err := r.client.Call("ApplicationCache.getFramesWithManifests", r.opts, &result)
 	return &result, err
 }
 
 // Enables application cache domain notifications.
-func (d *Domain) Enable() error {
-	return d.Client.Call("ApplicationCache.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetManifestForFrameOpts struct {
-	// Identifier of the frame containing document whose manifest is retrieved.
-	FrameId interface{} `json:"frameId"`
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables application cache domain notifications.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("ApplicationCache.enable", r.opts, nil)
+}
+
+// Returns manifest URL for document in the given frame.
+type GetManifestForFrameRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetManifestForFrame() *GetManifestForFrameRequest {
+	return &GetManifestForFrameRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Identifier of the frame containing document whose manifest is retrieved.
+func (r *GetManifestForFrameRequest) FrameId(v interface{}) *GetManifestForFrameRequest {
+	r.opts["frameId"] = v
+	return r
 }
 
 type GetManifestForFrameResult struct {
@@ -85,16 +112,26 @@ type GetManifestForFrameResult struct {
 	ManifestURL string `json:"manifestURL"`
 }
 
-// Returns manifest URL for document in the given frame.
-func (d *Domain) GetManifestForFrame(opts *GetManifestForFrameOpts) (*GetManifestForFrameResult, error) {
+func (r *GetManifestForFrameRequest) Do() (*GetManifestForFrameResult, error) {
 	var result GetManifestForFrameResult
-	err := d.Client.Call("ApplicationCache.getManifestForFrame", opts, &result)
+	err := r.client.Call("ApplicationCache.getManifestForFrame", r.opts, &result)
 	return &result, err
 }
 
-type GetApplicationCacheForFrameOpts struct {
-	// Identifier of the frame containing document whose application cache is retrieved.
-	FrameId interface{} `json:"frameId"`
+// Returns relevant application cache data for the document in given frame.
+type GetApplicationCacheForFrameRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetApplicationCacheForFrame() *GetApplicationCacheForFrameRequest {
+	return &GetApplicationCacheForFrameRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Identifier of the frame containing document whose application cache is retrieved.
+func (r *GetApplicationCacheForFrameRequest) FrameId(v interface{}) *GetApplicationCacheForFrameRequest {
+	r.opts["frameId"] = v
+	return r
 }
 
 type GetApplicationCacheForFrameResult struct {
@@ -102,11 +139,15 @@ type GetApplicationCacheForFrameResult struct {
 	ApplicationCache *ApplicationCache `json:"applicationCache"`
 }
 
-// Returns relevant application cache data for the document in given frame.
-func (d *Domain) GetApplicationCacheForFrame(opts *GetApplicationCacheForFrameOpts) (*GetApplicationCacheForFrameResult, error) {
+func (r *GetApplicationCacheForFrameRequest) Do() (*GetApplicationCacheForFrameResult, error) {
 	var result GetApplicationCacheForFrameResult
-	err := d.Client.Call("ApplicationCache.getApplicationCacheForFrame", opts, &result)
+	err := r.client.Call("ApplicationCache.getApplicationCacheForFrame", r.opts, &result)
 	return &result, err
+}
+
+func init() {
+	rpc.EventTypes["ApplicationCache.applicationCacheStatusUpdated"] = func() interface{} { return new(ApplicationCacheStatusUpdatedEvent) }
+	rpc.EventTypes["ApplicationCache.networkStateUpdated"] = func() interface{} { return new(NetworkStateUpdatedEvent) }
 }
 
 type ApplicationCacheStatusUpdatedEvent struct {
@@ -120,28 +161,6 @@ type ApplicationCacheStatusUpdatedEvent struct {
 	Status int `json:"status"`
 }
 
-func (d *Domain) OnApplicationCacheStatusUpdated(listener func(*ApplicationCacheStatusUpdatedEvent)) {
-	d.Client.AddListener("ApplicationCache.applicationCacheStatusUpdated", func(params json.RawMessage) {
-		var event ApplicationCacheStatusUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
 type NetworkStateUpdatedEvent struct {
 	IsNowOnline bool `json:"isNowOnline"`
-}
-
-func (d *Domain) OnNetworkStateUpdated(listener func(*NetworkStateUpdatedEvent)) {
-	d.Client.AddListener("ApplicationCache.networkStateUpdated", func(params json.RawMessage) {
-		var event NetworkStateUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

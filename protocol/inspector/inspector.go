@@ -2,9 +2,6 @@
 package inspector
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -14,43 +11,46 @@ type Domain struct {
 }
 
 // Enables inspector domain notifications.
-func (d *Domain) Enable() error {
-	return d.Client.Call("Inspector.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables inspector domain notifications.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("Inspector.enable", r.opts, nil)
 }
 
 // Disables inspector domain notifications.
-func (d *Domain) Disable() error {
-	return d.Client.Call("Inspector.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables inspector domain notifications.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("Inspector.disable", r.opts, nil)
+}
+
+func init() {
+	rpc.EventTypes["Inspector.detached"] = func() interface{} { return new(DetachedEvent) }
+	rpc.EventTypes["Inspector.targetCrashed"] = func() interface{} { return new(TargetCrashedEvent) }
+}
+
+// Fired when remote debugging connection is about to be terminated. Contains detach reason.
 type DetachedEvent struct {
 	// The reason why connection has been terminated.
 	Reason string `json:"reason"`
 }
 
-// Fired when remote debugging connection is about to be terminated. Contains detach reason.
-func (d *Domain) OnDetached(listener func(*DetachedEvent)) {
-	d.Client.AddListener("Inspector.detached", func(params json.RawMessage) {
-		var event DetachedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
-type TargetCrashedEvent struct {
-}
-
 // Fired when debugging target has crashed
-func (d *Domain) OnTargetCrashed(listener func(*TargetCrashedEvent)) {
-	d.Client.AddListener("Inspector.targetCrashed", func(params json.RawMessage) {
-		var event TargetCrashedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
+type TargetCrashedEvent struct {
 }

@@ -10,23 +10,53 @@ type Domain struct {
 	Client *rpc.Client
 }
 
-type SetDeviceOrientationOverrideOpts struct {
-	// Mock alpha
-	Alpha float64 `json:"alpha"`
+// Overrides the Device Orientation.
+type SetDeviceOrientationOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Mock beta
-	Beta float64 `json:"beta"`
+func (d *Domain) SetDeviceOrientationOverride() *SetDeviceOrientationOverrideRequest {
+	return &SetDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Mock gamma
-	Gamma float64 `json:"gamma"`
+// Mock alpha
+func (r *SetDeviceOrientationOverrideRequest) Alpha(v float64) *SetDeviceOrientationOverrideRequest {
+	r.opts["alpha"] = v
+	return r
+}
+
+// Mock beta
+func (r *SetDeviceOrientationOverrideRequest) Beta(v float64) *SetDeviceOrientationOverrideRequest {
+	r.opts["beta"] = v
+	return r
+}
+
+// Mock gamma
+func (r *SetDeviceOrientationOverrideRequest) Gamma(v float64) *SetDeviceOrientationOverrideRequest {
+	r.opts["gamma"] = v
+	return r
 }
 
 // Overrides the Device Orientation.
-func (d *Domain) SetDeviceOrientationOverride(opts *SetDeviceOrientationOverrideOpts) error {
-	return d.Client.Call("DeviceOrientation.setDeviceOrientationOverride", opts, nil)
+func (r *SetDeviceOrientationOverrideRequest) Do() error {
+	return r.client.Call("DeviceOrientation.setDeviceOrientationOverride", r.opts, nil)
 }
 
 // Clears the overridden Device Orientation.
-func (d *Domain) ClearDeviceOrientationOverride() error {
-	return d.Client.Call("DeviceOrientation.clearDeviceOrientationOverride", nil, nil)
+type ClearDeviceOrientationOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ClearDeviceOrientationOverride() *ClearDeviceOrientationOverrideRequest {
+	return &ClearDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Clears the overridden Device Orientation.
+func (r *ClearDeviceOrientationOverrideRequest) Do() error {
+	return r.client.Call("DeviceOrientation.clearDeviceOrientationOverride", r.opts, nil)
+}
+
+func init() {
 }

@@ -12,15 +12,32 @@ type Domain struct {
 
 type StreamHandle string
 
-type ReadOpts struct {
-	// Handle of the stream to read.
-	Handle StreamHandle `json:"handle"`
+// Read a chunk of the stream
+type ReadRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Seek to the specified offset before reading (if not specificed, proceed with offset following the last read). (optional)
-	Offset int `json:"offset,omitempty"`
+func (d *Domain) Read() *ReadRequest {
+	return &ReadRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Maximum number of bytes to read (left upon the agent discretion if not specified). (optional)
-	Size int `json:"size,omitempty"`
+// Handle of the stream to read.
+func (r *ReadRequest) Handle(v StreamHandle) *ReadRequest {
+	r.opts["handle"] = v
+	return r
+}
+
+// Seek to the specified offset before reading (if not specificed, proceed with offset following the last read). (optional)
+func (r *ReadRequest) Offset(v int) *ReadRequest {
+	r.opts["offset"] = v
+	return r
+}
+
+// Maximum number of bytes to read (left upon the agent discretion if not specified). (optional)
+func (r *ReadRequest) Size(v int) *ReadRequest {
+	r.opts["size"] = v
+	return r
 }
 
 type ReadResult struct {
@@ -31,19 +48,32 @@ type ReadResult struct {
 	Eof bool `json:"eof"`
 }
 
-// Read a chunk of the stream
-func (d *Domain) Read(opts *ReadOpts) (*ReadResult, error) {
+func (r *ReadRequest) Do() (*ReadResult, error) {
 	var result ReadResult
-	err := d.Client.Call("IO.read", opts, &result)
+	err := r.client.Call("IO.read", r.opts, &result)
 	return &result, err
 }
 
-type CloseOpts struct {
-	// Handle of the stream to close.
-	Handle StreamHandle `json:"handle"`
+// Close the stream, discard any temporary backing storage.
+type CloseRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Close() *CloseRequest {
+	return &CloseRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Handle of the stream to close.
+func (r *CloseRequest) Handle(v StreamHandle) *CloseRequest {
+	r.opts["handle"] = v
+	return r
 }
 
 // Close the stream, discard any temporary backing storage.
-func (d *Domain) Close(opts *CloseOpts) error {
-	return d.Client.Call("IO.close", opts, nil)
+func (r *CloseRequest) Do() error {
+	return r.client.Call("IO.close", r.opts, nil)
+}
+
+func init() {
 }

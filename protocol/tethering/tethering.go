@@ -2,9 +2,6 @@
 package tethering
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -13,42 +10,57 @@ type Domain struct {
 	Client *rpc.Client
 }
 
-type BindOpts struct {
-	// Port number to bind.
-	Port int `json:"port"`
+// Request browser port binding.
+type BindRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Bind() *BindRequest {
+	return &BindRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Port number to bind.
+func (r *BindRequest) Port(v int) *BindRequest {
+	r.opts["port"] = v
+	return r
 }
 
 // Request browser port binding.
-func (d *Domain) Bind(opts *BindOpts) error {
-	return d.Client.Call("Tethering.bind", opts, nil)
-}
-
-type UnbindOpts struct {
-	// Port number to unbind.
-	Port int `json:"port"`
+func (r *BindRequest) Do() error {
+	return r.client.Call("Tethering.bind", r.opts, nil)
 }
 
 // Request browser port unbinding.
-func (d *Domain) Unbind(opts *UnbindOpts) error {
-	return d.Client.Call("Tethering.unbind", opts, nil)
+type UnbindRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
+func (d *Domain) Unbind() *UnbindRequest {
+	return &UnbindRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Port number to unbind.
+func (r *UnbindRequest) Port(v int) *UnbindRequest {
+	r.opts["port"] = v
+	return r
+}
+
+// Request browser port unbinding.
+func (r *UnbindRequest) Do() error {
+	return r.client.Call("Tethering.unbind", r.opts, nil)
+}
+
+func init() {
+	rpc.EventTypes["Tethering.accepted"] = func() interface{} { return new(AcceptedEvent) }
+}
+
+// Informs that port was successfully bound and got a specified connection id.
 type AcceptedEvent struct {
 	// Port number that was successfully bound.
 	Port int `json:"port"`
 
 	// Connection id to be used.
 	ConnectionId string `json:"connectionId"`
-}
-
-// Informs that port was successfully bound and got a specified connection id.
-func (d *Domain) OnAccepted(listener func(*AcceptedEvent)) {
-	d.Client.AddListener("Tethering.accepted", func(params json.RawMessage) {
-		var event AcceptedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

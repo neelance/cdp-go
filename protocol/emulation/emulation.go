@@ -2,9 +2,6 @@
 package emulation
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -27,168 +24,371 @@ type ScreenOrientation struct {
 
 type VirtualTimePolicy string
 
-type SetDeviceMetricsOverrideOpts struct {
-	// Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-	Width int `json:"width"`
+// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
+type SetDeviceMetricsOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-	Height int `json:"height"`
+func (d *Domain) SetDeviceMetricsOverride() *SetDeviceMetricsOverrideRequest {
+	return &SetDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Overriding device scale factor value. 0 disables the override.
-	DeviceScaleFactor float64 `json:"deviceScaleFactor"`
+// Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
+func (r *SetDeviceMetricsOverrideRequest) Width(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["width"] = v
+	return r
+}
 
-	// Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text autosizing and more.
-	Mobile bool `json:"mobile"`
+// Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
+func (r *SetDeviceMetricsOverrideRequest) Height(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["height"] = v
+	return r
+}
 
-	// Whether a view that exceeds the available browser window area should be scaled down to fit.
-	FitWindow bool `json:"fitWindow"`
+// Overriding device scale factor value. 0 disables the override.
+func (r *SetDeviceMetricsOverrideRequest) DeviceScaleFactor(v float64) *SetDeviceMetricsOverrideRequest {
+	r.opts["deviceScaleFactor"] = v
+	return r
+}
 
-	// Scale to apply to resulting view image. Ignored in |fitWindow| mode. (optional, experimental)
-	Scale float64 `json:"scale,omitempty"`
+// Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text autosizing and more.
+func (r *SetDeviceMetricsOverrideRequest) Mobile(v bool) *SetDeviceMetricsOverrideRequest {
+	r.opts["mobile"] = v
+	return r
+}
 
-	// Not used. (optional, experimental)
-	OffsetX float64 `json:"offsetX,omitempty"`
+// Whether a view that exceeds the available browser window area should be scaled down to fit.
+func (r *SetDeviceMetricsOverrideRequest) FitWindow(v bool) *SetDeviceMetricsOverrideRequest {
+	r.opts["fitWindow"] = v
+	return r
+}
 
-	// Not used. (optional, experimental)
-	OffsetY float64 `json:"offsetY,omitempty"`
+// Scale to apply to resulting view image. Ignored in |fitWindow| mode. (optional, experimental)
+func (r *SetDeviceMetricsOverrideRequest) Scale(v float64) *SetDeviceMetricsOverrideRequest {
+	r.opts["scale"] = v
+	return r
+}
 
-	// Overriding screen width value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional, experimental)
-	ScreenWidth int `json:"screenWidth,omitempty"`
+// Not used. (optional, experimental)
+func (r *SetDeviceMetricsOverrideRequest) OffsetX(v float64) *SetDeviceMetricsOverrideRequest {
+	r.opts["offsetX"] = v
+	return r
+}
 
-	// Overriding screen height value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional, experimental)
-	ScreenHeight int `json:"screenHeight,omitempty"`
+// Not used. (optional, experimental)
+func (r *SetDeviceMetricsOverrideRequest) OffsetY(v float64) *SetDeviceMetricsOverrideRequest {
+	r.opts["offsetY"] = v
+	return r
+}
 
-	// Overriding view X position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional, experimental)
-	PositionX int `json:"positionX,omitempty"`
+// Overriding screen width value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional, experimental)
+func (r *SetDeviceMetricsOverrideRequest) ScreenWidth(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["screenWidth"] = v
+	return r
+}
 
-	// Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional, experimental)
-	PositionY int `json:"positionY,omitempty"`
+// Overriding screen height value in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional, experimental)
+func (r *SetDeviceMetricsOverrideRequest) ScreenHeight(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["screenHeight"] = v
+	return r
+}
 
-	// Screen orientation override. (optional)
-	ScreenOrientation *ScreenOrientation `json:"screenOrientation,omitempty"`
+// Overriding view X position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional, experimental)
+func (r *SetDeviceMetricsOverrideRequest) PositionX(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["positionX"] = v
+	return r
+}
+
+// Overriding view Y position on screen in pixels (minimum 0, maximum 10000000). Only used for |mobile==true|. (optional, experimental)
+func (r *SetDeviceMetricsOverrideRequest) PositionY(v int) *SetDeviceMetricsOverrideRequest {
+	r.opts["positionY"] = v
+	return r
+}
+
+// Screen orientation override. (optional)
+func (r *SetDeviceMetricsOverrideRequest) ScreenOrientation(v *ScreenOrientation) *SetDeviceMetricsOverrideRequest {
+	r.opts["screenOrientation"] = v
+	return r
 }
 
 // Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
-func (d *Domain) SetDeviceMetricsOverride(opts *SetDeviceMetricsOverrideOpts) error {
-	return d.Client.Call("Emulation.setDeviceMetricsOverride", opts, nil)
+func (r *SetDeviceMetricsOverrideRequest) Do() error {
+	return r.client.Call("Emulation.setDeviceMetricsOverride", r.opts, nil)
 }
 
 // Clears the overriden device metrics.
-func (d *Domain) ClearDeviceMetricsOverride() error {
-	return d.Client.Call("Emulation.clearDeviceMetricsOverride", nil, nil)
+type ClearDeviceMetricsOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type ForceViewportOpts struct {
-	// X coordinate of top-left corner of the area (CSS pixels).
-	X float64 `json:"x"`
+func (d *Domain) ClearDeviceMetricsOverride() *ClearDeviceMetricsOverrideRequest {
+	return &ClearDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Y coordinate of top-left corner of the area (CSS pixels).
-	Y float64 `json:"y"`
-
-	// Scale to apply to the area (relative to a page scale of 1.0).
-	Scale float64 `json:"scale"`
+// Clears the overriden device metrics.
+func (r *ClearDeviceMetricsOverrideRequest) Do() error {
+	return r.client.Call("Emulation.clearDeviceMetricsOverride", r.opts, nil)
 }
 
 // Overrides the visible area of the page. The change is hidden from the page, i.e. the observable scroll position and page scale does not change. In effect, the command moves the specified area of the page into the top-left corner of the frame. (experimental)
-func (d *Domain) ForceViewport(opts *ForceViewportOpts) error {
-	return d.Client.Call("Emulation.forceViewport", opts, nil)
+type ForceViewportRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ForceViewport() *ForceViewportRequest {
+	return &ForceViewportRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// X coordinate of top-left corner of the area (CSS pixels).
+func (r *ForceViewportRequest) X(v float64) *ForceViewportRequest {
+	r.opts["x"] = v
+	return r
+}
+
+// Y coordinate of top-left corner of the area (CSS pixels).
+func (r *ForceViewportRequest) Y(v float64) *ForceViewportRequest {
+	r.opts["y"] = v
+	return r
+}
+
+// Scale to apply to the area (relative to a page scale of 1.0).
+func (r *ForceViewportRequest) Scale(v float64) *ForceViewportRequest {
+	r.opts["scale"] = v
+	return r
+}
+
+// Overrides the visible area of the page. The change is hidden from the page, i.e. the observable scroll position and page scale does not change. In effect, the command moves the specified area of the page into the top-left corner of the frame. (experimental)
+func (r *ForceViewportRequest) Do() error {
+	return r.client.Call("Emulation.forceViewport", r.opts, nil)
 }
 
 // Resets the visible area of the page to the original viewport, undoing any effects of the <code>forceViewport</code> command. (experimental)
-func (d *Domain) ResetViewport() error {
-	return d.Client.Call("Emulation.resetViewport", nil, nil)
+type ResetViewportRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ResetViewport() *ResetViewportRequest {
+	return &ResetViewportRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Resets the visible area of the page to the original viewport, undoing any effects of the <code>forceViewport</code> command. (experimental)
+func (r *ResetViewportRequest) Do() error {
+	return r.client.Call("Emulation.resetViewport", r.opts, nil)
 }
 
 // Requests that page scale factor is reset to initial values. (experimental)
-func (d *Domain) ResetPageScaleFactor() error {
-	return d.Client.Call("Emulation.resetPageScaleFactor", nil, nil)
+type ResetPageScaleFactorRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetPageScaleFactorOpts struct {
-	// Page scale factor.
-	PageScaleFactor float64 `json:"pageScaleFactor"`
+func (d *Domain) ResetPageScaleFactor() *ResetPageScaleFactorRequest {
+	return &ResetPageScaleFactorRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Requests that page scale factor is reset to initial values. (experimental)
+func (r *ResetPageScaleFactorRequest) Do() error {
+	return r.client.Call("Emulation.resetPageScaleFactor", r.opts, nil)
 }
 
 // Sets a specified page scale factor. (experimental)
-func (d *Domain) SetPageScaleFactor(opts *SetPageScaleFactorOpts) error {
-	return d.Client.Call("Emulation.setPageScaleFactor", opts, nil)
+type SetPageScaleFactorRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetVisibleSizeOpts struct {
-	// Frame width (DIP).
-	Width int `json:"width"`
+func (d *Domain) SetPageScaleFactor() *SetPageScaleFactorRequest {
+	return &SetPageScaleFactorRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Frame height (DIP).
-	Height int `json:"height"`
+// Page scale factor.
+func (r *SetPageScaleFactorRequest) PageScaleFactor(v float64) *SetPageScaleFactorRequest {
+	r.opts["pageScaleFactor"] = v
+	return r
+}
+
+// Sets a specified page scale factor. (experimental)
+func (r *SetPageScaleFactorRequest) Do() error {
+	return r.client.Call("Emulation.setPageScaleFactor", r.opts, nil)
 }
 
 // Resizes the frame/viewport of the page. Note that this does not affect the frame's container (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported on Android. (experimental)
-func (d *Domain) SetVisibleSize(opts *SetVisibleSizeOpts) error {
-	return d.Client.Call("Emulation.setVisibleSize", opts, nil)
+type SetVisibleSizeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetScriptExecutionDisabledOpts struct {
-	// Whether script execution should be disabled in the page.
-	Value bool `json:"value"`
+func (d *Domain) SetVisibleSize() *SetVisibleSizeRequest {
+	return &SetVisibleSizeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Frame width (DIP).
+func (r *SetVisibleSizeRequest) Width(v int) *SetVisibleSizeRequest {
+	r.opts["width"] = v
+	return r
+}
+
+// Frame height (DIP).
+func (r *SetVisibleSizeRequest) Height(v int) *SetVisibleSizeRequest {
+	r.opts["height"] = v
+	return r
+}
+
+// Resizes the frame/viewport of the page. Note that this does not affect the frame's container (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported on Android. (experimental)
+func (r *SetVisibleSizeRequest) Do() error {
+	return r.client.Call("Emulation.setVisibleSize", r.opts, nil)
 }
 
 // Switches script execution in the page. (experimental)
-func (d *Domain) SetScriptExecutionDisabled(opts *SetScriptExecutionDisabledOpts) error {
-	return d.Client.Call("Emulation.setScriptExecutionDisabled", opts, nil)
+type SetScriptExecutionDisabledRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetGeolocationOverrideOpts struct {
-	// Mock latitude (optional)
-	Latitude float64 `json:"latitude,omitempty"`
+func (d *Domain) SetScriptExecutionDisabled() *SetScriptExecutionDisabledRequest {
+	return &SetScriptExecutionDisabledRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Mock longitude (optional)
-	Longitude float64 `json:"longitude,omitempty"`
+// Whether script execution should be disabled in the page.
+func (r *SetScriptExecutionDisabledRequest) Value(v bool) *SetScriptExecutionDisabledRequest {
+	r.opts["value"] = v
+	return r
+}
 
-	// Mock accuracy (optional)
-	Accuracy float64 `json:"accuracy,omitempty"`
+// Switches script execution in the page. (experimental)
+func (r *SetScriptExecutionDisabledRequest) Do() error {
+	return r.client.Call("Emulation.setScriptExecutionDisabled", r.opts, nil)
 }
 
 // Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable. (experimental)
-func (d *Domain) SetGeolocationOverride(opts *SetGeolocationOverrideOpts) error {
-	return d.Client.Call("Emulation.setGeolocationOverride", opts, nil)
+type SetGeolocationOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetGeolocationOverride() *SetGeolocationOverrideRequest {
+	return &SetGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Mock latitude (optional)
+func (r *SetGeolocationOverrideRequest) Latitude(v float64) *SetGeolocationOverrideRequest {
+	r.opts["latitude"] = v
+	return r
+}
+
+// Mock longitude (optional)
+func (r *SetGeolocationOverrideRequest) Longitude(v float64) *SetGeolocationOverrideRequest {
+	r.opts["longitude"] = v
+	return r
+}
+
+// Mock accuracy (optional)
+func (r *SetGeolocationOverrideRequest) Accuracy(v float64) *SetGeolocationOverrideRequest {
+	r.opts["accuracy"] = v
+	return r
+}
+
+// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable. (experimental)
+func (r *SetGeolocationOverrideRequest) Do() error {
+	return r.client.Call("Emulation.setGeolocationOverride", r.opts, nil)
 }
 
 // Clears the overriden Geolocation Position and Error. (experimental)
-func (d *Domain) ClearGeolocationOverride() error {
-	return d.Client.Call("Emulation.clearGeolocationOverride", nil, nil)
+type ClearGeolocationOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetTouchEmulationEnabledOpts struct {
-	// Whether the touch event emulation should be enabled.
-	Enabled bool `json:"enabled"`
+func (d *Domain) ClearGeolocationOverride() *ClearGeolocationOverrideRequest {
+	return &ClearGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Touch/gesture events configuration. Default: current platform. (optional)
-	Configuration string `json:"configuration,omitempty"`
+// Clears the overriden Geolocation Position and Error. (experimental)
+func (r *ClearGeolocationOverrideRequest) Do() error {
+	return r.client.Call("Emulation.clearGeolocationOverride", r.opts, nil)
 }
 
 // Toggles mouse event-based touch event emulation.
-func (d *Domain) SetTouchEmulationEnabled(opts *SetTouchEmulationEnabledOpts) error {
-	return d.Client.Call("Emulation.setTouchEmulationEnabled", opts, nil)
+type SetTouchEmulationEnabledRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetEmulatedMediaOpts struct {
-	// Media type to emulate. Empty string disables the override.
-	Media string `json:"media"`
+func (d *Domain) SetTouchEmulationEnabled() *SetTouchEmulationEnabledRequest {
+	return &SetTouchEmulationEnabledRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Whether the touch event emulation should be enabled.
+func (r *SetTouchEmulationEnabledRequest) Enabled(v bool) *SetTouchEmulationEnabledRequest {
+	r.opts["enabled"] = v
+	return r
+}
+
+// Touch/gesture events configuration. Default: current platform. (optional)
+func (r *SetTouchEmulationEnabledRequest) Configuration(v string) *SetTouchEmulationEnabledRequest {
+	r.opts["configuration"] = v
+	return r
+}
+
+// Toggles mouse event-based touch event emulation.
+func (r *SetTouchEmulationEnabledRequest) Do() error {
+	return r.client.Call("Emulation.setTouchEmulationEnabled", r.opts, nil)
 }
 
 // Emulates the given media for CSS media queries.
-func (d *Domain) SetEmulatedMedia(opts *SetEmulatedMediaOpts) error {
-	return d.Client.Call("Emulation.setEmulatedMedia", opts, nil)
+type SetEmulatedMediaRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetCPUThrottlingRateOpts struct {
-	// Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
-	Rate float64 `json:"rate"`
+func (d *Domain) SetEmulatedMedia() *SetEmulatedMediaRequest {
+	return &SetEmulatedMediaRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Media type to emulate. Empty string disables the override.
+func (r *SetEmulatedMediaRequest) Media(v string) *SetEmulatedMediaRequest {
+	r.opts["media"] = v
+	return r
+}
+
+// Emulates the given media for CSS media queries.
+func (r *SetEmulatedMediaRequest) Do() error {
+	return r.client.Call("Emulation.setEmulatedMedia", r.opts, nil)
 }
 
 // Enables CPU throttling to emulate slow CPUs. (experimental)
-func (d *Domain) SetCPUThrottlingRate(opts *SetCPUThrottlingRateOpts) error {
-	return d.Client.Call("Emulation.setCPUThrottlingRate", opts, nil)
+type SetCPUThrottlingRateRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetCPUThrottlingRate() *SetCPUThrottlingRateRequest {
+	return &SetCPUThrottlingRateRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
+func (r *SetCPUThrottlingRateRequest) Rate(v float64) *SetCPUThrottlingRateRequest {
+	r.opts["rate"] = v
+	return r
+}
+
+// Enables CPU throttling to emulate slow CPUs. (experimental)
+func (r *SetCPUThrottlingRateRequest) Do() error {
+	return r.client.Call("Emulation.setCPUThrottlingRate", r.opts, nil)
+}
+
+// Tells whether emulation is supported. (experimental)
+type CanEmulateRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CanEmulate() *CanEmulateRequest {
+	return &CanEmulateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type CanEmulateResult struct {
@@ -196,46 +396,63 @@ type CanEmulateResult struct {
 	Result bool `json:"result"`
 }
 
-// Tells whether emulation is supported. (experimental)
-func (d *Domain) CanEmulate() (*CanEmulateResult, error) {
+func (r *CanEmulateRequest) Do() (*CanEmulateResult, error) {
 	var result CanEmulateResult
-	err := d.Client.Call("Emulation.canEmulate", nil, &result)
+	err := r.client.Call("Emulation.canEmulate", r.opts, &result)
 	return &result, err
 }
 
-type SetVirtualTimePolicyOpts struct {
-	Policy VirtualTimePolicy `json:"policy"`
+// Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets the current virtual time policy.  Note this supersedes any previous time budget. (experimental)
+type SetVirtualTimePolicyRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// If set, after this many virtual milliseconds have elapsed virtual time will be paused and a virtualTimeBudgetExpired event is sent. (optional)
-	Budget int `json:"budget,omitempty"`
+func (d *Domain) SetVirtualTimePolicy() *SetVirtualTimePolicyRequest {
+	return &SetVirtualTimePolicyRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *SetVirtualTimePolicyRequest) Policy(v VirtualTimePolicy) *SetVirtualTimePolicyRequest {
+	r.opts["policy"] = v
+	return r
+}
+
+// If set, after this many virtual milliseconds have elapsed virtual time will be paused and a virtualTimeBudgetExpired event is sent. (optional)
+func (r *SetVirtualTimePolicyRequest) Budget(v int) *SetVirtualTimePolicyRequest {
+	r.opts["budget"] = v
+	return r
 }
 
 // Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets the current virtual time policy.  Note this supersedes any previous time budget. (experimental)
-func (d *Domain) SetVirtualTimePolicy(opts *SetVirtualTimePolicyOpts) error {
-	return d.Client.Call("Emulation.setVirtualTimePolicy", opts, nil)
-}
-
-type SetDefaultBackgroundColorOverrideOpts struct {
-	// RGBA of the default background color. If not specified, any existing override will be cleared. (optional)
-	Color interface{} `json:"color,omitempty"`
+func (r *SetVirtualTimePolicyRequest) Do() error {
+	return r.client.Call("Emulation.setVirtualTimePolicy", r.opts, nil)
 }
 
 // Sets or clears an override of the default background color of the frame. This override is used if the content does not specify one. (experimental)
-func (d *Domain) SetDefaultBackgroundColorOverride(opts *SetDefaultBackgroundColorOverrideOpts) error {
-	return d.Client.Call("Emulation.setDefaultBackgroundColorOverride", opts, nil)
+type SetDefaultBackgroundColorOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type VirtualTimeBudgetExpiredEvent struct {
+func (d *Domain) SetDefaultBackgroundColorOverride() *SetDefaultBackgroundColorOverrideRequest {
+	return &SetDefaultBackgroundColorOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// RGBA of the default background color. If not specified, any existing override will be cleared. (optional)
+func (r *SetDefaultBackgroundColorOverrideRequest) Color(v interface{}) *SetDefaultBackgroundColorOverrideRequest {
+	r.opts["color"] = v
+	return r
+}
+
+// Sets or clears an override of the default background color of the frame. This override is used if the content does not specify one. (experimental)
+func (r *SetDefaultBackgroundColorOverrideRequest) Do() error {
+	return r.client.Call("Emulation.setDefaultBackgroundColorOverride", r.opts, nil)
+}
+
+func init() {
+	rpc.EventTypes["Emulation.virtualTimeBudgetExpired"] = func() interface{} { return new(VirtualTimeBudgetExpiredEvent) }
 }
 
 // Notification sent after the virual time budget for the current VirtualTimePolicy has run out. (experimental)
-func (d *Domain) OnVirtualTimeBudgetExpired(listener func(*VirtualTimeBudgetExpiredEvent)) {
-	d.Client.AddListener("Emulation.virtualTimeBudgetExpired", func(params json.RawMessage) {
-		var event VirtualTimeBudgetExpiredEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
+type VirtualTimeBudgetExpiredEvent struct {
 }

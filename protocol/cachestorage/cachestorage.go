@@ -37,9 +37,20 @@ type Cache struct {
 	CacheName string `json:"cacheName"`
 }
 
-type RequestCacheNamesOpts struct {
-	// Security origin.
-	SecurityOrigin string `json:"securityOrigin"`
+// Requests cache names.
+type RequestCacheNamesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) RequestCacheNames() *RequestCacheNamesRequest {
+	return &RequestCacheNamesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Security origin.
+func (r *RequestCacheNamesRequest) SecurityOrigin(v string) *RequestCacheNamesRequest {
+	r.opts["securityOrigin"] = v
+	return r
 }
 
 type RequestCacheNamesResult struct {
@@ -47,22 +58,38 @@ type RequestCacheNamesResult struct {
 	Caches []*Cache `json:"caches"`
 }
 
-// Requests cache names.
-func (d *Domain) RequestCacheNames(opts *RequestCacheNamesOpts) (*RequestCacheNamesResult, error) {
+func (r *RequestCacheNamesRequest) Do() (*RequestCacheNamesResult, error) {
 	var result RequestCacheNamesResult
-	err := d.Client.Call("CacheStorage.requestCacheNames", opts, &result)
+	err := r.client.Call("CacheStorage.requestCacheNames", r.opts, &result)
 	return &result, err
 }
 
-type RequestEntriesOpts struct {
-	// ID of cache to get entries from.
-	CacheId CacheId `json:"cacheId"`
+// Requests data from cache.
+type RequestEntriesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Number of records to skip.
-	SkipCount int `json:"skipCount"`
+func (d *Domain) RequestEntries() *RequestEntriesRequest {
+	return &RequestEntriesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Number of records to fetch.
-	PageSize int `json:"pageSize"`
+// ID of cache to get entries from.
+func (r *RequestEntriesRequest) CacheId(v CacheId) *RequestEntriesRequest {
+	r.opts["cacheId"] = v
+	return r
+}
+
+// Number of records to skip.
+func (r *RequestEntriesRequest) SkipCount(v int) *RequestEntriesRequest {
+	r.opts["skipCount"] = v
+	return r
+}
+
+// Number of records to fetch.
+func (r *RequestEntriesRequest) PageSize(v int) *RequestEntriesRequest {
+	r.opts["pageSize"] = v
+	return r
 }
 
 type RequestEntriesResult struct {
@@ -73,32 +100,59 @@ type RequestEntriesResult struct {
 	HasMore bool `json:"hasMore"`
 }
 
-// Requests data from cache.
-func (d *Domain) RequestEntries(opts *RequestEntriesOpts) (*RequestEntriesResult, error) {
+func (r *RequestEntriesRequest) Do() (*RequestEntriesResult, error) {
 	var result RequestEntriesResult
-	err := d.Client.Call("CacheStorage.requestEntries", opts, &result)
+	err := r.client.Call("CacheStorage.requestEntries", r.opts, &result)
 	return &result, err
 }
 
-type DeleteCacheOpts struct {
-	// Id of cache for deletion.
-	CacheId CacheId `json:"cacheId"`
+// Deletes a cache.
+type DeleteCacheRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) DeleteCache() *DeleteCacheRequest {
+	return &DeleteCacheRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of cache for deletion.
+func (r *DeleteCacheRequest) CacheId(v CacheId) *DeleteCacheRequest {
+	r.opts["cacheId"] = v
+	return r
 }
 
 // Deletes a cache.
-func (d *Domain) DeleteCache(opts *DeleteCacheOpts) error {
-	return d.Client.Call("CacheStorage.deleteCache", opts, nil)
-}
-
-type DeleteEntryOpts struct {
-	// Id of cache where the entry will be deleted.
-	CacheId CacheId `json:"cacheId"`
-
-	// URL spec of the request.
-	Request string `json:"request"`
+func (r *DeleteCacheRequest) Do() error {
+	return r.client.Call("CacheStorage.deleteCache", r.opts, nil)
 }
 
 // Deletes a cache entry.
-func (d *Domain) DeleteEntry(opts *DeleteEntryOpts) error {
-	return d.Client.Call("CacheStorage.deleteEntry", opts, nil)
+type DeleteEntryRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) DeleteEntry() *DeleteEntryRequest {
+	return &DeleteEntryRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of cache where the entry will be deleted.
+func (r *DeleteEntryRequest) CacheId(v CacheId) *DeleteEntryRequest {
+	r.opts["cacheId"] = v
+	return r
+}
+
+// URL spec of the request.
+func (r *DeleteEntryRequest) Request(v string) *DeleteEntryRequest {
+	r.opts["request"] = v
+	return r
+}
+
+// Deletes a cache entry.
+func (r *DeleteEntryRequest) Do() error {
+	return r.client.Call("CacheStorage.deleteEntry", r.opts, nil)
+}
+
+func init() {
 }

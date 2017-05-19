@@ -2,9 +2,6 @@
 package css
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -371,17 +368,48 @@ type ComputedStyle struct {
 }
 
 // Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been enabled until the result of this command is received.
-func (d *Domain) Enable() error {
-	return d.Client.Call("CSS.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been enabled until the result of this command is received.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("CSS.enable", r.opts, nil)
 }
 
 // Disables the CSS agent for the given page.
-func (d *Domain) Disable() error {
-	return d.Client.Call("CSS.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetMatchedStylesForNodeOpts struct {
-	NodeId interface{} `json:"nodeId"`
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables the CSS agent for the given page.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("CSS.disable", r.opts, nil)
+}
+
+// Returns requested styles for a DOM node identified by <code>nodeId</code>.
+type GetMatchedStylesForNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetMatchedStylesForNode() *GetMatchedStylesForNodeRequest {
+	return &GetMatchedStylesForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *GetMatchedStylesForNodeRequest) NodeId(v interface{}) *GetMatchedStylesForNodeRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetMatchedStylesForNodeResult struct {
@@ -404,15 +432,25 @@ type GetMatchedStylesForNodeResult struct {
 	CssKeyframesRules []*CSSKeyframesRule `json:"cssKeyframesRules"`
 }
 
-// Returns requested styles for a DOM node identified by <code>nodeId</code>.
-func (d *Domain) GetMatchedStylesForNode(opts *GetMatchedStylesForNodeOpts) (*GetMatchedStylesForNodeResult, error) {
+func (r *GetMatchedStylesForNodeRequest) Do() (*GetMatchedStylesForNodeResult, error) {
 	var result GetMatchedStylesForNodeResult
-	err := d.Client.Call("CSS.getMatchedStylesForNode", opts, &result)
+	err := r.client.Call("CSS.getMatchedStylesForNode", r.opts, &result)
 	return &result, err
 }
 
-type GetInlineStylesForNodeOpts struct {
-	NodeId interface{} `json:"nodeId"`
+// Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM attributes) for a DOM node identified by <code>nodeId</code>.
+type GetInlineStylesForNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetInlineStylesForNode() *GetInlineStylesForNodeRequest {
+	return &GetInlineStylesForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *GetInlineStylesForNodeRequest) NodeId(v interface{}) *GetInlineStylesForNodeRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetInlineStylesForNodeResult struct {
@@ -423,15 +461,25 @@ type GetInlineStylesForNodeResult struct {
 	AttributesStyle *CSSStyle `json:"attributesStyle"`
 }
 
-// Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM attributes) for a DOM node identified by <code>nodeId</code>.
-func (d *Domain) GetInlineStylesForNode(opts *GetInlineStylesForNodeOpts) (*GetInlineStylesForNodeResult, error) {
+func (r *GetInlineStylesForNodeRequest) Do() (*GetInlineStylesForNodeResult, error) {
 	var result GetInlineStylesForNodeResult
-	err := d.Client.Call("CSS.getInlineStylesForNode", opts, &result)
+	err := r.client.Call("CSS.getInlineStylesForNode", r.opts, &result)
 	return &result, err
 }
 
-type GetComputedStyleForNodeOpts struct {
-	NodeId interface{} `json:"nodeId"`
+// Returns the computed style for a DOM node identified by <code>nodeId</code>.
+type GetComputedStyleForNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetComputedStyleForNode() *GetComputedStyleForNodeRequest {
+	return &GetComputedStyleForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *GetComputedStyleForNodeRequest) NodeId(v interface{}) *GetComputedStyleForNodeRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetComputedStyleForNodeResult struct {
@@ -439,15 +487,25 @@ type GetComputedStyleForNodeResult struct {
 	ComputedStyle []*CSSComputedStyleProperty `json:"computedStyle"`
 }
 
-// Returns the computed style for a DOM node identified by <code>nodeId</code>.
-func (d *Domain) GetComputedStyleForNode(opts *GetComputedStyleForNodeOpts) (*GetComputedStyleForNodeResult, error) {
+func (r *GetComputedStyleForNodeRequest) Do() (*GetComputedStyleForNodeResult, error) {
 	var result GetComputedStyleForNodeResult
-	err := d.Client.Call("CSS.getComputedStyleForNode", opts, &result)
+	err := r.client.Call("CSS.getComputedStyleForNode", r.opts, &result)
 	return &result, err
 }
 
-type GetPlatformFontsForNodeOpts struct {
-	NodeId interface{} `json:"nodeId"`
+// Requests information about platform fonts which we used to render child TextNodes in the given node. (experimental)
+type GetPlatformFontsForNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetPlatformFontsForNode() *GetPlatformFontsForNodeRequest {
+	return &GetPlatformFontsForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *GetPlatformFontsForNodeRequest) NodeId(v interface{}) *GetPlatformFontsForNodeRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetPlatformFontsForNodeResult struct {
@@ -455,15 +513,25 @@ type GetPlatformFontsForNodeResult struct {
 	Fonts []*PlatformFontUsage `json:"fonts"`
 }
 
-// Requests information about platform fonts which we used to render child TextNodes in the given node. (experimental)
-func (d *Domain) GetPlatformFontsForNode(opts *GetPlatformFontsForNodeOpts) (*GetPlatformFontsForNodeResult, error) {
+func (r *GetPlatformFontsForNodeRequest) Do() (*GetPlatformFontsForNodeResult, error) {
 	var result GetPlatformFontsForNodeResult
-	err := d.Client.Call("CSS.getPlatformFontsForNode", opts, &result)
+	err := r.client.Call("CSS.getPlatformFontsForNode", r.opts, &result)
 	return &result, err
 }
 
-type GetStyleSheetTextOpts struct {
-	StyleSheetId StyleSheetId `json:"styleSheetId"`
+// Returns the current textual content and the URL for a stylesheet.
+type GetStyleSheetTextRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetStyleSheetText() *GetStyleSheetTextRequest {
+	return &GetStyleSheetTextRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *GetStyleSheetTextRequest) StyleSheetId(v StyleSheetId) *GetStyleSheetTextRequest {
+	r.opts["styleSheetId"] = v
+	return r
 }
 
 type GetStyleSheetTextResult struct {
@@ -471,15 +539,25 @@ type GetStyleSheetTextResult struct {
 	Text string `json:"text"`
 }
 
-// Returns the current textual content and the URL for a stylesheet.
-func (d *Domain) GetStyleSheetText(opts *GetStyleSheetTextOpts) (*GetStyleSheetTextResult, error) {
+func (r *GetStyleSheetTextRequest) Do() (*GetStyleSheetTextResult, error) {
 	var result GetStyleSheetTextResult
-	err := d.Client.Call("CSS.getStyleSheetText", opts, &result)
+	err := r.client.Call("CSS.getStyleSheetText", r.opts, &result)
 	return &result, err
 }
 
-type CollectClassNamesOpts struct {
-	StyleSheetId StyleSheetId `json:"styleSheetId"`
+// Returns all class names from specified stylesheet. (experimental)
+type CollectClassNamesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CollectClassNames() *CollectClassNamesRequest {
+	return &CollectClassNamesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *CollectClassNamesRequest) StyleSheetId(v StyleSheetId) *CollectClassNamesRequest {
+	r.opts["styleSheetId"] = v
+	return r
 }
 
 type CollectClassNamesResult struct {
@@ -487,17 +565,30 @@ type CollectClassNamesResult struct {
 	ClassNames []string `json:"classNames"`
 }
 
-// Returns all class names from specified stylesheet. (experimental)
-func (d *Domain) CollectClassNames(opts *CollectClassNamesOpts) (*CollectClassNamesResult, error) {
+func (r *CollectClassNamesRequest) Do() (*CollectClassNamesResult, error) {
 	var result CollectClassNamesResult
-	err := d.Client.Call("CSS.collectClassNames", opts, &result)
+	err := r.client.Call("CSS.collectClassNames", r.opts, &result)
 	return &result, err
 }
 
-type SetStyleSheetTextOpts struct {
-	StyleSheetId StyleSheetId `json:"styleSheetId"`
+// Sets the new stylesheet text.
+type SetStyleSheetTextRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	Text string `json:"text"`
+func (d *Domain) SetStyleSheetText() *SetStyleSheetTextRequest {
+	return &SetStyleSheetTextRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *SetStyleSheetTextRequest) StyleSheetId(v StyleSheetId) *SetStyleSheetTextRequest {
+	r.opts["styleSheetId"] = v
+	return r
+}
+
+func (r *SetStyleSheetTextRequest) Text(v string) *SetStyleSheetTextRequest {
+	r.opts["text"] = v
+	return r
 }
 
 type SetStyleSheetTextResult struct {
@@ -505,19 +596,35 @@ type SetStyleSheetTextResult struct {
 	SourceMapURL string `json:"sourceMapURL"`
 }
 
-// Sets the new stylesheet text.
-func (d *Domain) SetStyleSheetText(opts *SetStyleSheetTextOpts) (*SetStyleSheetTextResult, error) {
+func (r *SetStyleSheetTextRequest) Do() (*SetStyleSheetTextResult, error) {
 	var result SetStyleSheetTextResult
-	err := d.Client.Call("CSS.setStyleSheetText", opts, &result)
+	err := r.client.Call("CSS.setStyleSheetText", r.opts, &result)
 	return &result, err
 }
 
-type SetRuleSelectorOpts struct {
-	StyleSheetId StyleSheetId `json:"styleSheetId"`
+// Modifies the rule selector.
+type SetRuleSelectorRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	Range *SourceRange `json:"range"`
+func (d *Domain) SetRuleSelector() *SetRuleSelectorRequest {
+	return &SetRuleSelectorRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	Selector string `json:"selector"`
+func (r *SetRuleSelectorRequest) StyleSheetId(v StyleSheetId) *SetRuleSelectorRequest {
+	r.opts["styleSheetId"] = v
+	return r
+}
+
+func (r *SetRuleSelectorRequest) Range(v *SourceRange) *SetRuleSelectorRequest {
+	r.opts["range"] = v
+	return r
+}
+
+func (r *SetRuleSelectorRequest) Selector(v string) *SetRuleSelectorRequest {
+	r.opts["selector"] = v
+	return r
 }
 
 type SetRuleSelectorResult struct {
@@ -525,19 +632,35 @@ type SetRuleSelectorResult struct {
 	SelectorList *SelectorList `json:"selectorList"`
 }
 
-// Modifies the rule selector.
-func (d *Domain) SetRuleSelector(opts *SetRuleSelectorOpts) (*SetRuleSelectorResult, error) {
+func (r *SetRuleSelectorRequest) Do() (*SetRuleSelectorResult, error) {
 	var result SetRuleSelectorResult
-	err := d.Client.Call("CSS.setRuleSelector", opts, &result)
+	err := r.client.Call("CSS.setRuleSelector", r.opts, &result)
 	return &result, err
 }
 
-type SetKeyframeKeyOpts struct {
-	StyleSheetId StyleSheetId `json:"styleSheetId"`
+// Modifies the keyframe rule key text.
+type SetKeyframeKeyRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	Range *SourceRange `json:"range"`
+func (d *Domain) SetKeyframeKey() *SetKeyframeKeyRequest {
+	return &SetKeyframeKeyRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	KeyText string `json:"keyText"`
+func (r *SetKeyframeKeyRequest) StyleSheetId(v StyleSheetId) *SetKeyframeKeyRequest {
+	r.opts["styleSheetId"] = v
+	return r
+}
+
+func (r *SetKeyframeKeyRequest) Range(v *SourceRange) *SetKeyframeKeyRequest {
+	r.opts["range"] = v
+	return r
+}
+
+func (r *SetKeyframeKeyRequest) KeyText(v string) *SetKeyframeKeyRequest {
+	r.opts["keyText"] = v
+	return r
 }
 
 type SetKeyframeKeyResult struct {
@@ -545,15 +668,25 @@ type SetKeyframeKeyResult struct {
 	KeyText *Value `json:"keyText"`
 }
 
-// Modifies the keyframe rule key text.
-func (d *Domain) SetKeyframeKey(opts *SetKeyframeKeyOpts) (*SetKeyframeKeyResult, error) {
+func (r *SetKeyframeKeyRequest) Do() (*SetKeyframeKeyResult, error) {
 	var result SetKeyframeKeyResult
-	err := d.Client.Call("CSS.setKeyframeKey", opts, &result)
+	err := r.client.Call("CSS.setKeyframeKey", r.opts, &result)
 	return &result, err
 }
 
-type SetStyleTextsOpts struct {
-	Edits []*StyleDeclarationEdit `json:"edits"`
+// Applies specified style edits one after another in the given order.
+type SetStyleTextsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetStyleTexts() *SetStyleTextsRequest {
+	return &SetStyleTextsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *SetStyleTextsRequest) Edits(v []*StyleDeclarationEdit) *SetStyleTextsRequest {
+	r.opts["edits"] = v
+	return r
 }
 
 type SetStyleTextsResult struct {
@@ -561,19 +694,35 @@ type SetStyleTextsResult struct {
 	Styles []*CSSStyle `json:"styles"`
 }
 
-// Applies specified style edits one after another in the given order.
-func (d *Domain) SetStyleTexts(opts *SetStyleTextsOpts) (*SetStyleTextsResult, error) {
+func (r *SetStyleTextsRequest) Do() (*SetStyleTextsResult, error) {
 	var result SetStyleTextsResult
-	err := d.Client.Call("CSS.setStyleTexts", opts, &result)
+	err := r.client.Call("CSS.setStyleTexts", r.opts, &result)
 	return &result, err
 }
 
-type SetMediaTextOpts struct {
-	StyleSheetId StyleSheetId `json:"styleSheetId"`
+// Modifies the rule selector.
+type SetMediaTextRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	Range *SourceRange `json:"range"`
+func (d *Domain) SetMediaText() *SetMediaTextRequest {
+	return &SetMediaTextRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	Text string `json:"text"`
+func (r *SetMediaTextRequest) StyleSheetId(v StyleSheetId) *SetMediaTextRequest {
+	r.opts["styleSheetId"] = v
+	return r
+}
+
+func (r *SetMediaTextRequest) Range(v *SourceRange) *SetMediaTextRequest {
+	r.opts["range"] = v
+	return r
+}
+
+func (r *SetMediaTextRequest) Text(v string) *SetMediaTextRequest {
+	r.opts["text"] = v
+	return r
 }
 
 type SetMediaTextResult struct {
@@ -581,16 +730,26 @@ type SetMediaTextResult struct {
 	Media *CSSMedia `json:"media"`
 }
 
-// Modifies the rule selector.
-func (d *Domain) SetMediaText(opts *SetMediaTextOpts) (*SetMediaTextResult, error) {
+func (r *SetMediaTextRequest) Do() (*SetMediaTextResult, error) {
 	var result SetMediaTextResult
-	err := d.Client.Call("CSS.setMediaText", opts, &result)
+	err := r.client.Call("CSS.setMediaText", r.opts, &result)
 	return &result, err
 }
 
-type CreateStyleSheetOpts struct {
-	// Identifier of the frame where "via-inspector" stylesheet should be created.
-	FrameId interface{} `json:"frameId"`
+// Creates a new special "via-inspector" stylesheet in the frame with given <code>frameId</code>.
+type CreateStyleSheetRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CreateStyleSheet() *CreateStyleSheetRequest {
+	return &CreateStyleSheetRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Identifier of the frame where "via-inspector" stylesheet should be created.
+func (r *CreateStyleSheetRequest) FrameId(v interface{}) *CreateStyleSheetRequest {
+	r.opts["frameId"] = v
+	return r
 }
 
 type CreateStyleSheetResult struct {
@@ -598,22 +757,38 @@ type CreateStyleSheetResult struct {
 	StyleSheetId StyleSheetId `json:"styleSheetId"`
 }
 
-// Creates a new special "via-inspector" stylesheet in the frame with given <code>frameId</code>.
-func (d *Domain) CreateStyleSheet(opts *CreateStyleSheetOpts) (*CreateStyleSheetResult, error) {
+func (r *CreateStyleSheetRequest) Do() (*CreateStyleSheetResult, error) {
 	var result CreateStyleSheetResult
-	err := d.Client.Call("CSS.createStyleSheet", opts, &result)
+	err := r.client.Call("CSS.createStyleSheet", r.opts, &result)
 	return &result, err
 }
 
-type AddRuleOpts struct {
-	// The css style sheet identifier where a new rule should be inserted.
-	StyleSheetId StyleSheetId `json:"styleSheetId"`
+// Inserts a new rule with the given <code>ruleText</code> in a stylesheet with given <code>styleSheetId</code>, at the position specified by <code>location</code>.
+type AddRuleRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// The text of a new rule.
-	RuleText string `json:"ruleText"`
+func (d *Domain) AddRule() *AddRuleRequest {
+	return &AddRuleRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Text position of a new rule in the target style sheet.
-	Location *SourceRange `json:"location"`
+// The css style sheet identifier where a new rule should be inserted.
+func (r *AddRuleRequest) StyleSheetId(v StyleSheetId) *AddRuleRequest {
+	r.opts["styleSheetId"] = v
+	return r
+}
+
+// The text of a new rule.
+func (r *AddRuleRequest) RuleText(v string) *AddRuleRequest {
+	r.opts["ruleText"] = v
+	return r
+}
+
+// Text position of a new rule in the target style sheet.
+func (r *AddRuleRequest) Location(v *SourceRange) *AddRuleRequest {
+	r.opts["location"] = v
+	return r
 }
 
 type AddRuleResult struct {
@@ -621,54 +796,104 @@ type AddRuleResult struct {
 	Rule *CSSRule `json:"rule"`
 }
 
-// Inserts a new rule with the given <code>ruleText</code> in a stylesheet with given <code>styleSheetId</code>, at the position specified by <code>location</code>.
-func (d *Domain) AddRule(opts *AddRuleOpts) (*AddRuleResult, error) {
+func (r *AddRuleRequest) Do() (*AddRuleResult, error) {
 	var result AddRuleResult
-	err := d.Client.Call("CSS.addRule", opts, &result)
+	err := r.client.Call("CSS.addRule", r.opts, &result)
 	return &result, err
 }
 
-type ForcePseudoStateOpts struct {
-	// The element id for which to force the pseudo state.
-	NodeId interface{} `json:"nodeId"`
+// Ensures that the given node will have specified pseudo-classes whenever its style is computed by the browser.
+type ForcePseudoStateRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Element pseudo classes to force when computing the element's style.
-	ForcedPseudoClasses []string `json:"forcedPseudoClasses"`
+func (d *Domain) ForcePseudoState() *ForcePseudoStateRequest {
+	return &ForcePseudoStateRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The element id for which to force the pseudo state.
+func (r *ForcePseudoStateRequest) NodeId(v interface{}) *ForcePseudoStateRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+// Element pseudo classes to force when computing the element's style.
+func (r *ForcePseudoStateRequest) ForcedPseudoClasses(v []string) *ForcePseudoStateRequest {
+	r.opts["forcedPseudoClasses"] = v
+	return r
 }
 
 // Ensures that the given node will have specified pseudo-classes whenever its style is computed by the browser.
-func (d *Domain) ForcePseudoState(opts *ForcePseudoStateOpts) error {
-	return d.Client.Call("CSS.forcePseudoState", opts, nil)
+func (r *ForcePseudoStateRequest) Do() error {
+	return r.client.Call("CSS.forcePseudoState", r.opts, nil)
+}
+
+// Returns all media queries parsed by the rendering engine. (experimental)
+type GetMediaQueriesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetMediaQueries() *GetMediaQueriesRequest {
+	return &GetMediaQueriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetMediaQueriesResult struct {
 	Medias []*CSSMedia `json:"medias"`
 }
 
-// Returns all media queries parsed by the rendering engine. (experimental)
-func (d *Domain) GetMediaQueries() (*GetMediaQueriesResult, error) {
+func (r *GetMediaQueriesRequest) Do() (*GetMediaQueriesResult, error) {
 	var result GetMediaQueriesResult
-	err := d.Client.Call("CSS.getMediaQueries", nil, &result)
+	err := r.client.Call("CSS.getMediaQueries", r.opts, &result)
 	return &result, err
 }
 
-type SetEffectivePropertyValueForNodeOpts struct {
-	// The element id for which to set property.
-	NodeId interface{} `json:"nodeId"`
+// Find a rule with the given active property for the given node and set the new value for this property (experimental)
+type SetEffectivePropertyValueForNodeRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	PropertyName string `json:"propertyName"`
+func (d *Domain) SetEffectivePropertyValueForNode() *SetEffectivePropertyValueForNodeRequest {
+	return &SetEffectivePropertyValueForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	Value string `json:"value"`
+// The element id for which to set property.
+func (r *SetEffectivePropertyValueForNodeRequest) NodeId(v interface{}) *SetEffectivePropertyValueForNodeRequest {
+	r.opts["nodeId"] = v
+	return r
+}
+
+func (r *SetEffectivePropertyValueForNodeRequest) PropertyName(v string) *SetEffectivePropertyValueForNodeRequest {
+	r.opts["propertyName"] = v
+	return r
+}
+
+func (r *SetEffectivePropertyValueForNodeRequest) Value(v string) *SetEffectivePropertyValueForNodeRequest {
+	r.opts["value"] = v
+	return r
 }
 
 // Find a rule with the given active property for the given node and set the new value for this property (experimental)
-func (d *Domain) SetEffectivePropertyValueForNode(opts *SetEffectivePropertyValueForNodeOpts) error {
-	return d.Client.Call("CSS.setEffectivePropertyValueForNode", opts, nil)
+func (r *SetEffectivePropertyValueForNodeRequest) Do() error {
+	return r.client.Call("CSS.setEffectivePropertyValueForNode", r.opts, nil)
 }
 
-type GetBackgroundColorsOpts struct {
-	// Id of the node to get background colors for.
-	NodeId interface{} `json:"nodeId"`
+// (experimental)
+type GetBackgroundColorsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetBackgroundColors() *GetBackgroundColorsRequest {
+	return &GetBackgroundColorsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Id of the node to get background colors for.
+func (r *GetBackgroundColorsRequest) NodeId(v interface{}) *GetBackgroundColorsRequest {
+	r.opts["nodeId"] = v
+	return r
 }
 
 type GetBackgroundColorsResult struct {
@@ -676,16 +901,26 @@ type GetBackgroundColorsResult struct {
 	BackgroundColors []string `json:"backgroundColors"`
 }
 
-// (experimental)
-func (d *Domain) GetBackgroundColors(opts *GetBackgroundColorsOpts) (*GetBackgroundColorsResult, error) {
+func (r *GetBackgroundColorsRequest) Do() (*GetBackgroundColorsResult, error) {
 	var result GetBackgroundColorsResult
-	err := d.Client.Call("CSS.getBackgroundColors", opts, &result)
+	err := r.client.Call("CSS.getBackgroundColors", r.opts, &result)
 	return &result, err
 }
 
-type GetLayoutTreeAndStylesOpts struct {
-	// Whitelist of computed styles to return.
-	ComputedStyleWhitelist []string `json:"computedStyleWhitelist"`
+// For the main document and any content documents, return the LayoutTreeNodes and a whitelisted subset of the computed style. It only returns pushed nodes, on way to pull all nodes is to call DOM.getDocument with a depth of -1. (experimental)
+type GetLayoutTreeAndStylesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetLayoutTreeAndStyles() *GetLayoutTreeAndStylesRequest {
+	return &GetLayoutTreeAndStylesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Whitelist of computed styles to return.
+func (r *GetLayoutTreeAndStylesRequest) ComputedStyleWhitelist(v []string) *GetLayoutTreeAndStylesRequest {
+	r.opts["computedStyleWhitelist"] = v
+	return r
 }
 
 type GetLayoutTreeAndStylesResult struct {
@@ -694,116 +929,96 @@ type GetLayoutTreeAndStylesResult struct {
 	ComputedStyles []*ComputedStyle `json:"computedStyles"`
 }
 
-// For the main document and any content documents, return the LayoutTreeNodes and a whitelisted subset of the computed style. It only returns pushed nodes, on way to pull all nodes is to call DOM.getDocument with a depth of -1. (experimental)
-func (d *Domain) GetLayoutTreeAndStyles(opts *GetLayoutTreeAndStylesOpts) (*GetLayoutTreeAndStylesResult, error) {
+func (r *GetLayoutTreeAndStylesRequest) Do() (*GetLayoutTreeAndStylesResult, error) {
 	var result GetLayoutTreeAndStylesResult
-	err := d.Client.Call("CSS.getLayoutTreeAndStyles", opts, &result)
+	err := r.client.Call("CSS.getLayoutTreeAndStyles", r.opts, &result)
 	return &result, err
 }
 
 // Enables the selector recording. (experimental)
-func (d *Domain) StartRuleUsageTracking() error {
-	return d.Client.Call("CSS.startRuleUsageTracking", nil, nil)
+type StartRuleUsageTrackingRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) StartRuleUsageTracking() *StartRuleUsageTrackingRequest {
+	return &StartRuleUsageTrackingRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables the selector recording. (experimental)
+func (r *StartRuleUsageTrackingRequest) Do() error {
+	return r.client.Call("CSS.startRuleUsageTracking", r.opts, nil)
+}
+
+// Obtain list of rules that became used since last call to this method (or since start of coverage instrumentation) (experimental)
+type TakeCoverageDeltaRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) TakeCoverageDelta() *TakeCoverageDeltaRequest {
+	return &TakeCoverageDeltaRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type TakeCoverageDeltaResult struct {
 	Coverage []*RuleUsage `json:"coverage"`
 }
 
-// Obtain list of rules that became used since last call to this method (or since start of coverage instrumentation) (experimental)
-func (d *Domain) TakeCoverageDelta() (*TakeCoverageDeltaResult, error) {
+func (r *TakeCoverageDeltaRequest) Do() (*TakeCoverageDeltaResult, error) {
 	var result TakeCoverageDeltaResult
-	err := d.Client.Call("CSS.takeCoverageDelta", nil, &result)
+	err := r.client.Call("CSS.takeCoverageDelta", r.opts, &result)
 	return &result, err
+}
+
+// The list of rules with an indication of whether these were used (experimental)
+type StopRuleUsageTrackingRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) StopRuleUsageTracking() *StopRuleUsageTrackingRequest {
+	return &StopRuleUsageTrackingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type StopRuleUsageTrackingResult struct {
 	RuleUsage []*RuleUsage `json:"ruleUsage"`
 }
 
-// The list of rules with an indication of whether these were used (experimental)
-func (d *Domain) StopRuleUsageTracking() (*StopRuleUsageTrackingResult, error) {
+func (r *StopRuleUsageTrackingRequest) Do() (*StopRuleUsageTrackingResult, error) {
 	var result StopRuleUsageTrackingResult
-	err := d.Client.Call("CSS.stopRuleUsageTracking", nil, &result)
+	err := r.client.Call("CSS.stopRuleUsageTracking", r.opts, &result)
 	return &result, err
 }
 
-type MediaQueryResultChangedEvent struct {
+func init() {
+	rpc.EventTypes["CSS.mediaQueryResultChanged"] = func() interface{} { return new(MediaQueryResultChangedEvent) }
+	rpc.EventTypes["CSS.fontsUpdated"] = func() interface{} { return new(FontsUpdatedEvent) }
+	rpc.EventTypes["CSS.styleSheetChanged"] = func() interface{} { return new(StyleSheetChangedEvent) }
+	rpc.EventTypes["CSS.styleSheetAdded"] = func() interface{} { return new(StyleSheetAddedEvent) }
+	rpc.EventTypes["CSS.styleSheetRemoved"] = func() interface{} { return new(StyleSheetRemovedEvent) }
 }
 
 // Fires whenever a MediaQuery result changes (for example, after a browser window has been resized.) The current implementation considers only viewport-dependent media features.
-func (d *Domain) OnMediaQueryResultChanged(listener func(*MediaQueryResultChangedEvent)) {
-	d.Client.AddListener("CSS.mediaQueryResultChanged", func(params json.RawMessage) {
-		var event MediaQueryResultChangedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
-type FontsUpdatedEvent struct {
+type MediaQueryResultChangedEvent struct {
 }
 
 // Fires whenever a web font gets loaded.
-func (d *Domain) OnFontsUpdated(listener func(*FontsUpdatedEvent)) {
-	d.Client.AddListener("CSS.fontsUpdated", func(params json.RawMessage) {
-		var event FontsUpdatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
+type FontsUpdatedEvent struct {
 }
 
+// Fired whenever a stylesheet is changed as a result of the client operation.
 type StyleSheetChangedEvent struct {
 	StyleSheetId StyleSheetId `json:"styleSheetId"`
 }
 
-// Fired whenever a stylesheet is changed as a result of the client operation.
-func (d *Domain) OnStyleSheetChanged(listener func(*StyleSheetChangedEvent)) {
-	d.Client.AddListener("CSS.styleSheetChanged", func(params json.RawMessage) {
-		var event StyleSheetChangedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired whenever an active document stylesheet is added.
 type StyleSheetAddedEvent struct {
 	// Added stylesheet metainfo.
 	Header *CSSStyleSheetHeader `json:"header"`
 }
 
-// Fired whenever an active document stylesheet is added.
-func (d *Domain) OnStyleSheetAdded(listener func(*StyleSheetAddedEvent)) {
-	d.Client.AddListener("CSS.styleSheetAdded", func(params json.RawMessage) {
-		var event StyleSheetAddedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired whenever an active document stylesheet is removed.
 type StyleSheetRemovedEvent struct {
 	// Identifier of the removed stylesheet.
 	StyleSheetId StyleSheetId `json:"styleSheetId"`
-}
-
-// Fired whenever an active document stylesheet is removed.
-func (d *Domain) OnStyleSheetRemoved(listener func(*StyleSheetRemovedEvent)) {
-	d.Client.AddListener("CSS.styleSheetRemoved", func(params json.RawMessage) {
-		var event StyleSheetRemovedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

@@ -2,9 +2,6 @@
 package log
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -55,48 +52,92 @@ type ViolationSetting struct {
 }
 
 // Enables log domain, sends the entries collected so far to the client by means of the <code>entryAdded</code> notification.
-func (d *Domain) Enable() error {
-	return d.Client.Call("Log.enable", nil, nil)
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Enables log domain, sends the entries collected so far to the client by means of the <code>entryAdded</code> notification.
+func (r *EnableRequest) Do() error {
+	return r.client.Call("Log.enable", r.opts, nil)
 }
 
 // Disables log domain, prevents further log entries from being reported to the client.
-func (d *Domain) Disable() error {
-	return d.Client.Call("Log.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables log domain, prevents further log entries from being reported to the client.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("Log.disable", r.opts, nil)
 }
 
 // Clears the log.
-func (d *Domain) Clear() error {
-	return d.Client.Call("Log.clear", nil, nil)
+type ClearRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type StartViolationsReportOpts struct {
-	// Configuration for violations.
-	Config []*ViolationSetting `json:"config"`
+func (d *Domain) Clear() *ClearRequest {
+	return &ClearRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Clears the log.
+func (r *ClearRequest) Do() error {
+	return r.client.Call("Log.clear", r.opts, nil)
 }
 
 // start violation reporting.
-func (d *Domain) StartViolationsReport(opts *StartViolationsReportOpts) error {
-	return d.Client.Call("Log.startViolationsReport", opts, nil)
+type StartViolationsReportRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) StartViolationsReport() *StartViolationsReportRequest {
+	return &StartViolationsReportRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Configuration for violations.
+func (r *StartViolationsReportRequest) Config(v []*ViolationSetting) *StartViolationsReportRequest {
+	r.opts["config"] = v
+	return r
+}
+
+// start violation reporting.
+func (r *StartViolationsReportRequest) Do() error {
+	return r.client.Call("Log.startViolationsReport", r.opts, nil)
 }
 
 // Stop violation reporting.
-func (d *Domain) StopViolationsReport() error {
-	return d.Client.Call("Log.stopViolationsReport", nil, nil)
+type StopViolationsReportRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type EntryAddedEvent struct {
-	// The entry.
-	Entry *LogEntry `json:"entry"`
+func (d *Domain) StopViolationsReport() *StopViolationsReportRequest {
+	return &StopViolationsReportRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Stop violation reporting.
+func (r *StopViolationsReportRequest) Do() error {
+	return r.client.Call("Log.stopViolationsReport", r.opts, nil)
+}
+
+func init() {
+	rpc.EventTypes["Log.entryAdded"] = func() interface{} { return new(EntryAddedEvent) }
 }
 
 // Issued when new message was logged.
-func (d *Domain) OnEntryAdded(listener func(*EntryAddedEvent)) {
-	d.Client.AddListener("Log.entryAdded", func(params json.RawMessage) {
-		var event EntryAddedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
+type EntryAddedEvent struct {
+	// The entry.
+	Entry *LogEntry `json:"entry"`
 }

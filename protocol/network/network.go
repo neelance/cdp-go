@@ -2,9 +2,6 @@
 package network
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -363,47 +360,104 @@ type Cookie struct {
 	SameSite CookieSameSite `json:"sameSite,omitempty"`
 }
 
-type EnableOpts struct {
-	// Buffer size in bytes to use when preserving network payloads (XHRs, etc). (optional, experimental)
-	MaxTotalBufferSize int `json:"maxTotalBufferSize,omitempty"`
+// Enables network tracking, network events will now be delivered to the client.
+type EnableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc). (optional, experimental)
-	MaxResourceBufferSize int `json:"maxResourceBufferSize,omitempty"`
+func (d *Domain) Enable() *EnableRequest {
+	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Buffer size in bytes to use when preserving network payloads (XHRs, etc). (optional, experimental)
+func (r *EnableRequest) MaxTotalBufferSize(v int) *EnableRequest {
+	r.opts["maxTotalBufferSize"] = v
+	return r
+}
+
+// Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc). (optional, experimental)
+func (r *EnableRequest) MaxResourceBufferSize(v int) *EnableRequest {
+	r.opts["maxResourceBufferSize"] = v
+	return r
 }
 
 // Enables network tracking, network events will now be delivered to the client.
-func (d *Domain) Enable(opts *EnableOpts) error {
-	return d.Client.Call("Network.enable", opts, nil)
+func (r *EnableRequest) Do() error {
+	return r.client.Call("Network.enable", r.opts, nil)
 }
 
 // Disables network tracking, prevents network events from being sent to the client.
-func (d *Domain) Disable() error {
-	return d.Client.Call("Network.disable", nil, nil)
+type DisableRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetUserAgentOverrideOpts struct {
-	// User agent to use.
-	UserAgent string `json:"userAgent"`
+func (d *Domain) Disable() *DisableRequest {
+	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Disables network tracking, prevents network events from being sent to the client.
+func (r *DisableRequest) Do() error {
+	return r.client.Call("Network.disable", r.opts, nil)
 }
 
 // Allows overriding user agent with the given string.
-func (d *Domain) SetUserAgentOverride(opts *SetUserAgentOverrideOpts) error {
-	return d.Client.Call("Network.setUserAgentOverride", opts, nil)
+type SetUserAgentOverrideRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetExtraHTTPHeadersOpts struct {
-	// Map with extra HTTP headers.
-	Headers *Headers `json:"headers"`
+func (d *Domain) SetUserAgentOverride() *SetUserAgentOverrideRequest {
+	return &SetUserAgentOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// User agent to use.
+func (r *SetUserAgentOverrideRequest) UserAgent(v string) *SetUserAgentOverrideRequest {
+	r.opts["userAgent"] = v
+	return r
+}
+
+// Allows overriding user agent with the given string.
+func (r *SetUserAgentOverrideRequest) Do() error {
+	return r.client.Call("Network.setUserAgentOverride", r.opts, nil)
 }
 
 // Specifies whether to always send extra HTTP headers with the requests from this page.
-func (d *Domain) SetExtraHTTPHeaders(opts *SetExtraHTTPHeadersOpts) error {
-	return d.Client.Call("Network.setExtraHTTPHeaders", opts, nil)
+type SetExtraHTTPHeadersRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetResponseBodyOpts struct {
-	// Identifier of the network request to get content for.
-	RequestId RequestId `json:"requestId"`
+func (d *Domain) SetExtraHTTPHeaders() *SetExtraHTTPHeadersRequest {
+	return &SetExtraHTTPHeadersRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Map with extra HTTP headers.
+func (r *SetExtraHTTPHeadersRequest) Headers(v *Headers) *SetExtraHTTPHeadersRequest {
+	r.opts["headers"] = v
+	return r
+}
+
+// Specifies whether to always send extra HTTP headers with the requests from this page.
+func (r *SetExtraHTTPHeadersRequest) Do() error {
+	return r.client.Call("Network.setExtraHTTPHeaders", r.opts, nil)
+}
+
+// Returns content served for the given request.
+type GetResponseBodyRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetResponseBody() *GetResponseBodyRequest {
+	return &GetResponseBodyRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Identifier of the network request to get content for.
+func (r *GetResponseBodyRequest) RequestId(v RequestId) *GetResponseBodyRequest {
+	r.opts["requestId"] = v
+	return r
 }
 
 type GetResponseBodyResult struct {
@@ -414,31 +468,62 @@ type GetResponseBodyResult struct {
 	Base64Encoded bool `json:"base64Encoded"`
 }
 
-// Returns content served for the given request.
-func (d *Domain) GetResponseBody(opts *GetResponseBodyOpts) (*GetResponseBodyResult, error) {
+func (r *GetResponseBodyRequest) Do() (*GetResponseBodyResult, error) {
 	var result GetResponseBodyResult
-	err := d.Client.Call("Network.getResponseBody", opts, &result)
+	err := r.client.Call("Network.getResponseBody", r.opts, &result)
 	return &result, err
 }
 
-type SetBlockedURLsOpts struct {
-	// URL patterns to block. Wildcards ('*') are allowed.
-	Urls []string `json:"urls"`
+// Blocks URLs from loading. (experimental)
+type SetBlockedURLsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetBlockedURLs() *SetBlockedURLsRequest {
+	return &SetBlockedURLsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// URL patterns to block. Wildcards ('*') are allowed.
+func (r *SetBlockedURLsRequest) Urls(v []string) *SetBlockedURLsRequest {
+	r.opts["urls"] = v
+	return r
 }
 
 // Blocks URLs from loading. (experimental)
-func (d *Domain) SetBlockedURLs(opts *SetBlockedURLsOpts) error {
-	return d.Client.Call("Network.setBlockedURLs", opts, nil)
-}
-
-type ReplayXHROpts struct {
-	// Identifier of XHR to replay.
-	RequestId RequestId `json:"requestId"`
+func (r *SetBlockedURLsRequest) Do() error {
+	return r.client.Call("Network.setBlockedURLs", r.opts, nil)
 }
 
 // This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password. (experimental)
-func (d *Domain) ReplayXHR(opts *ReplayXHROpts) error {
-	return d.Client.Call("Network.replayXHR", opts, nil)
+type ReplayXHRRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ReplayXHR() *ReplayXHRRequest {
+	return &ReplayXHRRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Identifier of XHR to replay.
+func (r *ReplayXHRRequest) RequestId(v RequestId) *ReplayXHRRequest {
+	r.opts["requestId"] = v
+	return r
+}
+
+// This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password. (experimental)
+func (r *ReplayXHRRequest) Do() error {
+	return r.client.Call("Network.replayXHR", r.opts, nil)
+}
+
+// Tells whether clearing browser cache is supported.
+type CanClearBrowserCacheRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CanClearBrowserCache() *CanClearBrowserCacheRequest {
+	return &CanClearBrowserCacheRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type CanClearBrowserCacheResult struct {
@@ -446,16 +531,35 @@ type CanClearBrowserCacheResult struct {
 	Result bool `json:"result"`
 }
 
-// Tells whether clearing browser cache is supported.
-func (d *Domain) CanClearBrowserCache() (*CanClearBrowserCacheResult, error) {
+func (r *CanClearBrowserCacheRequest) Do() (*CanClearBrowserCacheResult, error) {
 	var result CanClearBrowserCacheResult
-	err := d.Client.Call("Network.canClearBrowserCache", nil, &result)
+	err := r.client.Call("Network.canClearBrowserCache", r.opts, &result)
 	return &result, err
 }
 
 // Clears browser cache.
-func (d *Domain) ClearBrowserCache() error {
-	return d.Client.Call("Network.clearBrowserCache", nil, nil)
+type ClearBrowserCacheRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ClearBrowserCache() *ClearBrowserCacheRequest {
+	return &ClearBrowserCacheRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Clears browser cache.
+func (r *ClearBrowserCacheRequest) Do() error {
+	return r.client.Call("Network.clearBrowserCache", r.opts, nil)
+}
+
+// Tells whether clearing browser cookies is supported.
+type CanClearBrowserCookiesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CanClearBrowserCookies() *CanClearBrowserCookiesRequest {
+	return &CanClearBrowserCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type CanClearBrowserCookiesResult struct {
@@ -463,21 +567,41 @@ type CanClearBrowserCookiesResult struct {
 	Result bool `json:"result"`
 }
 
-// Tells whether clearing browser cookies is supported.
-func (d *Domain) CanClearBrowserCookies() (*CanClearBrowserCookiesResult, error) {
+func (r *CanClearBrowserCookiesRequest) Do() (*CanClearBrowserCookiesResult, error) {
 	var result CanClearBrowserCookiesResult
-	err := d.Client.Call("Network.canClearBrowserCookies", nil, &result)
+	err := r.client.Call("Network.canClearBrowserCookies", r.opts, &result)
 	return &result, err
 }
 
 // Clears browser cookies.
-func (d *Domain) ClearBrowserCookies() error {
-	return d.Client.Call("Network.clearBrowserCookies", nil, nil)
+type ClearBrowserCookiesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetCookiesOpts struct {
-	// The list of URLs for which applicable cookies will be fetched (optional)
-	Urls []string `json:"urls,omitempty"`
+func (d *Domain) ClearBrowserCookies() *ClearBrowserCookiesRequest {
+	return &ClearBrowserCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Clears browser cookies.
+func (r *ClearBrowserCookiesRequest) Do() error {
+	return r.client.Call("Network.clearBrowserCookies", r.opts, nil)
+}
+
+// Returns all browser cookies for the current URL. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
+type GetCookiesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetCookies() *GetCookiesRequest {
+	return &GetCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The list of URLs for which applicable cookies will be fetched (optional)
+func (r *GetCookiesRequest) Urls(v []string) *GetCookiesRequest {
+	r.opts["urls"] = v
+	return r
 }
 
 type GetCookiesResult struct {
@@ -485,11 +609,20 @@ type GetCookiesResult struct {
 	Cookies []*Cookie `json:"cookies"`
 }
 
-// Returns all browser cookies for the current URL. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
-func (d *Domain) GetCookies(opts *GetCookiesOpts) (*GetCookiesResult, error) {
+func (r *GetCookiesRequest) Do() (*GetCookiesResult, error) {
 	var result GetCookiesResult
-	err := d.Client.Call("Network.getCookies", opts, &result)
+	err := r.client.Call("Network.getCookies", r.opts, &result)
 	return &result, err
+}
+
+// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
+type GetAllCookiesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetAllCookies() *GetAllCookiesRequest {
+	return &GetAllCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetAllCookiesResult struct {
@@ -497,53 +630,101 @@ type GetAllCookiesResult struct {
 	Cookies []*Cookie `json:"cookies"`
 }
 
-// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
-func (d *Domain) GetAllCookies() (*GetAllCookiesResult, error) {
+func (r *GetAllCookiesRequest) Do() (*GetAllCookiesResult, error) {
 	var result GetAllCookiesResult
-	err := d.Client.Call("Network.getAllCookies", nil, &result)
+	err := r.client.Call("Network.getAllCookies", r.opts, &result)
 	return &result, err
 }
 
-type DeleteCookieOpts struct {
-	// Name of the cookie to remove.
-	CookieName string `json:"cookieName"`
+// Deletes browser cookie with given name, domain and path. (experimental)
+type DeleteCookieRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// URL to match cooke domain and path.
-	URL string `json:"url"`
+func (d *Domain) DeleteCookie() *DeleteCookieRequest {
+	return &DeleteCookieRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Name of the cookie to remove.
+func (r *DeleteCookieRequest) CookieName(v string) *DeleteCookieRequest {
+	r.opts["cookieName"] = v
+	return r
+}
+
+// URL to match cooke domain and path.
+func (r *DeleteCookieRequest) URL(v string) *DeleteCookieRequest {
+	r.opts["url"] = v
+	return r
 }
 
 // Deletes browser cookie with given name, domain and path. (experimental)
-func (d *Domain) DeleteCookie(opts *DeleteCookieOpts) error {
-	return d.Client.Call("Network.deleteCookie", opts, nil)
+func (r *DeleteCookieRequest) Do() error {
+	return r.client.Call("Network.deleteCookie", r.opts, nil)
 }
 
-type SetCookieOpts struct {
-	// The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie.
-	URL string `json:"url"`
+// Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist. (experimental)
+type SetCookieRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// The name of the cookie.
-	Name string `json:"name"`
+func (d *Domain) SetCookie() *SetCookieRequest {
+	return &SetCookieRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// The value of the cookie.
-	Value string `json:"value"`
+// The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie.
+func (r *SetCookieRequest) URL(v string) *SetCookieRequest {
+	r.opts["url"] = v
+	return r
+}
 
-	// If omitted, the cookie becomes a host-only cookie. (optional)
-	Domain string `json:"domain,omitempty"`
+// The name of the cookie.
+func (r *SetCookieRequest) Name(v string) *SetCookieRequest {
+	r.opts["name"] = v
+	return r
+}
 
-	// Defaults to the path portion of the url parameter. (optional)
-	Path string `json:"path,omitempty"`
+// The value of the cookie.
+func (r *SetCookieRequest) Value(v string) *SetCookieRequest {
+	r.opts["value"] = v
+	return r
+}
 
-	// Defaults ot false. (optional)
-	Secure bool `json:"secure,omitempty"`
+// If omitted, the cookie becomes a host-only cookie. (optional)
+func (r *SetCookieRequest) Domain(v string) *SetCookieRequest {
+	r.opts["domain"] = v
+	return r
+}
 
-	// Defaults to false. (optional)
-	HttpOnly bool `json:"httpOnly,omitempty"`
+// Defaults to the path portion of the url parameter. (optional)
+func (r *SetCookieRequest) Path(v string) *SetCookieRequest {
+	r.opts["path"] = v
+	return r
+}
 
-	// Defaults to browser default behavior. (optional)
-	SameSite CookieSameSite `json:"sameSite,omitempty"`
+// Defaults ot false. (optional)
+func (r *SetCookieRequest) Secure(v bool) *SetCookieRequest {
+	r.opts["secure"] = v
+	return r
+}
 
-	// If omitted, the cookie becomes a session cookie. (optional)
-	ExpirationDate Timestamp `json:"expirationDate,omitempty"`
+// Defaults to false. (optional)
+func (r *SetCookieRequest) HttpOnly(v bool) *SetCookieRequest {
+	r.opts["httpOnly"] = v
+	return r
+}
+
+// Defaults to browser default behavior. (optional)
+func (r *SetCookieRequest) SameSite(v CookieSameSite) *SetCookieRequest {
+	r.opts["sameSite"] = v
+	return r
+}
+
+// If omitted, the cookie becomes a session cookie. (optional)
+func (r *SetCookieRequest) ExpirationDate(v Timestamp) *SetCookieRequest {
+	r.opts["expirationDate"] = v
+	return r
 }
 
 type SetCookieResult struct {
@@ -551,11 +732,20 @@ type SetCookieResult struct {
 	Success bool `json:"success"`
 }
 
-// Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist. (experimental)
-func (d *Domain) SetCookie(opts *SetCookieOpts) (*SetCookieResult, error) {
+func (r *SetCookieRequest) Do() (*SetCookieResult, error) {
 	var result SetCookieResult
-	err := d.Client.Call("Network.setCookie", opts, &result)
+	err := r.client.Call("Network.setCookie", r.opts, &result)
 	return &result, err
+}
+
+// Tells whether emulation of network conditions is supported. (experimental)
+type CanEmulateNetworkConditionsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) CanEmulateNetworkConditions() *CanEmulateNetworkConditionsRequest {
+	return &CanEmulateNetworkConditionsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type CanEmulateNetworkConditionsResult struct {
@@ -563,84 +753,171 @@ type CanEmulateNetworkConditionsResult struct {
 	Result bool `json:"result"`
 }
 
-// Tells whether emulation of network conditions is supported. (experimental)
-func (d *Domain) CanEmulateNetworkConditions() (*CanEmulateNetworkConditionsResult, error) {
+func (r *CanEmulateNetworkConditionsRequest) Do() (*CanEmulateNetworkConditionsResult, error) {
 	var result CanEmulateNetworkConditionsResult
-	err := d.Client.Call("Network.canEmulateNetworkConditions", nil, &result)
+	err := r.client.Call("Network.canEmulateNetworkConditions", r.opts, &result)
 	return &result, err
 }
 
-type EmulateNetworkConditionsOpts struct {
-	// True to emulate internet disconnection.
-	Offline bool `json:"offline"`
+// Activates emulation of network conditions.
+type EmulateNetworkConditionsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Additional latency (ms).
-	Latency float64 `json:"latency"`
+func (d *Domain) EmulateNetworkConditions() *EmulateNetworkConditionsRequest {
+	return &EmulateNetworkConditionsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Maximal aggregated download throughput.
-	DownloadThroughput float64 `json:"downloadThroughput"`
+// True to emulate internet disconnection.
+func (r *EmulateNetworkConditionsRequest) Offline(v bool) *EmulateNetworkConditionsRequest {
+	r.opts["offline"] = v
+	return r
+}
 
-	// Maximal aggregated upload throughput.
-	UploadThroughput float64 `json:"uploadThroughput"`
+// Additional latency (ms).
+func (r *EmulateNetworkConditionsRequest) Latency(v float64) *EmulateNetworkConditionsRequest {
+	r.opts["latency"] = v
+	return r
+}
 
-	// Connection type if known. (optional)
-	ConnectionType ConnectionType `json:"connectionType,omitempty"`
+// Maximal aggregated download throughput.
+func (r *EmulateNetworkConditionsRequest) DownloadThroughput(v float64) *EmulateNetworkConditionsRequest {
+	r.opts["downloadThroughput"] = v
+	return r
+}
+
+// Maximal aggregated upload throughput.
+func (r *EmulateNetworkConditionsRequest) UploadThroughput(v float64) *EmulateNetworkConditionsRequest {
+	r.opts["uploadThroughput"] = v
+	return r
+}
+
+// Connection type if known. (optional)
+func (r *EmulateNetworkConditionsRequest) ConnectionType(v ConnectionType) *EmulateNetworkConditionsRequest {
+	r.opts["connectionType"] = v
+	return r
 }
 
 // Activates emulation of network conditions.
-func (d *Domain) EmulateNetworkConditions(opts *EmulateNetworkConditionsOpts) error {
-	return d.Client.Call("Network.emulateNetworkConditions", opts, nil)
-}
-
-type SetCacheDisabledOpts struct {
-	// Cache disabled state.
-	CacheDisabled bool `json:"cacheDisabled"`
+func (r *EmulateNetworkConditionsRequest) Do() error {
+	return r.client.Call("Network.emulateNetworkConditions", r.opts, nil)
 }
 
 // Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.
-func (d *Domain) SetCacheDisabled(opts *SetCacheDisabledOpts) error {
-	return d.Client.Call("Network.setCacheDisabled", opts, nil)
+type SetCacheDisabledRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetBypassServiceWorkerOpts struct {
-	// Bypass service worker and load from network.
-	Bypass bool `json:"bypass"`
+func (d *Domain) SetCacheDisabled() *SetCacheDisabledRequest {
+	return &SetCacheDisabledRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Cache disabled state.
+func (r *SetCacheDisabledRequest) CacheDisabled(v bool) *SetCacheDisabledRequest {
+	r.opts["cacheDisabled"] = v
+	return r
+}
+
+// Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.
+func (r *SetCacheDisabledRequest) Do() error {
+	return r.client.Call("Network.setCacheDisabled", r.opts, nil)
 }
 
 // Toggles ignoring of service worker for each request. (experimental)
-func (d *Domain) SetBypassServiceWorker(opts *SetBypassServiceWorkerOpts) error {
-	return d.Client.Call("Network.setBypassServiceWorker", opts, nil)
+type SetBypassServiceWorkerRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type SetDataSizeLimitsForTestOpts struct {
-	// Maximum total buffer size.
-	MaxTotalSize int `json:"maxTotalSize"`
+func (d *Domain) SetBypassServiceWorker() *SetBypassServiceWorkerRequest {
+	return &SetBypassServiceWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// Maximum per-resource size.
-	MaxResourceSize int `json:"maxResourceSize"`
+// Bypass service worker and load from network.
+func (r *SetBypassServiceWorkerRequest) Bypass(v bool) *SetBypassServiceWorkerRequest {
+	r.opts["bypass"] = v
+	return r
+}
+
+// Toggles ignoring of service worker for each request. (experimental)
+func (r *SetBypassServiceWorkerRequest) Do() error {
+	return r.client.Call("Network.setBypassServiceWorker", r.opts, nil)
 }
 
 // For testing. (experimental)
-func (d *Domain) SetDataSizeLimitsForTest(opts *SetDataSizeLimitsForTestOpts) error {
-	return d.Client.Call("Network.setDataSizeLimitsForTest", opts, nil)
+type SetDataSizeLimitsForTestRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
 }
 
-type GetCertificateOpts struct {
-	// Origin to get certificate for.
-	Origin string `json:"origin"`
+func (d *Domain) SetDataSizeLimitsForTest() *SetDataSizeLimitsForTestRequest {
+	return &SetDataSizeLimitsForTestRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Maximum total buffer size.
+func (r *SetDataSizeLimitsForTestRequest) MaxTotalSize(v int) *SetDataSizeLimitsForTestRequest {
+	r.opts["maxTotalSize"] = v
+	return r
+}
+
+// Maximum per-resource size.
+func (r *SetDataSizeLimitsForTestRequest) MaxResourceSize(v int) *SetDataSizeLimitsForTestRequest {
+	r.opts["maxResourceSize"] = v
+	return r
+}
+
+// For testing. (experimental)
+func (r *SetDataSizeLimitsForTestRequest) Do() error {
+	return r.client.Call("Network.setDataSizeLimitsForTest", r.opts, nil)
+}
+
+// Returns the DER-encoded certificate. (experimental)
+type GetCertificateRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetCertificate() *GetCertificateRequest {
+	return &GetCertificateRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Origin to get certificate for.
+func (r *GetCertificateRequest) Origin(v string) *GetCertificateRequest {
+	r.opts["origin"] = v
+	return r
 }
 
 type GetCertificateResult struct {
 	TableNames []string `json:"tableNames"`
 }
 
-// Returns the DER-encoded certificate. (experimental)
-func (d *Domain) GetCertificate(opts *GetCertificateOpts) (*GetCertificateResult, error) {
+func (r *GetCertificateRequest) Do() (*GetCertificateResult, error) {
 	var result GetCertificateResult
-	err := d.Client.Call("Network.getCertificate", opts, &result)
+	err := r.client.Call("Network.getCertificate", r.opts, &result)
 	return &result, err
 }
 
+func init() {
+	rpc.EventTypes["Network.resourceChangedPriority"] = func() interface{} { return new(ResourceChangedPriorityEvent) }
+	rpc.EventTypes["Network.requestWillBeSent"] = func() interface{} { return new(RequestWillBeSentEvent) }
+	rpc.EventTypes["Network.requestServedFromCache"] = func() interface{} { return new(RequestServedFromCacheEvent) }
+	rpc.EventTypes["Network.responseReceived"] = func() interface{} { return new(ResponseReceivedEvent) }
+	rpc.EventTypes["Network.dataReceived"] = func() interface{} { return new(DataReceivedEvent) }
+	rpc.EventTypes["Network.loadingFinished"] = func() interface{} { return new(LoadingFinishedEvent) }
+	rpc.EventTypes["Network.loadingFailed"] = func() interface{} { return new(LoadingFailedEvent) }
+	rpc.EventTypes["Network.webSocketWillSendHandshakeRequest"] = func() interface{} { return new(WebSocketWillSendHandshakeRequestEvent) }
+	rpc.EventTypes["Network.webSocketHandshakeResponseReceived"] = func() interface{} { return new(WebSocketHandshakeResponseReceivedEvent) }
+	rpc.EventTypes["Network.webSocketCreated"] = func() interface{} { return new(WebSocketCreatedEvent) }
+	rpc.EventTypes["Network.webSocketClosed"] = func() interface{} { return new(WebSocketClosedEvent) }
+	rpc.EventTypes["Network.webSocketFrameReceived"] = func() interface{} { return new(WebSocketFrameReceivedEvent) }
+	rpc.EventTypes["Network.webSocketFrameError"] = func() interface{} { return new(WebSocketFrameErrorEvent) }
+	rpc.EventTypes["Network.webSocketFrameSent"] = func() interface{} { return new(WebSocketFrameSentEvent) }
+	rpc.EventTypes["Network.eventSourceMessageReceived"] = func() interface{} { return new(EventSourceMessageReceivedEvent) }
+}
+
+// Fired when resource loading priority is changed (experimental)
 type ResourceChangedPriorityEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -652,18 +929,7 @@ type ResourceChangedPriorityEvent struct {
 	Timestamp Timestamp `json:"timestamp"`
 }
 
-// Fired when resource loading priority is changed (experimental)
-func (d *Domain) OnResourceChangedPriority(listener func(*ResourceChangedPriorityEvent)) {
-	d.Client.AddListener("Network.resourceChangedPriority", func(params json.RawMessage) {
-		var event ResourceChangedPriorityEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when page is about to send HTTP request.
 type RequestWillBeSentEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -696,35 +962,13 @@ type RequestWillBeSentEvent struct {
 	Type interface{} `json:"type"`
 }
 
-// Fired when page is about to send HTTP request.
-func (d *Domain) OnRequestWillBeSent(listener func(*RequestWillBeSentEvent)) {
-	d.Client.AddListener("Network.requestWillBeSent", func(params json.RawMessage) {
-		var event RequestWillBeSentEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired if request ended up loading from cache.
 type RequestServedFromCacheEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
 }
 
-// Fired if request ended up loading from cache.
-func (d *Domain) OnRequestServedFromCache(listener func(*RequestServedFromCacheEvent)) {
-	d.Client.AddListener("Network.requestServedFromCache", func(params json.RawMessage) {
-		var event RequestServedFromCacheEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when HTTP response is available.
 type ResponseReceivedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -745,18 +989,7 @@ type ResponseReceivedEvent struct {
 	Response *Response `json:"response"`
 }
 
-// Fired when HTTP response is available.
-func (d *Domain) OnResponseReceived(listener func(*ResponseReceivedEvent)) {
-	d.Client.AddListener("Network.responseReceived", func(params json.RawMessage) {
-		var event ResponseReceivedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when data chunk was received over the network.
 type DataReceivedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -771,18 +1004,7 @@ type DataReceivedEvent struct {
 	EncodedDataLength int `json:"encodedDataLength"`
 }
 
-// Fired when data chunk was received over the network.
-func (d *Domain) OnDataReceived(listener func(*DataReceivedEvent)) {
-	d.Client.AddListener("Network.dataReceived", func(params json.RawMessage) {
-		var event DataReceivedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when HTTP request has finished loading.
 type LoadingFinishedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -794,18 +1016,7 @@ type LoadingFinishedEvent struct {
 	EncodedDataLength float64 `json:"encodedDataLength"`
 }
 
-// Fired when HTTP request has finished loading.
-func (d *Domain) OnLoadingFinished(listener func(*LoadingFinishedEvent)) {
-	d.Client.AddListener("Network.loadingFinished", func(params json.RawMessage) {
-		var event LoadingFinishedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when HTTP request has failed to load.
 type LoadingFailedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -826,18 +1037,7 @@ type LoadingFailedEvent struct {
 	BlockedReason BlockedReason `json:"blockedReason"`
 }
 
-// Fired when HTTP request has failed to load.
-func (d *Domain) OnLoadingFailed(listener func(*LoadingFailedEvent)) {
-	d.Client.AddListener("Network.loadingFailed", func(params json.RawMessage) {
-		var event LoadingFailedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when WebSocket is about to initiate handshake. (experimental)
 type WebSocketWillSendHandshakeRequestEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -852,18 +1052,7 @@ type WebSocketWillSendHandshakeRequestEvent struct {
 	Request *WebSocketRequest `json:"request"`
 }
 
-// Fired when WebSocket is about to initiate handshake. (experimental)
-func (d *Domain) OnWebSocketWillSendHandshakeRequest(listener func(*WebSocketWillSendHandshakeRequestEvent)) {
-	d.Client.AddListener("Network.webSocketWillSendHandshakeRequest", func(params json.RawMessage) {
-		var event WebSocketWillSendHandshakeRequestEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when WebSocket handshake response becomes available. (experimental)
 type WebSocketHandshakeResponseReceivedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -875,18 +1064,7 @@ type WebSocketHandshakeResponseReceivedEvent struct {
 	Response *WebSocketResponse `json:"response"`
 }
 
-// Fired when WebSocket handshake response becomes available. (experimental)
-func (d *Domain) OnWebSocketHandshakeResponseReceived(listener func(*WebSocketHandshakeResponseReceivedEvent)) {
-	d.Client.AddListener("Network.webSocketHandshakeResponseReceived", func(params json.RawMessage) {
-		var event WebSocketHandshakeResponseReceivedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired upon WebSocket creation. (experimental)
 type WebSocketCreatedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -898,18 +1076,7 @@ type WebSocketCreatedEvent struct {
 	Initiator *Initiator `json:"initiator"`
 }
 
-// Fired upon WebSocket creation. (experimental)
-func (d *Domain) OnWebSocketCreated(listener func(*WebSocketCreatedEvent)) {
-	d.Client.AddListener("Network.webSocketCreated", func(params json.RawMessage) {
-		var event WebSocketCreatedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when WebSocket is closed. (experimental)
 type WebSocketClosedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -918,18 +1085,7 @@ type WebSocketClosedEvent struct {
 	Timestamp Timestamp `json:"timestamp"`
 }
 
-// Fired when WebSocket is closed. (experimental)
-func (d *Domain) OnWebSocketClosed(listener func(*WebSocketClosedEvent)) {
-	d.Client.AddListener("Network.webSocketClosed", func(params json.RawMessage) {
-		var event WebSocketClosedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when WebSocket frame is received. (experimental)
 type WebSocketFrameReceivedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -941,18 +1097,7 @@ type WebSocketFrameReceivedEvent struct {
 	Response *WebSocketFrame `json:"response"`
 }
 
-// Fired when WebSocket frame is received. (experimental)
-func (d *Domain) OnWebSocketFrameReceived(listener func(*WebSocketFrameReceivedEvent)) {
-	d.Client.AddListener("Network.webSocketFrameReceived", func(params json.RawMessage) {
-		var event WebSocketFrameReceivedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when WebSocket frame error occurs. (experimental)
 type WebSocketFrameErrorEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -964,18 +1109,7 @@ type WebSocketFrameErrorEvent struct {
 	ErrorMessage string `json:"errorMessage"`
 }
 
-// Fired when WebSocket frame error occurs. (experimental)
-func (d *Domain) OnWebSocketFrameError(listener func(*WebSocketFrameErrorEvent)) {
-	d.Client.AddListener("Network.webSocketFrameError", func(params json.RawMessage) {
-		var event WebSocketFrameErrorEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when WebSocket frame is sent. (experimental)
 type WebSocketFrameSentEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -987,18 +1121,7 @@ type WebSocketFrameSentEvent struct {
 	Response *WebSocketFrame `json:"response"`
 }
 
-// Fired when WebSocket frame is sent. (experimental)
-func (d *Domain) OnWebSocketFrameSent(listener func(*WebSocketFrameSentEvent)) {
-	d.Client.AddListener("Network.webSocketFrameSent", func(params json.RawMessage) {
-		var event WebSocketFrameSentEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Fired when EventSource message is received. (experimental)
 type EventSourceMessageReceivedEvent struct {
 	// Request identifier.
 	RequestId RequestId `json:"requestId"`
@@ -1014,16 +1137,4 @@ type EventSourceMessageReceivedEvent struct {
 
 	// Message content.
 	Data string `json:"data"`
-}
-
-// Fired when EventSource message is received. (experimental)
-func (d *Domain) OnEventSourceMessageReceived(listener func(*EventSourceMessageReceivedEvent)) {
-	d.Client.AddListener("Network.eventSourceMessageReceived", func(params json.RawMessage) {
-		var event EventSourceMessageReceivedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

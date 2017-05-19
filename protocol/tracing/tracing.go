@@ -2,9 +2,6 @@
 package tracing
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/neelance/cdp-go/rpc"
 )
 
@@ -44,31 +41,74 @@ type TraceConfig struct {
 	MemoryDumpConfig *MemoryDumpConfig `json:"memoryDumpConfig,omitempty"`
 }
 
-type StartOpts struct {
-	// Category/tag filter (optional)
-	Categories string `json:"categories,omitempty"`
+// Start trace events collection.
+type StartRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Tracing options (optional)
-	Options string `json:"options,omitempty"`
+func (d *Domain) Start() *StartRequest {
+	return &StartRequest{opts: make(map[string]interface{}), client: d.Client}
+}
 
-	// If set, the agent will issue bufferUsage events at this interval, specified in milliseconds (optional)
-	BufferUsageReportingInterval float64 `json:"bufferUsageReportingInterval,omitempty"`
+// Category/tag filter (optional)
+func (r *StartRequest) Categories(v string) *StartRequest {
+	r.opts["categories"] = v
+	return r
+}
 
-	// Whether to report trace events as series of dataCollected events or to save trace to a stream (defaults to <code>ReportEvents</code>). (optional)
-	TransferMode string `json:"transferMode,omitempty"`
+// Tracing options (optional)
+func (r *StartRequest) Options(v string) *StartRequest {
+	r.opts["options"] = v
+	return r
+}
 
-	// (optional)
-	TraceConfig *TraceConfig `json:"traceConfig,omitempty"`
+// If set, the agent will issue bufferUsage events at this interval, specified in milliseconds (optional)
+func (r *StartRequest) BufferUsageReportingInterval(v float64) *StartRequest {
+	r.opts["bufferUsageReportingInterval"] = v
+	return r
+}
+
+// Whether to report trace events as series of dataCollected events or to save trace to a stream (defaults to <code>ReportEvents</code>). (optional)
+func (r *StartRequest) TransferMode(v string) *StartRequest {
+	r.opts["transferMode"] = v
+	return r
+}
+
+// (optional)
+func (r *StartRequest) TraceConfig(v *TraceConfig) *StartRequest {
+	r.opts["traceConfig"] = v
+	return r
 }
 
 // Start trace events collection.
-func (d *Domain) Start(opts *StartOpts) error {
-	return d.Client.Call("Tracing.start", opts, nil)
+func (r *StartRequest) Do() error {
+	return r.client.Call("Tracing.start", r.opts, nil)
 }
 
 // Stop trace events collection.
-func (d *Domain) End() error {
-	return d.Client.Call("Tracing.end", nil, nil)
+type EndRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) End() *EndRequest {
+	return &EndRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Stop trace events collection.
+func (r *EndRequest) Do() error {
+	return r.client.Call("Tracing.end", r.opts, nil)
+}
+
+// Gets supported tracing categories.
+type GetCategoriesRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) GetCategories() *GetCategoriesRequest {
+	return &GetCategoriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type GetCategoriesResult struct {
@@ -76,11 +116,20 @@ type GetCategoriesResult struct {
 	Categories []string `json:"categories"`
 }
 
-// Gets supported tracing categories.
-func (d *Domain) GetCategories() (*GetCategoriesResult, error) {
+func (r *GetCategoriesRequest) Do() (*GetCategoriesResult, error) {
 	var result GetCategoriesResult
-	err := d.Client.Call("Tracing.getCategories", nil, &result)
+	err := r.client.Call("Tracing.getCategories", r.opts, &result)
 	return &result, err
+}
+
+// Request a global memory dump.
+type RequestMemoryDumpRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) RequestMemoryDump() *RequestMemoryDumpRequest {
+	return &RequestMemoryDumpRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
 type RequestMemoryDumpResult struct {
@@ -91,54 +140,48 @@ type RequestMemoryDumpResult struct {
 	Success bool `json:"success"`
 }
 
-// Request a global memory dump.
-func (d *Domain) RequestMemoryDump() (*RequestMemoryDumpResult, error) {
+func (r *RequestMemoryDumpRequest) Do() (*RequestMemoryDumpResult, error) {
 	var result RequestMemoryDumpResult
-	err := d.Client.Call("Tracing.requestMemoryDump", nil, &result)
+	err := r.client.Call("Tracing.requestMemoryDump", r.opts, &result)
 	return &result, err
 }
 
-type RecordClockSyncMarkerOpts struct {
-	// The ID of this clock sync marker
-	SyncId string `json:"syncId"`
+// Record a clock sync marker in the trace.
+type RecordClockSyncMarkerRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) RecordClockSyncMarker() *RecordClockSyncMarkerRequest {
+	return &RecordClockSyncMarkerRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// The ID of this clock sync marker
+func (r *RecordClockSyncMarkerRequest) SyncId(v string) *RecordClockSyncMarkerRequest {
+	r.opts["syncId"] = v
+	return r
 }
 
 // Record a clock sync marker in the trace.
-func (d *Domain) RecordClockSyncMarker(opts *RecordClockSyncMarkerOpts) error {
-	return d.Client.Call("Tracing.recordClockSyncMarker", opts, nil)
+func (r *RecordClockSyncMarkerRequest) Do() error {
+	return r.client.Call("Tracing.recordClockSyncMarker", r.opts, nil)
 }
 
+func init() {
+	rpc.EventTypes["Tracing.dataCollected"] = func() interface{} { return new(DataCollectedEvent) }
+	rpc.EventTypes["Tracing.tracingComplete"] = func() interface{} { return new(TracingCompleteEvent) }
+	rpc.EventTypes["Tracing.bufferUsage"] = func() interface{} { return new(BufferUsageEvent) }
+}
+
+// Contains an bucket of collected trace events. When tracing is stopped collected events will be send as a sequence of dataCollected events followed by tracingComplete event.
 type DataCollectedEvent struct {
 	Value []interface{} `json:"value"`
 }
 
-// Contains an bucket of collected trace events. When tracing is stopped collected events will be send as a sequence of dataCollected events followed by tracingComplete event.
-func (d *Domain) OnDataCollected(listener func(*DataCollectedEvent)) {
-	d.Client.AddListener("Tracing.dataCollected", func(params json.RawMessage) {
-		var event DataCollectedEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
-}
-
+// Signals that tracing is stopped and there is no trace buffers pending flush, all data were delivered via dataCollected events.
 type TracingCompleteEvent struct {
 	// A handle of the stream that holds resulting trace data. (optional)
 	Stream interface{} `json:"stream"`
-}
-
-// Signals that tracing is stopped and there is no trace buffers pending flush, all data were delivered via dataCollected events.
-func (d *Domain) OnTracingComplete(listener func(*TracingCompleteEvent)) {
-	d.Client.AddListener("Tracing.tracingComplete", func(params json.RawMessage) {
-		var event TracingCompleteEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }
 
 type BufferUsageEvent struct {
@@ -150,15 +193,4 @@ type BufferUsageEvent struct {
 
 	// A number in range [0..1] that indicates the used size of event buffer as a fraction of its total size. (optional)
 	Value float64 `json:"value"`
-}
-
-func (d *Domain) OnBufferUsage(listener func(*BufferUsageEvent)) {
-	d.Client.AddListener("Tracing.bufferUsage", func(params json.RawMessage) {
-		var event BufferUsageEvent
-		if err := json.Unmarshal(params, &event); err != nil {
-			log.Print(err)
-			return
-		}
-		listener(&event)
-	})
 }

@@ -14,15 +14,32 @@ type Domain struct {
 
 type StorageType string
 
-type ClearDataForOriginOpts struct {
-	// Security origin.
-	Origin string `json:"origin"`
+// Clears storage for origin.
+type ClearDataForOriginRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
 
-	// Comma separated origin names.
-	StorageTypes string `json:"storageTypes"`
+func (d *Domain) ClearDataForOrigin() *ClearDataForOriginRequest {
+	return &ClearDataForOriginRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Security origin.
+func (r *ClearDataForOriginRequest) Origin(v string) *ClearDataForOriginRequest {
+	r.opts["origin"] = v
+	return r
+}
+
+// Comma separated origin names.
+func (r *ClearDataForOriginRequest) StorageTypes(v string) *ClearDataForOriginRequest {
+	r.opts["storageTypes"] = v
+	return r
 }
 
 // Clears storage for origin.
-func (d *Domain) ClearDataForOrigin(opts *ClearDataForOriginOpts) error {
-	return d.Client.Call("Storage.clearDataForOrigin", opts, nil)
+func (r *ClearDataForOriginRequest) Do() error {
+	return r.client.Call("Storage.clearDataForOrigin", r.opts, nil)
+}
+
+func init() {
 }
