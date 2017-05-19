@@ -11,13 +11,31 @@ type Domain struct {
 }
 
 // Unique identifier of the Cache object.
-type CacheId interface{}
+
+type CacheId string
 
 // Data entry.
-type DataEntry interface{}
+
+type DataEntry struct {
+	// Request url spec.
+	Request string `json:"request"`
+
+	// Response stataus text.
+	Response string `json:"response"`
+}
 
 // Cache identifier.
-type Cache interface{}
+
+type Cache struct {
+	// An opaque unique id of the cache.
+	CacheId *CacheId `json:"cacheId"`
+
+	// Security origin of the cache.
+	SecurityOrigin string `json:"securityOrigin"`
+
+	// The name of the cache.
+	CacheName string `json:"cacheName"`
+}
 
 type RequestCacheNamesOpts struct {
 	// Security origin.
@@ -26,7 +44,7 @@ type RequestCacheNamesOpts struct {
 
 type RequestCacheNamesResult struct {
 	// Caches for the security origin.
-	Caches []Cache `json:"caches"`
+	Caches []*Cache `json:"caches"`
 }
 
 // Requests cache names.
@@ -38,7 +56,7 @@ func (d *Domain) RequestCacheNames(opts *RequestCacheNamesOpts) (*RequestCacheNa
 
 type RequestEntriesOpts struct {
 	// ID of cache to get entries from.
-	CacheId CacheId `json:"cacheId"`
+	CacheId *CacheId `json:"cacheId"`
 
 	// Number of records to skip.
 	SkipCount int `json:"skipCount"`
@@ -49,7 +67,7 @@ type RequestEntriesOpts struct {
 
 type RequestEntriesResult struct {
 	// Array of object store data entries.
-	CacheDataEntries []DataEntry `json:"cacheDataEntries"`
+	CacheDataEntries []*DataEntry `json:"cacheDataEntries"`
 
 	// If true, there are more entries to fetch in the given range.
 	HasMore bool `json:"hasMore"`
@@ -64,7 +82,7 @@ func (d *Domain) RequestEntries(opts *RequestEntriesOpts) (*RequestEntriesResult
 
 type DeleteCacheOpts struct {
 	// Id of cache for deletion.
-	CacheId CacheId `json:"cacheId"`
+	CacheId *CacheId `json:"cacheId"`
 }
 
 // Deletes a cache.
@@ -74,7 +92,7 @@ func (d *Domain) DeleteCache(opts *DeleteCacheOpts) error {
 
 type DeleteEntryOpts struct {
 	// Id of cache where the entry will be deleted.
-	CacheId CacheId `json:"cacheId"`
+	CacheId *CacheId `json:"cacheId"`
 
 	// URL spec of the request.
 	Request string `json:"request"`

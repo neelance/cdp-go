@@ -14,17 +14,60 @@ type Domain struct {
 }
 
 // ServiceWorker registration.
-type ServiceWorkerRegistration interface{}
 
-type ServiceWorkerVersionRunningStatus interface{}
+type ServiceWorkerRegistration struct {
+	RegistrationId string `json:"registrationId"`
 
-type ServiceWorkerVersionStatus interface{}
+	ScopeURL string `json:"scopeURL"`
+
+	IsDeleted bool `json:"isDeleted"`
+}
+
+type ServiceWorkerVersionRunningStatus string
+
+type ServiceWorkerVersionStatus string
 
 // ServiceWorker version.
-type ServiceWorkerVersion interface{}
+
+type ServiceWorkerVersion struct {
+	VersionId string `json:"versionId"`
+
+	RegistrationId string `json:"registrationId"`
+
+	ScriptURL string `json:"scriptURL"`
+
+	RunningStatus *ServiceWorkerVersionRunningStatus `json:"runningStatus"`
+
+	Status *ServiceWorkerVersionStatus `json:"status"`
+
+	// The Last-Modified header value of the main script. (optional)
+	ScriptLastModified float64 `json:"scriptLastModified,omitempty"`
+
+	// The time at which the response headers of the main script were received from the server.  For cached script it is the last time the cache entry was validated. (optional)
+	ScriptResponseTime float64 `json:"scriptResponseTime,omitempty"`
+
+	// (optional)
+	ControlledClients []interface{} `json:"controlledClients,omitempty"`
+
+	// (optional)
+	TargetId interface{} `json:"targetId,omitempty"`
+}
 
 // ServiceWorker error message.
-type ServiceWorkerErrorMessage interface{}
+
+type ServiceWorkerErrorMessage struct {
+	ErrorMessage string `json:"errorMessage"`
+
+	RegistrationId string `json:"registrationId"`
+
+	VersionId string `json:"versionId"`
+
+	SourceURL string `json:"sourceURL"`
+
+	LineNumber int `json:"lineNumber"`
+
+	ColumnNumber int `json:"columnNumber"`
+}
 
 func (d *Domain) Enable() error {
 	return d.Client.Call("ServiceWorker.enable", nil, nil)
@@ -117,7 +160,7 @@ func (d *Domain) DispatchSyncEvent(opts *DispatchSyncEventOpts) error {
 }
 
 type WorkerRegistrationUpdatedEvent struct {
-	Registrations []ServiceWorkerRegistration `json:"registrations"`
+	Registrations []*ServiceWorkerRegistration `json:"registrations"`
 }
 
 func (d *Domain) OnWorkerRegistrationUpdated(listener func(*WorkerRegistrationUpdatedEvent)) {
@@ -132,7 +175,7 @@ func (d *Domain) OnWorkerRegistrationUpdated(listener func(*WorkerRegistrationUp
 }
 
 type WorkerVersionUpdatedEvent struct {
-	Versions []ServiceWorkerVersion `json:"versions"`
+	Versions []*ServiceWorkerVersion `json:"versions"`
 }
 
 func (d *Domain) OnWorkerVersionUpdated(listener func(*WorkerVersionUpdatedEvent)) {
@@ -147,7 +190,7 @@ func (d *Domain) OnWorkerVersionUpdated(listener func(*WorkerVersionUpdatedEvent
 }
 
 type WorkerErrorReportedEvent struct {
-	ErrorMessage ServiceWorkerErrorMessage `json:"errorMessage"`
+	ErrorMessage *ServiceWorkerErrorMessage `json:"errorMessage"`
 }
 
 func (d *Domain) OnWorkerErrorReported(listener func(*WorkerErrorReportedEvent)) {

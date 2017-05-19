@@ -14,9 +14,35 @@ type Domain struct {
 }
 
 // Configuration for memory dump. Used only when "memory-infra" category is enabled.
-type MemoryDumpConfig interface{}
 
-type TraceConfig interface{}
+type MemoryDumpConfig struct {
+}
+
+type TraceConfig struct {
+	// Controls how the trace buffer stores data. (optional)
+	RecordMode string `json:"recordMode,omitempty"`
+
+	// Turns on JavaScript stack sampling. (optional)
+	EnableSampling bool `json:"enableSampling,omitempty"`
+
+	// Turns on system tracing. (optional)
+	EnableSystrace bool `json:"enableSystrace,omitempty"`
+
+	// Turns on argument filter. (optional)
+	EnableArgumentFilter bool `json:"enableArgumentFilter,omitempty"`
+
+	// Included category filters. (optional)
+	IncludedCategories []string `json:"includedCategories,omitempty"`
+
+	// Excluded category filters. (optional)
+	ExcludedCategories []string `json:"excludedCategories,omitempty"`
+
+	// Configuration to synthesize the delays in tracing. (optional)
+	SyntheticDelays []string `json:"syntheticDelays,omitempty"`
+
+	// Configuration for memory dump triggers. Used only when "memory-infra" category is enabled. (optional)
+	MemoryDumpConfig *MemoryDumpConfig `json:"memoryDumpConfig,omitempty"`
+}
 
 type StartOpts struct {
 	// Category/tag filter (optional)
@@ -32,7 +58,7 @@ type StartOpts struct {
 	TransferMode string `json:"transferMode,omitempty"`
 
 	// (optional)
-	TraceConfig TraceConfig `json:"traceConfig,omitempty"`
+	TraceConfig *TraceConfig `json:"traceConfig,omitempty"`
 }
 
 // Start trace events collection.

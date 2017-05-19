@@ -14,37 +14,194 @@ type Domain struct {
 }
 
 // Unique DOM node identifier.
-type NodeId interface{}
+
+type NodeId int
 
 // Unique DOM node identifier used to reference a node that may not have been pushed to the front-end. (experimental)
-type BackendNodeId interface{}
+
+type BackendNodeId int
 
 // Backend node with a friendly name. (experimental)
-type BackendNode interface{}
+
+type BackendNode struct {
+	// <code>Node</code>'s nodeType.
+	NodeType int `json:"nodeType"`
+
+	// <code>Node</code>'s nodeName.
+	NodeName string `json:"nodeName"`
+
+	BackendNodeId *BackendNodeId `json:"backendNodeId"`
+}
 
 // Pseudo element type.
-type PseudoType interface{}
+
+type PseudoType string
 
 // Shadow root type.
-type ShadowRootType interface{}
+
+type ShadowRootType string
 
 // DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes. DOMNode is a base node mirror type.
-type Node interface{}
+
+type Node struct {
+	// Node identifier that is passed into the rest of the DOM messages as the <code>nodeId</code>. Backend will only push node with given <code>id</code> once. It is aware of all requested nodes and will only fire DOM events for nodes known to the client.
+	NodeId *NodeId `json:"nodeId"`
+
+	// The id of the parent node if any. (optional, experimental)
+	ParentId *NodeId `json:"parentId,omitempty"`
+
+	// The BackendNodeId for this node.
+	BackendNodeId *BackendNodeId `json:"backendNodeId"`
+
+	// <code>Node</code>'s nodeType.
+	NodeType int `json:"nodeType"`
+
+	// <code>Node</code>'s nodeName.
+	NodeName string `json:"nodeName"`
+
+	// <code>Node</code>'s localName.
+	LocalName string `json:"localName"`
+
+	// <code>Node</code>'s nodeValue.
+	NodeValue string `json:"nodeValue"`
+
+	// Child count for <code>Container</code> nodes. (optional)
+	ChildNodeCount int `json:"childNodeCount,omitempty"`
+
+	// Child nodes of this node when requested with children. (optional)
+	Children []*Node `json:"children,omitempty"`
+
+	// Attributes of the <code>Element</code> node in the form of flat array <code>[name1, value1, name2, value2]</code>. (optional)
+	Attributes []string `json:"attributes,omitempty"`
+
+	// Document URL that <code>Document</code> or <code>FrameOwner</code> node points to. (optional)
+	DocumentURL string `json:"documentURL,omitempty"`
+
+	// Base URL that <code>Document</code> or <code>FrameOwner</code> node uses for URL completion. (optional, experimental)
+	BaseURL string `json:"baseURL,omitempty"`
+
+	// <code>DocumentType</code>'s publicId. (optional)
+	PublicId string `json:"publicId,omitempty"`
+
+	// <code>DocumentType</code>'s systemId. (optional)
+	SystemId string `json:"systemId,omitempty"`
+
+	// <code>DocumentType</code>'s internalSubset. (optional)
+	InternalSubset string `json:"internalSubset,omitempty"`
+
+	// <code>Document</code>'s XML version in case of XML documents. (optional)
+	XmlVersion string `json:"xmlVersion,omitempty"`
+
+	// <code>Attr</code>'s name. (optional)
+	Name string `json:"name,omitempty"`
+
+	// <code>Attr</code>'s value. (optional)
+	Value string `json:"value,omitempty"`
+
+	// Pseudo element type for this node. (optional)
+	PseudoType *PseudoType `json:"pseudoType,omitempty"`
+
+	// Shadow root type. (optional)
+	ShadowRootType *ShadowRootType `json:"shadowRootType,omitempty"`
+
+	// Frame ID for frame owner elements. (optional, experimental)
+	FrameId interface{} `json:"frameId,omitempty"`
+
+	// Content document for frame owner elements. (optional)
+	ContentDocument *Node `json:"contentDocument,omitempty"`
+
+	// Shadow root list for given element host. (optional, experimental)
+	ShadowRoots []*Node `json:"shadowRoots,omitempty"`
+
+	// Content document fragment for template elements. (optional, experimental)
+	TemplateContent *Node `json:"templateContent,omitempty"`
+
+	// Pseudo elements associated with this node. (optional, experimental)
+	PseudoElements []*Node `json:"pseudoElements,omitempty"`
+
+	// Import document for the HTMLImport links. (optional)
+	ImportedDocument *Node `json:"importedDocument,omitempty"`
+
+	// Distributed nodes for given insertion point. (optional, experimental)
+	DistributedNodes []*BackendNode `json:"distributedNodes,omitempty"`
+
+	// Whether the node is SVG. (optional, experimental)
+	IsSVG bool `json:"isSVG,omitempty"`
+}
 
 // A structure holding an RGBA color.
-type RGBA interface{}
+
+type RGBA struct {
+	// The red component, in the [0-255] range.
+	R int `json:"r"`
+
+	// The green component, in the [0-255] range.
+	G int `json:"g"`
+
+	// The blue component, in the [0-255] range.
+	B int `json:"b"`
+
+	// The alpha component, in the [0-1] range (default: 1). (optional)
+	A float64 `json:"a,omitempty"`
+}
 
 // An array of quad vertices, x immediately followed by y for each point, points clock-wise. (experimental)
-type Quad interface{}
+
+type Quad []float64
 
 // Box model. (experimental)
-type BoxModel interface{}
+
+type BoxModel struct {
+	// Content box
+	Content *Quad `json:"content"`
+
+	// Padding box
+	Padding *Quad `json:"padding"`
+
+	// Border box
+	Border *Quad `json:"border"`
+
+	// Margin box
+	Margin *Quad `json:"margin"`
+
+	// Node width
+	Width int `json:"width"`
+
+	// Node height
+	Height int `json:"height"`
+
+	// Shape outside coordinates (optional)
+	ShapeOutside *ShapeOutsideInfo `json:"shapeOutside,omitempty"`
+}
 
 // CSS Shape Outside details. (experimental)
-type ShapeOutsideInfo interface{}
+
+type ShapeOutsideInfo struct {
+	// Shape bounds
+	Bounds *Quad `json:"bounds"`
+
+	// Shape coordinate details
+	Shape []interface{} `json:"shape"`
+
+	// Margin shape bounds
+	MarginShape []interface{} `json:"marginShape"`
+}
 
 // Rectangle. (experimental)
-type Rect interface{}
+
+type Rect struct {
+	// X coordinate
+	X float64 `json:"x"`
+
+	// Y coordinate
+	Y float64 `json:"y"`
+
+	// Rectangle width
+	Width float64 `json:"width"`
+
+	// Rectangle height
+	Height float64 `json:"height"`
+}
 
 // Enables DOM agent for the given page.
 func (d *Domain) Enable() error {
@@ -66,7 +223,7 @@ type GetDocumentOpts struct {
 
 type GetDocumentResult struct {
 	// Resulting node.
-	Root Node `json:"root"`
+	Root *Node `json:"root"`
 }
 
 // Returns the root DOM node (and optionally the subtree) to the caller.
@@ -86,7 +243,7 @@ type GetFlattenedDocumentOpts struct {
 
 type GetFlattenedDocumentResult struct {
 	// Resulting node.
-	Nodes []Node `json:"nodes"`
+	Nodes []*Node `json:"nodes"`
 }
 
 // Returns the root DOM node (and optionally the subtree) to the caller.
@@ -98,7 +255,7 @@ func (d *Domain) GetFlattenedDocument(opts *GetFlattenedDocumentOpts) (*GetFlatt
 
 type CollectClassNamesFromSubtreeOpts struct {
 	// Id of the node to collect class names.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 type CollectClassNamesFromSubtreeResult struct {
@@ -115,7 +272,7 @@ func (d *Domain) CollectClassNamesFromSubtree(opts *CollectClassNamesFromSubtree
 
 type RequestChildNodesOpts struct {
 	// Id of the node to get children for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the entire subtree or provide an integer larger than 0. (optional, experimental)
 	Depth int `json:"depth,omitempty"`
@@ -131,7 +288,7 @@ func (d *Domain) RequestChildNodes(opts *RequestChildNodesOpts) error {
 
 type QuerySelectorOpts struct {
 	// Id of the node to query upon.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Selector string.
 	Selector string `json:"selector"`
@@ -139,7 +296,7 @@ type QuerySelectorOpts struct {
 
 type QuerySelectorResult struct {
 	// Query selector result.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Executes <code>querySelector</code> on a given node.
@@ -151,7 +308,7 @@ func (d *Domain) QuerySelector(opts *QuerySelectorOpts) (*QuerySelectorResult, e
 
 type QuerySelectorAllOpts struct {
 	// Id of the node to query upon.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Selector string.
 	Selector string `json:"selector"`
@@ -159,7 +316,7 @@ type QuerySelectorAllOpts struct {
 
 type QuerySelectorAllResult struct {
 	// Query selector result.
-	NodeIds []NodeId `json:"nodeIds"`
+	NodeIds []*NodeId `json:"nodeIds"`
 }
 
 // Executes <code>querySelectorAll</code> on a given node.
@@ -171,7 +328,7 @@ func (d *Domain) QuerySelectorAll(opts *QuerySelectorAllOpts) (*QuerySelectorAll
 
 type SetNodeNameOpts struct {
 	// Id of the node to set name for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// New node's name.
 	Name string `json:"name"`
@@ -179,7 +336,7 @@ type SetNodeNameOpts struct {
 
 type SetNodeNameResult struct {
 	// New node's id.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Sets node name for a node with given id.
@@ -191,7 +348,7 @@ func (d *Domain) SetNodeName(opts *SetNodeNameOpts) (*SetNodeNameResult, error) 
 
 type SetNodeValueOpts struct {
 	// Id of the node to set value for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// New node's value.
 	Value string `json:"value"`
@@ -204,7 +361,7 @@ func (d *Domain) SetNodeValue(opts *SetNodeValueOpts) error {
 
 type RemoveNodeOpts struct {
 	// Id of the node to remove.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Removes node with given id.
@@ -214,7 +371,7 @@ func (d *Domain) RemoveNode(opts *RemoveNodeOpts) error {
 
 type SetAttributeValueOpts struct {
 	// Id of the element to set attribute for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Attribute name.
 	Name string `json:"name"`
@@ -230,7 +387,7 @@ func (d *Domain) SetAttributeValue(opts *SetAttributeValueOpts) error {
 
 type SetAttributesAsTextOpts struct {
 	// Id of the element to set attributes for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Text with a number of attributes. Will parse this text using HTML parser.
 	Text string `json:"text"`
@@ -246,7 +403,7 @@ func (d *Domain) SetAttributesAsText(opts *SetAttributesAsTextOpts) error {
 
 type RemoveAttributeOpts struct {
 	// Id of the element to remove attribute from.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Name of the attribute to remove.
 	Name string `json:"name"`
@@ -259,7 +416,7 @@ func (d *Domain) RemoveAttribute(opts *RemoveAttributeOpts) error {
 
 type GetOuterHTMLOpts struct {
 	// Id of the node to get markup for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 type GetOuterHTMLResult struct {
@@ -276,7 +433,7 @@ func (d *Domain) GetOuterHTML(opts *GetOuterHTMLOpts) (*GetOuterHTMLResult, erro
 
 type SetOuterHTMLOpts struct {
 	// Id of the node to set markup for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Outer HTML markup to set.
 	OuterHTML string `json:"outerHTML"`
@@ -323,7 +480,7 @@ type GetSearchResultsOpts struct {
 
 type GetSearchResultsResult struct {
 	// Ids of the search result nodes.
-	NodeIds []NodeId `json:"nodeIds"`
+	NodeIds []*NodeId `json:"nodeIds"`
 }
 
 // Returns search results from given <code>fromIndex</code> to given <code>toIndex</code> from the sarch with the given identifier. (experimental)
@@ -350,7 +507,7 @@ type RequestNodeOpts struct {
 
 type RequestNodeResult struct {
 	// Node id for given object.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Requests that the node is sent to the caller given the JavaScript node object reference. All nodes that form the path from the node to the root are also sent to the client as a series of <code>setChildNodes</code> notifications.
@@ -382,7 +539,7 @@ type PushNodeByPathToFrontendOpts struct {
 
 type PushNodeByPathToFrontendResult struct {
 	// Id of the node for given path.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Requests that the node is sent to the caller given its path. // FIXME, use XPath (experimental)
@@ -394,12 +551,12 @@ func (d *Domain) PushNodeByPathToFrontend(opts *PushNodeByPathToFrontendOpts) (*
 
 type PushNodesByBackendIdsToFrontendOpts struct {
 	// The array of backend node ids.
-	BackendNodeIds []BackendNodeId `json:"backendNodeIds"`
+	BackendNodeIds []*BackendNodeId `json:"backendNodeIds"`
 }
 
 type PushNodesByBackendIdsToFrontendResult struct {
 	// The array of ids of pushed nodes that correspond to the backend ids specified in backendNodeIds.
-	NodeIds []NodeId `json:"nodeIds"`
+	NodeIds []*NodeId `json:"nodeIds"`
 }
 
 // Requests that a batch of nodes is sent to the caller given their backend node ids. (experimental)
@@ -411,7 +568,7 @@ func (d *Domain) PushNodesByBackendIdsToFrontend(opts *PushNodesByBackendIdsToFr
 
 type SetInspectedNodeOpts struct {
 	// DOM node id to be accessible by means of $x command line API.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions). (experimental)
@@ -421,7 +578,7 @@ func (d *Domain) SetInspectedNode(opts *SetInspectedNodeOpts) error {
 
 type ResolveNodeOpts struct {
 	// Id of the node to resolve.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Symbolic group name that can be used to release multiple objects. (optional)
 	ObjectGroup string `json:"objectGroup,omitempty"`
@@ -441,7 +598,7 @@ func (d *Domain) ResolveNode(opts *ResolveNodeOpts) (*ResolveNodeResult, error) 
 
 type GetAttributesOpts struct {
 	// Id of the node to retrieve attibutes for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 type GetAttributesResult struct {
@@ -458,18 +615,18 @@ func (d *Domain) GetAttributes(opts *GetAttributesOpts) (*GetAttributesResult, e
 
 type CopyToOpts struct {
 	// Id of the node to copy.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Id of the element to drop the copy into.
-	TargetNodeId NodeId `json:"targetNodeId"`
+	TargetNodeId *NodeId `json:"targetNodeId"`
 
 	// Drop the copy before this node (if absent, the copy becomes the last child of <code>targetNodeId</code>). (optional)
-	InsertBeforeNodeId NodeId `json:"insertBeforeNodeId,omitempty"`
+	InsertBeforeNodeId *NodeId `json:"insertBeforeNodeId,omitempty"`
 }
 
 type CopyToResult struct {
 	// Id of the node clone.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Creates a deep copy of the specified node and places it into the target container before the given anchor. (experimental)
@@ -481,18 +638,18 @@ func (d *Domain) CopyTo(opts *CopyToOpts) (*CopyToResult, error) {
 
 type MoveToOpts struct {
 	// Id of the node to move.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Id of the element to drop the moved node into.
-	TargetNodeId NodeId `json:"targetNodeId"`
+	TargetNodeId *NodeId `json:"targetNodeId"`
 
 	// Drop node before this one (if absent, the moved node becomes the last child of <code>targetNodeId</code>). (optional)
-	InsertBeforeNodeId NodeId `json:"insertBeforeNodeId,omitempty"`
+	InsertBeforeNodeId *NodeId `json:"insertBeforeNodeId,omitempty"`
 }
 
 type MoveToResult struct {
 	// New id of the moved node.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Moves node into the new container, places it before the given anchor.
@@ -519,7 +676,7 @@ func (d *Domain) MarkUndoableState() error {
 
 type FocusOpts struct {
 	// Id of the node to focus.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Focuses the given element. (experimental)
@@ -529,7 +686,7 @@ func (d *Domain) Focus(opts *FocusOpts) error {
 
 type SetFileInputFilesOpts struct {
 	// Id of the file input node to set files for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Array of file paths to set.
 	Files []string `json:"files"`
@@ -542,12 +699,12 @@ func (d *Domain) SetFileInputFiles(opts *SetFileInputFilesOpts) error {
 
 type GetBoxModelOpts struct {
 	// Id of the node to get box model for.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 type GetBoxModelResult struct {
 	// Box model for the node.
-	Model BoxModel `json:"model"`
+	Model *BoxModel `json:"model"`
 }
 
 // Returns boxes for the currently selected nodes. (experimental)
@@ -570,7 +727,7 @@ type GetNodeForLocationOpts struct {
 
 type GetNodeForLocationResult struct {
 	// Id of the node at given coordinates.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Returns node id at given location. (experimental)
@@ -582,12 +739,12 @@ func (d *Domain) GetNodeForLocation(opts *GetNodeForLocationOpts) (*GetNodeForLo
 
 type GetRelayoutBoundaryOpts struct {
 	// Id of the node.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 type GetRelayoutBoundaryResult struct {
 	// Relayout boundary node id for the given node.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Returns the id of the nearest ancestor that is a relayout boundary. (experimental)
@@ -614,10 +771,10 @@ func (d *Domain) OnDocumentUpdated(listener func(*DocumentUpdatedEvent)) {
 
 type SetChildNodesEvent struct {
 	// Parent node id to populate with children.
-	ParentId NodeId `json:"parentId"`
+	ParentId *NodeId `json:"parentId"`
 
 	// Child nodes array.
-	Nodes []Node `json:"nodes"`
+	Nodes []*Node `json:"nodes"`
 }
 
 // Fired when backend wants to provide client with the missing DOM structure. This happens upon most of the calls requesting node ids.
@@ -634,7 +791,7 @@ func (d *Domain) OnSetChildNodes(listener func(*SetChildNodesEvent)) {
 
 type AttributeModifiedEvent struct {
 	// Id of the node that has changed.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// Attribute name.
 	Name string `json:"name"`
@@ -657,7 +814,7 @@ func (d *Domain) OnAttributeModified(listener func(*AttributeModifiedEvent)) {
 
 type AttributeRemovedEvent struct {
 	// Id of the node that has changed.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// A ttribute name.
 	Name string `json:"name"`
@@ -677,7 +834,7 @@ func (d *Domain) OnAttributeRemoved(listener func(*AttributeRemovedEvent)) {
 
 type InlineStyleInvalidatedEvent struct {
 	// Ids of the nodes for which the inline styles have been invalidated.
-	NodeIds []NodeId `json:"nodeIds"`
+	NodeIds []*NodeId `json:"nodeIds"`
 }
 
 // Fired when <code>Element</code>'s inline style is modified via a CSS property modification. (experimental)
@@ -694,7 +851,7 @@ func (d *Domain) OnInlineStyleInvalidated(listener func(*InlineStyleInvalidatedE
 
 type CharacterDataModifiedEvent struct {
 	// Id of the node that has changed.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// New text value.
 	CharacterData string `json:"characterData"`
@@ -714,7 +871,7 @@ func (d *Domain) OnCharacterDataModified(listener func(*CharacterDataModifiedEve
 
 type ChildNodeCountUpdatedEvent struct {
 	// Id of the node that has changed.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 
 	// New node count.
 	ChildNodeCount int `json:"childNodeCount"`
@@ -734,13 +891,13 @@ func (d *Domain) OnChildNodeCountUpdated(listener func(*ChildNodeCountUpdatedEve
 
 type ChildNodeInsertedEvent struct {
 	// Id of the node that has changed.
-	ParentNodeId NodeId `json:"parentNodeId"`
+	ParentNodeId *NodeId `json:"parentNodeId"`
 
 	// If of the previous siblint.
-	PreviousNodeId NodeId `json:"previousNodeId"`
+	PreviousNodeId *NodeId `json:"previousNodeId"`
 
 	// Inserted node data.
-	Node Node `json:"node"`
+	Node *Node `json:"node"`
 }
 
 // Mirrors <code>DOMNodeInserted</code> event.
@@ -757,10 +914,10 @@ func (d *Domain) OnChildNodeInserted(listener func(*ChildNodeInsertedEvent)) {
 
 type ChildNodeRemovedEvent struct {
 	// Parent id.
-	ParentNodeId NodeId `json:"parentNodeId"`
+	ParentNodeId *NodeId `json:"parentNodeId"`
 
 	// Id of the node that has been removed.
-	NodeId NodeId `json:"nodeId"`
+	NodeId *NodeId `json:"nodeId"`
 }
 
 // Mirrors <code>DOMNodeRemoved</code> event.
@@ -777,10 +934,10 @@ func (d *Domain) OnChildNodeRemoved(listener func(*ChildNodeRemovedEvent)) {
 
 type ShadowRootPushedEvent struct {
 	// Host element id.
-	HostId NodeId `json:"hostId"`
+	HostId *NodeId `json:"hostId"`
 
 	// Shadow root.
-	Root Node `json:"root"`
+	Root *Node `json:"root"`
 }
 
 // Called when shadow root is pushed into the element. (experimental)
@@ -797,10 +954,10 @@ func (d *Domain) OnShadowRootPushed(listener func(*ShadowRootPushedEvent)) {
 
 type ShadowRootPoppedEvent struct {
 	// Host element id.
-	HostId NodeId `json:"hostId"`
+	HostId *NodeId `json:"hostId"`
 
 	// Shadow root id.
-	RootId NodeId `json:"rootId"`
+	RootId *NodeId `json:"rootId"`
 }
 
 // Called when shadow root is popped from the element. (experimental)
@@ -817,10 +974,10 @@ func (d *Domain) OnShadowRootPopped(listener func(*ShadowRootPoppedEvent)) {
 
 type PseudoElementAddedEvent struct {
 	// Pseudo element's parent element id.
-	ParentId NodeId `json:"parentId"`
+	ParentId *NodeId `json:"parentId"`
 
 	// The added pseudo element.
-	PseudoElement Node `json:"pseudoElement"`
+	PseudoElement *Node `json:"pseudoElement"`
 }
 
 // Called when a pseudo element is added to an element. (experimental)
@@ -837,10 +994,10 @@ func (d *Domain) OnPseudoElementAdded(listener func(*PseudoElementAddedEvent)) {
 
 type PseudoElementRemovedEvent struct {
 	// Pseudo element's parent element id.
-	ParentId NodeId `json:"parentId"`
+	ParentId *NodeId `json:"parentId"`
 
 	// The removed pseudo element id.
-	PseudoElementId NodeId `json:"pseudoElementId"`
+	PseudoElementId *NodeId `json:"pseudoElementId"`
 }
 
 // Called when a pseudo element is removed from an element. (experimental)
@@ -857,10 +1014,10 @@ func (d *Domain) OnPseudoElementRemoved(listener func(*PseudoElementRemovedEvent
 
 type DistributedNodesUpdatedEvent struct {
 	// Insertion point where distrubuted nodes were updated.
-	InsertionPointId NodeId `json:"insertionPointId"`
+	InsertionPointId *NodeId `json:"insertionPointId"`
 
 	// Distributed nodes for given insertion point.
-	DistributedNodes []BackendNode `json:"distributedNodes"`
+	DistributedNodes []*BackendNode `json:"distributedNodes"`
 }
 
 // Called when distrubution is changed. (experimental)

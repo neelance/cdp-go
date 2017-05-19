@@ -14,16 +14,92 @@ type Domain struct {
 }
 
 // Animation instance. (experimental)
-type Animation interface{}
+
+type Animation struct {
+	// <code>Animation</code>'s id.
+	Id string `json:"id"`
+
+	// <code>Animation</code>'s name.
+	Name string `json:"name"`
+
+	// <code>Animation</code>'s internal paused state.
+	PausedState bool `json:"pausedState"`
+
+	// <code>Animation</code>'s play state.
+	PlayState string `json:"playState"`
+
+	// <code>Animation</code>'s playback rate.
+	PlaybackRate float64 `json:"playbackRate"`
+
+	// <code>Animation</code>'s start time.
+	StartTime float64 `json:"startTime"`
+
+	// <code>Animation</code>'s current time.
+	CurrentTime float64 `json:"currentTime"`
+
+	// <code>Animation</code>'s source animation node.
+	Source *AnimationEffect `json:"source"`
+
+	// Animation type of <code>Animation</code>.
+	Type string `json:"type"`
+
+	// A unique ID for <code>Animation</code> representing the sources that triggered this CSS animation/transition. (optional)
+	CssId string `json:"cssId,omitempty"`
+}
 
 // AnimationEffect instance (experimental)
-type AnimationEffect interface{}
+
+type AnimationEffect struct {
+	// <code>AnimationEffect</code>'s delay.
+	Delay float64 `json:"delay"`
+
+	// <code>AnimationEffect</code>'s end delay.
+	EndDelay float64 `json:"endDelay"`
+
+	// <code>AnimationEffect</code>'s iteration start.
+	IterationStart float64 `json:"iterationStart"`
+
+	// <code>AnimationEffect</code>'s iterations.
+	Iterations float64 `json:"iterations"`
+
+	// <code>AnimationEffect</code>'s iteration duration.
+	Duration float64 `json:"duration"`
+
+	// <code>AnimationEffect</code>'s playback direction.
+	Direction string `json:"direction"`
+
+	// <code>AnimationEffect</code>'s fill mode.
+	Fill string `json:"fill"`
+
+	// <code>AnimationEffect</code>'s target node.
+	BackendNodeId interface{} `json:"backendNodeId"`
+
+	// <code>AnimationEffect</code>'s keyframes. (optional)
+	KeyframesRule *KeyframesRule `json:"keyframesRule,omitempty"`
+
+	// <code>AnimationEffect</code>'s timing function.
+	Easing string `json:"easing"`
+}
 
 // Keyframes Rule
-type KeyframesRule interface{}
+
+type KeyframesRule struct {
+	// CSS keyframed animation's name. (optional)
+	Name string `json:"name,omitempty"`
+
+	// List of animation keyframes.
+	Keyframes []*KeyframeStyle `json:"keyframes"`
+}
 
 // Keyframe Style
-type KeyframeStyle interface{}
+
+type KeyframeStyle struct {
+	// Keyframe's time offset.
+	Offset string `json:"offset"`
+
+	// <code>AnimationEffect</code>'s timing function.
+	Easing string `json:"easing"`
+}
 
 // Enables animation domain notifications.
 func (d *Domain) Enable() error {
@@ -162,7 +238,7 @@ func (d *Domain) OnAnimationCreated(listener func(*AnimationCreatedEvent)) {
 
 type AnimationStartedEvent struct {
 	// Animation that was started.
-	Animation Animation `json:"animation"`
+	Animation *Animation `json:"animation"`
 }
 
 // Event for animation that has been started.

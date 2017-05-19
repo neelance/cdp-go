@@ -9,10 +9,36 @@ type Domain struct {
 }
 
 // (experimental)
-type TouchPoint interface{}
+
+type TouchPoint struct {
+	// State of the touch point.
+	State string `json:"state"`
+
+	// X coordinate of the event relative to the main frame's viewport.
+	X int `json:"x"`
+
+	// Y coordinate of the event relative to the main frame's viewport. 0 refers to the top of the viewport and Y increases as it proceeds towards the bottom of the viewport.
+	Y int `json:"y"`
+
+	// X radius of the touch area (default: 1). (optional)
+	RadiusX int `json:"radiusX,omitempty"`
+
+	// Y radius of the touch area (default: 1). (optional)
+	RadiusY int `json:"radiusY,omitempty"`
+
+	// Rotation angle (default: 0.0). (optional)
+	RotationAngle float64 `json:"rotationAngle,omitempty"`
+
+	// Force (default: 1.0). (optional)
+	Force float64 `json:"force,omitempty"`
+
+	// Identifier used to track touch sources between events, must be unique within an event. (optional)
+	Id float64 `json:"id,omitempty"`
+}
 
 // (experimental)
-type GestureSourceType interface{}
+
+type GestureSourceType string
 
 type DispatchKeyEventOpts struct {
 	// Type of the key event.
@@ -93,7 +119,7 @@ type DispatchTouchEventOpts struct {
 	Type string `json:"type"`
 
 	// Touch points.
-	TouchPoints []TouchPoint `json:"touchPoints"`
+	TouchPoints []*TouchPoint `json:"touchPoints"`
 
 	// Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8 (default: 0). (optional)
 	Modifiers int `json:"modifiers,omitempty"`
@@ -155,7 +181,7 @@ type SynthesizePinchGestureOpts struct {
 	RelativeSpeed int `json:"relativeSpeed,omitempty"`
 
 	// Which type of input events to be generated (default: 'default', which queries the platform for the preferred input type). (optional)
-	GestureSourceType GestureSourceType `json:"gestureSourceType,omitempty"`
+	GestureSourceType *GestureSourceType `json:"gestureSourceType,omitempty"`
 }
 
 // Synthesizes a pinch gesture over a time period by issuing appropriate touch events. (experimental)
@@ -189,7 +215,7 @@ type SynthesizeScrollGestureOpts struct {
 	Speed int `json:"speed,omitempty"`
 
 	// Which type of input events to be generated (default: 'default', which queries the platform for the preferred input type). (optional)
-	GestureSourceType GestureSourceType `json:"gestureSourceType,omitempty"`
+	GestureSourceType *GestureSourceType `json:"gestureSourceType,omitempty"`
 
 	// The number of times to repeat the gesture (default: 0). (optional)
 	RepeatCount int `json:"repeatCount,omitempty"`
@@ -220,7 +246,7 @@ type SynthesizeTapGestureOpts struct {
 	TapCount int `json:"tapCount,omitempty"`
 
 	// Which type of input events to be generated (default: 'default', which queries the platform for the preferred input type). (optional)
-	GestureSourceType GestureSourceType `json:"gestureSourceType,omitempty"`
+	GestureSourceType *GestureSourceType `json:"gestureSourceType,omitempty"`
 }
 
 // Synthesizes a tap gesture over a time period by issuing appropriate touch events. (experimental)

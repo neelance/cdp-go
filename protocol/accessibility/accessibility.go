@@ -11,44 +11,140 @@ type Domain struct {
 }
 
 // Unique accessibility node identifier.
-type AXNodeId interface{}
+
+type AXNodeId string
 
 // Enum of possible property types.
-type AXValueType interface{}
+
+type AXValueType string
 
 // Enum of possible property sources.
-type AXValueSourceType interface{}
+
+type AXValueSourceType string
 
 // Enum of possible native property sources (as a subtype of a particular AXValueSourceType).
-type AXValueNativeSourceType interface{}
+
+type AXValueNativeSourceType string
 
 // A single source for a computed AX property.
-type AXValueSource interface{}
 
-type AXRelatedNode interface{}
+type AXValueSource struct {
+	// What type of source this is.
+	Type *AXValueSourceType `json:"type"`
 
-type AXProperty interface{}
+	// The value of this property source. (optional)
+	Value *AXValue `json:"value,omitempty"`
+
+	// The name of the relevant attribute, if any. (optional)
+	Attribute string `json:"attribute,omitempty"`
+
+	// The value of the relevant attribute, if any. (optional)
+	AttributeValue *AXValue `json:"attributeValue,omitempty"`
+
+	// Whether this source is superseded by a higher priority source. (optional)
+	Superseded bool `json:"superseded,omitempty"`
+
+	// The native markup source for this value, e.g. a <label> element. (optional)
+	NativeSource *AXValueNativeSourceType `json:"nativeSource,omitempty"`
+
+	// The value, such as a node or node list, of the native source. (optional)
+	NativeSourceValue *AXValue `json:"nativeSourceValue,omitempty"`
+
+	// Whether the value for this property is invalid. (optional)
+	Invalid bool `json:"invalid,omitempty"`
+
+	// Reason for the value being invalid, if it is. (optional)
+	InvalidReason string `json:"invalidReason,omitempty"`
+}
+
+type AXRelatedNode struct {
+	// The BackendNodeId of the related DOM node.
+	BackendDOMNodeId interface{} `json:"backendDOMNodeId"`
+
+	// The IDRef value provided, if any. (optional)
+	Idref string `json:"idref,omitempty"`
+
+	// The text alternative of this node in the current context. (optional)
+	Text string `json:"text,omitempty"`
+}
+
+type AXProperty struct {
+	// The name of this property.
+	Name string `json:"name"`
+
+	// The value of this property.
+	Value *AXValue `json:"value"`
+}
 
 // A single computed AX property.
-type AXValue interface{}
+
+type AXValue struct {
+	// The type of this value.
+	Type *AXValueType `json:"type"`
+
+	// The computed value of this property. (optional)
+	Value interface{} `json:"value,omitempty"`
+
+	// One or more related nodes, if applicable. (optional)
+	RelatedNodes []*AXRelatedNode `json:"relatedNodes,omitempty"`
+
+	// The sources which contributed to the computation of this property. (optional)
+	Sources []*AXValueSource `json:"sources,omitempty"`
+}
 
 // States which apply to every AX node.
-type AXGlobalStates interface{}
+
+type AXGlobalStates string
 
 // Attributes which apply to nodes in live regions.
-type AXLiveRegionAttributes interface{}
+
+type AXLiveRegionAttributes string
 
 // Attributes which apply to widgets.
-type AXWidgetAttributes interface{}
+
+type AXWidgetAttributes string
 
 // States which apply to widgets.
-type AXWidgetStates interface{}
+
+type AXWidgetStates string
 
 // Relationships between elements other than parent/child/sibling.
-type AXRelationshipAttributes interface{}
+
+type AXRelationshipAttributes string
 
 // A node in the accessibility tree.
-type AXNode interface{}
+
+type AXNode struct {
+	// Unique identifier for this node.
+	NodeId *AXNodeId `json:"nodeId"`
+
+	// Whether this node is ignored for accessibility
+	Ignored bool `json:"ignored"`
+
+	// Collection of reasons why this node is hidden. (optional)
+	IgnoredReasons []*AXProperty `json:"ignoredReasons,omitempty"`
+
+	// This <code>Node</code>'s role, whether explicit or implicit. (optional)
+	Role *AXValue `json:"role,omitempty"`
+
+	// The accessible name for this <code>Node</code>. (optional)
+	Name *AXValue `json:"name,omitempty"`
+
+	// The accessible description for this <code>Node</code>. (optional)
+	Description *AXValue `json:"description,omitempty"`
+
+	// The value for this <code>Node</code>. (optional)
+	Value *AXValue `json:"value,omitempty"`
+
+	// All other properties (optional)
+	Properties []*AXProperty `json:"properties,omitempty"`
+
+	// IDs for each of this node's child nodes. (optional)
+	ChildIds []*AXNodeId `json:"childIds,omitempty"`
+
+	// The backend ID for the associated DOM node, if any. (optional)
+	BackendDOMNodeId interface{} `json:"backendDOMNodeId,omitempty"`
+}
 
 type GetPartialAXTreeOpts struct {
 	// ID of node to get the partial accessibility tree for.
@@ -60,7 +156,7 @@ type GetPartialAXTreeOpts struct {
 
 type GetPartialAXTreeResult struct {
 	// The <code>Accessibility.AXNode</code> for this DOM node, if it exists, plus its ancestors, siblings and children, if requested.
-	Nodes []AXNode `json:"nodes"`
+	Nodes []*AXNode `json:"nodes"`
 }
 
 // Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists. (experimental)

@@ -3,6 +3,7 @@ package rpc
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"math"
 	"net/rpc"
 )
@@ -67,6 +68,7 @@ func (c *clientCodec) ReadResponseHeader(r *rpc.Response) error {
 	}
 
 	if resp.Method != "" {
+		log.Println(resp.Method)
 		for _, l := range c.client.listeners[resp.Method] {
 			l(resp.Params)
 		}

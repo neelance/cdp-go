@@ -14,19 +14,57 @@ type Domain struct {
 }
 
 // An internal certificate ID value.
-type CertificateId interface{}
+
+type CertificateId int
 
 // The security level of a page or resource.
-type SecurityState interface{}
+
+type SecurityState string
 
 // An explanation of an factor contributing to the security state.
-type SecurityStateExplanation interface{}
+
+type SecurityStateExplanation struct {
+	// Security state representing the severity of the factor being explained.
+	SecurityState *SecurityState `json:"securityState"`
+
+	// Short phrase describing the type of factor.
+	Summary string `json:"summary"`
+
+	// Full text explanation of the factor.
+	Description string `json:"description"`
+
+	// True if the page has a certificate.
+	HasCertificate bool `json:"hasCertificate"`
+}
 
 // Information about insecure content on the page.
-type InsecureContentStatus interface{}
+
+type InsecureContentStatus struct {
+	// True if the page was loaded over HTTPS and ran mixed (HTTP) content such as scripts.
+	RanMixedContent bool `json:"ranMixedContent"`
+
+	// True if the page was loaded over HTTPS and displayed mixed (HTTP) content such as images.
+	DisplayedMixedContent bool `json:"displayedMixedContent"`
+
+	// True if the page was loaded over HTTPS and contained a form targeting an insecure url.
+	ContainedMixedForm bool `json:"containedMixedForm"`
+
+	// True if the page was loaded over HTTPS without certificate errors, and ran content such as scripts that were loaded with certificate errors.
+	RanContentWithCertErrors bool `json:"ranContentWithCertErrors"`
+
+	// True if the page was loaded over HTTPS without certificate errors, and displayed content such as images that were loaded with certificate errors.
+	DisplayedContentWithCertErrors bool `json:"displayedContentWithCertErrors"`
+
+	// Security state representing a page that ran insecure content.
+	RanInsecureContentStyle *SecurityState `json:"ranInsecureContentStyle"`
+
+	// Security state representing a page that displayed insecure content.
+	DisplayedInsecureContentStyle *SecurityState `json:"displayedInsecureContentStyle"`
+}
 
 // The action to take when a certificate error occurs. continue will continue processing the request and cancel will cancel the request.
-type CertificateErrorAction interface{}
+
+type CertificateErrorAction string
 
 // Enables tracking security state changes.
 func (d *Domain) Enable() error {
@@ -48,7 +86,7 @@ type HandleCertificateErrorOpts struct {
 	EventId int `json:"eventId"`
 
 	// The action to take on the certificate error.
-	Action CertificateErrorAction `json:"action"`
+	Action *CertificateErrorAction `json:"action"`
 }
 
 // Handles a certificate error that fired a certificateError event.
@@ -68,16 +106,16 @@ func (d *Domain) SetOverrideCertificateErrors(opts *SetOverrideCertificateErrors
 
 type SecurityStateChangedEvent struct {
 	// Security state.
-	SecurityState SecurityState `json:"securityState"`
+	SecurityState *SecurityState `json:"securityState"`
 
 	// True if the page was loaded over cryptographic transport such as HTTPS.
 	SchemeIsCryptographic bool `json:"schemeIsCryptographic"`
 
 	// List of explanations for the security state. If the overall security state is `insecure` or `warning`, at least one corresponding explanation should be included.
-	Explanations []SecurityStateExplanation `json:"explanations"`
+	Explanations []*SecurityStateExplanation `json:"explanations"`
 
 	// Information about insecure content on the page.
-	InsecureContentStatus InsecureContentStatus `json:"insecureContentStatus"`
+	InsecureContentStatus *InsecureContentStatus `json:"insecureContentStatus"`
 
 	// Overrides user-visible description of the state. (optional)
 	Summary string `json:"summary"`

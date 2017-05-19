@@ -35,11 +35,21 @@ func (d *Domain) Doc() string {
 	return strings.TrimSpace(doc)
 }
 
+func (d *Domain) lookupType(id string) *Type {
+	for _, t := range d.Types {
+		if t.ID == id {
+			return t
+		}
+	}
+	panic("type not found")
+}
+
 type Type struct {
 	ID           string
-	Type         string
 	Description  string
 	Experimental bool
+	Properties   []*Property
+	TypeRef
 }
 
 func (t *Type) Doc() string {
@@ -52,8 +62,8 @@ func (t *Type) Doc() string {
 
 type Command struct {
 	Name         string
-	Parameters   []*Parameter
-	Returns      []*Parameter
+	Parameters   []*Property
+	Returns      []*Property
 	Description  string
 	Experimental bool
 }
@@ -80,7 +90,7 @@ func (c *Command) Doc() string {
 
 type Event struct {
 	Name         string
-	Parameters   []*Parameter
+	Parameters   []*Property
 	Description  string
 	Experimental bool
 }
@@ -101,7 +111,7 @@ func (e *Event) Doc() string {
 	return strings.TrimSpace(doc)
 }
 
-type Parameter struct {
+type Property struct {
 	Name string
 	TypeRef
 	Description  string
@@ -109,7 +119,7 @@ type Parameter struct {
 	Experimental bool
 }
 
-func (p *Parameter) GoField() string {
+func (p *Property) GoField() string {
 	switch p.Name {
 	case "url":
 		return "URL"
@@ -117,7 +127,7 @@ func (p *Parameter) GoField() string {
 	return strings.ToUpper(p.Name[:1]) + p.Name[1:]
 }
 
-func (p *Parameter) Doc() string {
+func (p *Property) Doc() string {
 	doc := p.Description
 	switch {
 	case p.Optional && p.Experimental:
@@ -140,6 +150,9 @@ func (t *TypeRef) GoType() string {
 	if t.Ref != "" {
 		if strings.Contains(t.Ref, ".") {
 			return "interface{}" // TODO
+		}
+		if lookupType(t.Ref).Type == "object" {
+			return "*" + t.Ref
 		}
 		return t.Ref
 	}
@@ -210,7 +223,16 @@ type Domain struct {
 
 {{range .Types}}
 	{{if .Doc}}// {{.Doc}}{{end}}
-	type {{.ID}} interface{}
+	{{if eq .Type "object"}}
+		type {{.ID}} struct {
+			{{- range .Properties}}
+				{{if .Doc}}// {{.Doc}}{{end}}
+				{{.GoField}} {{.GoType}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
+			{{end}}
+		}
+	{{else}}
+		type {{.ID}} {{.GoType}}
+	{{end}}
 {{end}}
 
 {{range .Commands}}

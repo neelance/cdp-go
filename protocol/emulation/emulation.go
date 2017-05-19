@@ -14,10 +14,18 @@ type Domain struct {
 }
 
 // Screen orientation.
-type ScreenOrientation interface{}
+
+type ScreenOrientation struct {
+	// Orientation type.
+	Type string `json:"type"`
+
+	// Orientation angle.
+	Angle int `json:"angle"`
+}
 
 // advance: If the scheduler runs out of immediate work, the virtual time base may fast forward to allow the next delayed task (if any) to run; pause: The virtual time base may not advance; pauseIfNetworkFetchesPending: The virtual time base may not advance if there are any pending resource fetches. (experimental)
-type VirtualTimePolicy interface{}
+
+type VirtualTimePolicy string
 
 type SetDeviceMetricsOverrideOpts struct {
 	// Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
@@ -57,7 +65,7 @@ type SetDeviceMetricsOverrideOpts struct {
 	PositionY int `json:"positionY,omitempty"`
 
 	// Screen orientation override. (optional)
-	ScreenOrientation ScreenOrientation `json:"screenOrientation,omitempty"`
+	ScreenOrientation *ScreenOrientation `json:"screenOrientation,omitempty"`
 }
 
 // Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
@@ -196,7 +204,7 @@ func (d *Domain) CanEmulate() (*CanEmulateResult, error) {
 }
 
 type SetVirtualTimePolicyOpts struct {
-	Policy VirtualTimePolicy `json:"policy"`
+	Policy *VirtualTimePolicy `json:"policy"`
 
 	// If set, after this many virtual milliseconds have elapsed virtual time will be paused and a virtualTimeBudgetExpired event is sent. (optional)
 	Budget int `json:"budget,omitempty"`

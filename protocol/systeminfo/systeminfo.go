@@ -11,14 +11,40 @@ type Domain struct {
 }
 
 // Describes a single graphics processor (GPU).
-type GPUDevice interface{}
+
+type GPUDevice struct {
+	// PCI ID of the GPU vendor, if available; 0 otherwise.
+	VendorId float64 `json:"vendorId"`
+
+	// PCI ID of the GPU device, if available; 0 otherwise.
+	DeviceId float64 `json:"deviceId"`
+
+	// String description of the GPU vendor, if the PCI ID is not available.
+	VendorString string `json:"vendorString"`
+
+	// String description of the GPU device, if the PCI ID is not available.
+	DeviceString string `json:"deviceString"`
+}
 
 // Provides information about the GPU(s) on the system.
-type GPUInfo interface{}
+
+type GPUInfo struct {
+	// The graphics devices on the system. Element 0 is the primary GPU.
+	Devices []*GPUDevice `json:"devices"`
+
+	// An optional dictionary of additional GPU related attributes. (optional)
+	AuxAttributes interface{} `json:"auxAttributes,omitempty"`
+
+	// An optional dictionary of graphics features and their status. (optional)
+	FeatureStatus interface{} `json:"featureStatus,omitempty"`
+
+	// An optional array of GPU driver bug workarounds.
+	DriverBugWorkarounds []string `json:"driverBugWorkarounds"`
+}
 
 type GetInfoResult struct {
 	// Information about the GPUs on the system.
-	Gpu GPUInfo `json:"gpu"`
+	Gpu *GPUInfo `json:"gpu"`
 
 	// A platform-dependent description of the model of the machine. On Mac OS, this is, for example, 'MacBookPro'. Will be the empty string if not supported.
 	ModelName string `json:"modelName"`

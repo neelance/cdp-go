@@ -14,10 +14,45 @@ type Domain struct {
 }
 
 // Log entry.
-type LogEntry interface{}
+
+type LogEntry struct {
+	// Log entry source.
+	Source string `json:"source"`
+
+	// Log entry severity.
+	Level string `json:"level"`
+
+	// Logged text.
+	Text string `json:"text"`
+
+	// Timestamp when this entry was added.
+	Timestamp interface{} `json:"timestamp"`
+
+	// URL of the resource if known. (optional)
+	URL string `json:"url,omitempty"`
+
+	// Line number in the resource. (optional)
+	LineNumber int `json:"lineNumber,omitempty"`
+
+	// JavaScript stack trace. (optional)
+	StackTrace interface{} `json:"stackTrace,omitempty"`
+
+	// Identifier of the network request associated with this entry. (optional)
+	NetworkRequestId interface{} `json:"networkRequestId,omitempty"`
+
+	// Identifier of the worker associated with this entry. (optional)
+	WorkerId string `json:"workerId,omitempty"`
+}
 
 // Violation configuration setting.
-type ViolationSetting interface{}
+
+type ViolationSetting struct {
+	// Violation type.
+	Name string `json:"name"`
+
+	// Time threshold to trigger upon.
+	Threshold float64 `json:"threshold"`
+}
 
 // Enables log domain, sends the entries collected so far to the client by means of the <code>entryAdded</code> notification.
 func (d *Domain) Enable() error {
@@ -36,7 +71,7 @@ func (d *Domain) Clear() error {
 
 type StartViolationsReportOpts struct {
 	// Configuration for violations.
-	Config []ViolationSetting `json:"config"`
+	Config []*ViolationSetting `json:"config"`
 }
 
 // start violation reporting.
@@ -51,7 +86,7 @@ func (d *Domain) StopViolationsReport() error {
 
 type EntryAddedEvent struct {
 	// The entry.
-	Entry LogEntry `json:"entry"`
+	Entry *LogEntry `json:"entry"`
 }
 
 // Issued when new message was logged.

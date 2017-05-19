@@ -11,7 +11,8 @@ type Domain struct {
 }
 
 // Memory pressure level.
-type PressureLevel interface{}
+
+type PressureLevel string
 
 type GetDOMCountersResult struct {
 	Documents int `json:"documents"`
@@ -39,7 +40,7 @@ func (d *Domain) SetPressureNotificationsSuppressed(opts *SetPressureNotificatio
 
 type SimulatePressureNotificationOpts struct {
 	// Memory pressure level of the notification.
-	Level PressureLevel `json:"level"`
+	Level *PressureLevel `json:"level"`
 }
 
 // Simulate a memory pressure notification in all processes.

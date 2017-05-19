@@ -11,17 +11,49 @@ type Domain struct {
 }
 
 // DOM breakpoint type.
-type DOMBreakpointType interface{}
+
+type DOMBreakpointType string
 
 // Object event listener. (experimental)
-type EventListener interface{}
+
+type EventListener struct {
+	// <code>EventListener</code>'s type.
+	Type string `json:"type"`
+
+	// <code>EventListener</code>'s useCapture.
+	UseCapture bool `json:"useCapture"`
+
+	// <code>EventListener</code>'s passive flag.
+	Passive bool `json:"passive"`
+
+	// <code>EventListener</code>'s once flag.
+	Once bool `json:"once"`
+
+	// Script id of the handler code.
+	ScriptId interface{} `json:"scriptId"`
+
+	// Line number in the script (0-based).
+	LineNumber int `json:"lineNumber"`
+
+	// Column number in the script (0-based).
+	ColumnNumber int `json:"columnNumber"`
+
+	// Event handler function value. (optional)
+	Handler interface{} `json:"handler,omitempty"`
+
+	// Event original handler function value. (optional)
+	OriginalHandler interface{} `json:"originalHandler,omitempty"`
+
+	// Node the listener is added to (if any). (optional)
+	BackendNodeId interface{} `json:"backendNodeId,omitempty"`
+}
 
 type SetDOMBreakpointOpts struct {
 	// Identifier of the node to set breakpoint on.
 	NodeId interface{} `json:"nodeId"`
 
 	// Type of the operation to stop upon.
-	Type DOMBreakpointType `json:"type"`
+	Type *DOMBreakpointType `json:"type"`
 }
 
 // Sets breakpoint on particular operation with DOM.
@@ -34,7 +66,7 @@ type RemoveDOMBreakpointOpts struct {
 	NodeId interface{} `json:"nodeId"`
 
 	// Type of the breakpoint to remove.
-	Type DOMBreakpointType `json:"type"`
+	Type *DOMBreakpointType `json:"type"`
 }
 
 // Removes DOM breakpoint that was set using <code>setDOMBreakpoint</code>.
@@ -121,7 +153,7 @@ type GetEventListenersOpts struct {
 
 type GetEventListenersResult struct {
 	// Array of relevant listeners.
-	Listeners []EventListener `json:"listeners"`
+	Listeners []*EventListener `json:"listeners"`
 }
 
 // Returns event listeners of the given object. (experimental)

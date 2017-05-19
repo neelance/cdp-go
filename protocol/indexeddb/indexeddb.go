@@ -11,25 +11,110 @@ type Domain struct {
 }
 
 // Database with an array of object stores.
-type DatabaseWithObjectStores interface{}
+
+type DatabaseWithObjectStores struct {
+	// Database name.
+	Name string `json:"name"`
+
+	// Database version.
+	Version int `json:"version"`
+
+	// Object stores in this database.
+	ObjectStores []*ObjectStore `json:"objectStores"`
+}
 
 // Object store.
-type ObjectStore interface{}
+
+type ObjectStore struct {
+	// Object store name.
+	Name string `json:"name"`
+
+	// Object store key path.
+	KeyPath *KeyPath `json:"keyPath"`
+
+	// If true, object store has auto increment flag set.
+	AutoIncrement bool `json:"autoIncrement"`
+
+	// Indexes in this object store.
+	Indexes []*ObjectStoreIndex `json:"indexes"`
+}
 
 // Object store index.
-type ObjectStoreIndex interface{}
+
+type ObjectStoreIndex struct {
+	// Index name.
+	Name string `json:"name"`
+
+	// Index key path.
+	KeyPath *KeyPath `json:"keyPath"`
+
+	// If true, index is unique.
+	Unique bool `json:"unique"`
+
+	// If true, index allows multiple entries for a key.
+	MultiEntry bool `json:"multiEntry"`
+}
 
 // Key.
-type Key interface{}
+
+type Key struct {
+	// Key type.
+	Type string `json:"type"`
+
+	// Number value. (optional)
+	Number float64 `json:"number,omitempty"`
+
+	// String value. (optional)
+	String string `json:"string,omitempty"`
+
+	// Date value. (optional)
+	Date float64 `json:"date,omitempty"`
+
+	// Array value. (optional)
+	Array []*Key `json:"array,omitempty"`
+}
 
 // Key range.
-type KeyRange interface{}
+
+type KeyRange struct {
+	// Lower bound. (optional)
+	Lower *Key `json:"lower,omitempty"`
+
+	// Upper bound. (optional)
+	Upper *Key `json:"upper,omitempty"`
+
+	// If true lower bound is open.
+	LowerOpen bool `json:"lowerOpen"`
+
+	// If true upper bound is open.
+	UpperOpen bool `json:"upperOpen"`
+}
 
 // Data entry.
-type DataEntry interface{}
+
+type DataEntry struct {
+	// Key object.
+	Key interface{} `json:"key"`
+
+	// Primary key object.
+	PrimaryKey interface{} `json:"primaryKey"`
+
+	// Value object.
+	Value interface{} `json:"value"`
+}
 
 // Key path.
-type KeyPath interface{}
+
+type KeyPath struct {
+	// Key path type.
+	Type string `json:"type"`
+
+	// String value. (optional)
+	String string `json:"string,omitempty"`
+
+	// Array value. (optional)
+	Array []string `json:"array,omitempty"`
+}
 
 // Enables events from backend.
 func (d *Domain) Enable() error {
@@ -68,7 +153,7 @@ type RequestDatabaseOpts struct {
 
 type RequestDatabaseResult struct {
 	// Database with an array of object stores.
-	DatabaseWithObjectStores DatabaseWithObjectStores `json:"databaseWithObjectStores"`
+	DatabaseWithObjectStores *DatabaseWithObjectStores `json:"databaseWithObjectStores"`
 }
 
 // Requests database with given name in given frame.
@@ -98,12 +183,12 @@ type RequestDataOpts struct {
 	PageSize int `json:"pageSize"`
 
 	// Key range. (optional)
-	KeyRange KeyRange `json:"keyRange,omitempty"`
+	KeyRange *KeyRange `json:"keyRange,omitempty"`
 }
 
 type RequestDataResult struct {
 	// Array of object store data entries.
-	ObjectStoreDataEntries []DataEntry `json:"objectStoreDataEntries"`
+	ObjectStoreDataEntries []*DataEntry `json:"objectStoreDataEntries"`
 
 	// If true, there are more entries to fetch in the given range.
 	HasMore bool `json:"hasMore"`

@@ -14,9 +14,46 @@ type Domain struct {
 }
 
 // Configuration data for the highlighting of page elements.
-type HighlightConfig interface{}
 
-type InspectMode interface{}
+type HighlightConfig struct {
+	// Whether the node info tooltip should be shown (default: false). (optional)
+	ShowInfo bool `json:"showInfo,omitempty"`
+
+	// Whether the rulers should be shown (default: false). (optional)
+	ShowRulers bool `json:"showRulers,omitempty"`
+
+	// Whether the extension lines from node to the rulers should be shown (default: false). (optional)
+	ShowExtensionLines bool `json:"showExtensionLines,omitempty"`
+
+	// (optional)
+	DisplayAsMaterial bool `json:"displayAsMaterial,omitempty"`
+
+	// The content box highlight fill color (default: transparent). (optional)
+	ContentColor interface{} `json:"contentColor,omitempty"`
+
+	// The padding highlight fill color (default: transparent). (optional)
+	PaddingColor interface{} `json:"paddingColor,omitempty"`
+
+	// The border highlight fill color (default: transparent). (optional)
+	BorderColor interface{} `json:"borderColor,omitempty"`
+
+	// The margin highlight fill color (default: transparent). (optional)
+	MarginColor interface{} `json:"marginColor,omitempty"`
+
+	// The event target element highlight fill color (default: transparent). (optional)
+	EventTargetColor interface{} `json:"eventTargetColor,omitempty"`
+
+	// The shape outside fill color (default: transparent). (optional)
+	ShapeColor interface{} `json:"shapeColor,omitempty"`
+
+	// The shape margin fill color (default: transparent). (optional)
+	ShapeMarginColor interface{} `json:"shapeMarginColor,omitempty"`
+
+	// Selectors to highlight relevant nodes. (optional)
+	SelectorList string `json:"selectorList,omitempty"`
+}
+
+type InspectMode string
 
 // Enables domain notifications.
 func (d *Domain) Enable() error {
@@ -98,10 +135,10 @@ func (d *Domain) SetSuspended(opts *SetSuspendedOpts) error {
 
 type SetInspectModeOpts struct {
 	// Set an inspection mode.
-	Mode InspectMode `json:"mode"`
+	Mode *InspectMode `json:"mode"`
 
 	// A descriptor for the highlight appearance of hovered-over nodes. May be omitted if <code>enabled == false</code>. (optional)
-	HighlightConfig HighlightConfig `json:"highlightConfig,omitempty"`
+	HighlightConfig *HighlightConfig `json:"highlightConfig,omitempty"`
 }
 
 // Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted. Backend then generates 'inspectNodeRequested' event upon element selection.
@@ -152,7 +189,7 @@ func (d *Domain) HighlightQuad(opts *HighlightQuadOpts) error {
 
 type HighlightNodeOpts struct {
 	// A descriptor for the highlight appearance.
-	HighlightConfig HighlightConfig `json:"highlightConfig"`
+	HighlightConfig *HighlightConfig `json:"highlightConfig"`
 
 	// Identifier of the node to highlight. (optional)
 	NodeId interface{} `json:"nodeId,omitempty"`

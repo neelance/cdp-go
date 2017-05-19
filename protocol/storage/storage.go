@@ -11,7 +11,8 @@ type Domain struct {
 }
 
 // Enum of possible storage types.
-type StorageType interface{}
+
+type StorageType string
 
 type ClearDataForOriginOpts struct {
 	// Security origin.

@@ -13,13 +13,25 @@ type Domain struct {
 	Client *rpc.Client
 }
 
-type TargetID interface{}
+type TargetID string
 
-type BrowserContextID interface{}
+type BrowserContextID string
 
-type TargetInfo interface{}
+type TargetInfo struct {
+	TargetId *TargetID `json:"targetId"`
 
-type RemoteLocation interface{}
+	Type string `json:"type"`
+
+	Title string `json:"title"`
+
+	URL string `json:"url"`
+}
+
+type RemoteLocation struct {
+	Host string `json:"host"`
+
+	Port int `json:"port"`
+}
 
 type SetDiscoverTargetsOpts struct {
 	// Whether to discover available targets.
@@ -55,7 +67,7 @@ func (d *Domain) SetAttachToFrames(opts *SetAttachToFramesOpts) error {
 
 type SetRemoteLocationsOpts struct {
 	// List of remote locations.
-	Locations []RemoteLocation `json:"locations"`
+	Locations []*RemoteLocation `json:"locations"`
 }
 
 // Enables target discovery for the specified locations, when <code>setDiscoverTargets</code> was set to <code>true</code>.
@@ -64,7 +76,7 @@ func (d *Domain) SetRemoteLocations(opts *SetRemoteLocationsOpts) error {
 }
 
 type SendMessageToTargetOpts struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 
 	Message string `json:"message"`
 }
@@ -75,11 +87,11 @@ func (d *Domain) SendMessageToTarget(opts *SendMessageToTargetOpts) error {
 }
 
 type GetTargetInfoOpts struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 }
 
 type GetTargetInfoResult struct {
-	TargetInfo TargetInfo `json:"targetInfo"`
+	TargetInfo *TargetInfo `json:"targetInfo"`
 }
 
 // Returns information about a target.
@@ -90,7 +102,7 @@ func (d *Domain) GetTargetInfo(opts *GetTargetInfoOpts) (*GetTargetInfoResult, e
 }
 
 type ActivateTargetOpts struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 }
 
 // Activates (focuses) the target.
@@ -99,7 +111,7 @@ func (d *Domain) ActivateTarget(opts *ActivateTargetOpts) error {
 }
 
 type CloseTargetOpts struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 }
 
 type CloseTargetResult struct {
@@ -114,7 +126,7 @@ func (d *Domain) CloseTarget(opts *CloseTargetOpts) (*CloseTargetResult, error) 
 }
 
 type AttachToTargetOpts struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 }
 
 type AttachToTargetResult struct {
@@ -130,7 +142,7 @@ func (d *Domain) AttachToTarget(opts *AttachToTargetOpts) (*AttachToTargetResult
 }
 
 type DetachFromTargetOpts struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 }
 
 // Detaches from the target with given id.
@@ -140,7 +152,7 @@ func (d *Domain) DetachFromTarget(opts *DetachFromTargetOpts) error {
 
 type CreateBrowserContextResult struct {
 	// The id of the context created.
-	BrowserContextId BrowserContextID `json:"browserContextId"`
+	BrowserContextId *BrowserContextID `json:"browserContextId"`
 }
 
 // Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than one.
@@ -151,7 +163,7 @@ func (d *Domain) CreateBrowserContext() (*CreateBrowserContextResult, error) {
 }
 
 type DisposeBrowserContextOpts struct {
-	BrowserContextId BrowserContextID `json:"browserContextId"`
+	BrowserContextId *BrowserContextID `json:"browserContextId"`
 }
 
 type DisposeBrowserContextResult struct {
@@ -176,12 +188,12 @@ type CreateTargetOpts struct {
 	Height int `json:"height,omitempty"`
 
 	// The browser context to create the page in (headless chrome only). (optional)
-	BrowserContextId BrowserContextID `json:"browserContextId,omitempty"`
+	BrowserContextId *BrowserContextID `json:"browserContextId,omitempty"`
 }
 
 type CreateTargetResult struct {
 	// The id of the page opened.
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 }
 
 // Creates a new page.
@@ -193,7 +205,7 @@ func (d *Domain) CreateTarget(opts *CreateTargetOpts) (*CreateTargetResult, erro
 
 type GetTargetsResult struct {
 	// The list of targets.
-	TargetInfos []TargetInfo `json:"targetInfos"`
+	TargetInfos []*TargetInfo `json:"targetInfos"`
 }
 
 // Retrieves a list of available targets.
@@ -204,7 +216,7 @@ func (d *Domain) GetTargets() (*GetTargetsResult, error) {
 }
 
 type TargetCreatedEvent struct {
-	TargetInfo TargetInfo `json:"targetInfo"`
+	TargetInfo *TargetInfo `json:"targetInfo"`
 }
 
 // Issued when a possible inspection target is created.
@@ -220,7 +232,7 @@ func (d *Domain) OnTargetCreated(listener func(*TargetCreatedEvent)) {
 }
 
 type TargetDestroyedEvent struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 }
 
 // Issued when a target is destroyed.
@@ -236,7 +248,7 @@ func (d *Domain) OnTargetDestroyed(listener func(*TargetDestroyedEvent)) {
 }
 
 type AttachedToTargetEvent struct {
-	TargetInfo TargetInfo `json:"targetInfo"`
+	TargetInfo *TargetInfo `json:"targetInfo"`
 
 	WaitingForDebugger bool `json:"waitingForDebugger"`
 }
@@ -254,7 +266,7 @@ func (d *Domain) OnAttachedToTarget(listener func(*AttachedToTargetEvent)) {
 }
 
 type DetachedFromTargetEvent struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 }
 
 // Issued when detached from target for any reason (including <code>detachFromTarget</code> command).
@@ -270,7 +282,7 @@ func (d *Domain) OnDetachedFromTarget(listener func(*DetachedFromTargetEvent)) {
 }
 
 type ReceivedMessageFromTargetEvent struct {
-	TargetId TargetID `json:"targetId"`
+	TargetId *TargetID `json:"targetId"`
 
 	Message string `json:"message"`
 }

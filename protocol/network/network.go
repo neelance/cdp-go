@@ -14,61 +14,354 @@ type Domain struct {
 }
 
 // Unique loader identifier.
-type LoaderId interface{}
+
+type LoaderId string
 
 // Unique request identifier.
-type RequestId interface{}
+
+type RequestId string
 
 // Number of seconds since epoch.
-type Timestamp interface{}
+
+type Timestamp float64
 
 // Request / response headers as keys / values of JSON object.
-type Headers interface{}
+
+type Headers struct {
+}
 
 // Loading priority of a resource request.
-type ConnectionType interface{}
+
+type ConnectionType string
 
 // Represents the cookie's 'SameSite' status: https://tools.ietf.org/html/draft-west-first-party-cookies
-type CookieSameSite interface{}
+
+type CookieSameSite string
 
 // Timing information for the request.
-type ResourceTiming interface{}
+
+type ResourceTiming struct {
+	// Timing's requestTime is a baseline in seconds, while the other numbers are ticks in milliseconds relatively to this requestTime.
+	RequestTime float64 `json:"requestTime"`
+
+	// Started resolving proxy.
+	ProxyStart float64 `json:"proxyStart"`
+
+	// Finished resolving proxy.
+	ProxyEnd float64 `json:"proxyEnd"`
+
+	// Started DNS address resolve.
+	DnsStart float64 `json:"dnsStart"`
+
+	// Finished DNS address resolve.
+	DnsEnd float64 `json:"dnsEnd"`
+
+	// Started connecting to the remote host.
+	ConnectStart float64 `json:"connectStart"`
+
+	// Connected to the remote host.
+	ConnectEnd float64 `json:"connectEnd"`
+
+	// Started SSL handshake.
+	SslStart float64 `json:"sslStart"`
+
+	// Finished SSL handshake.
+	SslEnd float64 `json:"sslEnd"`
+
+	// Started running ServiceWorker.
+	WorkerStart float64 `json:"workerStart"`
+
+	// Finished Starting ServiceWorker.
+	WorkerReady float64 `json:"workerReady"`
+
+	// Started sending request.
+	SendStart float64 `json:"sendStart"`
+
+	// Finished sending request.
+	SendEnd float64 `json:"sendEnd"`
+
+	// Time the server started pushing request.
+	PushStart float64 `json:"pushStart"`
+
+	// Time the server finished pushing request.
+	PushEnd float64 `json:"pushEnd"`
+
+	// Finished receiving response headers.
+	ReceiveHeadersEnd float64 `json:"receiveHeadersEnd"`
+}
 
 // Loading priority of a resource request.
-type ResourcePriority interface{}
+
+type ResourcePriority string
 
 // HTTP request data.
-type Request interface{}
+
+type Request struct {
+	// Request URL.
+	URL string `json:"url"`
+
+	// HTTP request method.
+	Method string `json:"method"`
+
+	// HTTP request headers.
+	Headers *Headers `json:"headers"`
+
+	// HTTP POST request data. (optional)
+	PostData string `json:"postData,omitempty"`
+
+	// The mixed content status of the request, as defined in http://www.w3.org/TR/mixed-content/ (optional)
+	MixedContentType string `json:"mixedContentType,omitempty"`
+
+	// Priority of the resource request at the time request is sent.
+	InitialPriority *ResourcePriority `json:"initialPriority"`
+
+	// The referrer policy of the request, as defined in https://www.w3.org/TR/referrer-policy/
+	ReferrerPolicy string `json:"referrerPolicy"`
+
+	// Whether is loaded via link preload. (optional)
+	IsLinkPreload bool `json:"isLinkPreload,omitempty"`
+}
 
 // Details of a signed certificate timestamp (SCT).
-type SignedCertificateTimestamp interface{}
+
+type SignedCertificateTimestamp struct {
+	// Validation status.
+	Status string `json:"status"`
+
+	// Origin.
+	Origin string `json:"origin"`
+
+	// Log name / description.
+	LogDescription string `json:"logDescription"`
+
+	// Log ID.
+	LogId string `json:"logId"`
+
+	// Issuance date.
+	Timestamp *Timestamp `json:"timestamp"`
+
+	// Hash algorithm.
+	HashAlgorithm string `json:"hashAlgorithm"`
+
+	// Signature algorithm.
+	SignatureAlgorithm string `json:"signatureAlgorithm"`
+
+	// Signature data.
+	SignatureData string `json:"signatureData"`
+}
 
 // Security details about a request.
-type SecurityDetails interface{}
+
+type SecurityDetails struct {
+	// Protocol name (e.g. "TLS 1.2" or "QUIC").
+	Protocol string `json:"protocol"`
+
+	// Key Exchange used by the connection, or the empty string if not applicable.
+	KeyExchange string `json:"keyExchange"`
+
+	// (EC)DH group used by the connection, if applicable. (optional)
+	KeyExchangeGroup string `json:"keyExchangeGroup,omitempty"`
+
+	// Cipher name.
+	Cipher string `json:"cipher"`
+
+	// TLS MAC. Note that AEAD ciphers do not have separate MACs. (optional)
+	Mac string `json:"mac,omitempty"`
+
+	// Certificate ID value.
+	CertificateId interface{} `json:"certificateId"`
+
+	// Certificate subject name.
+	SubjectName string `json:"subjectName"`
+
+	// Subject Alternative Name (SAN) DNS names and IP addresses.
+	SanList []string `json:"sanList"`
+
+	// Name of the issuing CA.
+	Issuer string `json:"issuer"`
+
+	// Certificate valid from date.
+	ValidFrom *Timestamp `json:"validFrom"`
+
+	// Certificate valid to (expiration) date
+	ValidTo *Timestamp `json:"validTo"`
+
+	// List of signed certificate timestamps (SCTs).
+	SignedCertificateTimestampList []*SignedCertificateTimestamp `json:"signedCertificateTimestampList"`
+}
 
 // The reason why request was blocked. (experimental)
-type BlockedReason interface{}
+
+type BlockedReason string
 
 // HTTP response data.
-type Response interface{}
+
+type Response struct {
+	// Response URL. This URL can be different from CachedResource.url in case of redirect.
+	URL string `json:"url"`
+
+	// HTTP response status code.
+	Status float64 `json:"status"`
+
+	// HTTP response status text.
+	StatusText string `json:"statusText"`
+
+	// HTTP response headers.
+	Headers *Headers `json:"headers"`
+
+	// HTTP response headers text. (optional)
+	HeadersText string `json:"headersText,omitempty"`
+
+	// Resource mimeType as determined by the browser.
+	MimeType string `json:"mimeType"`
+
+	// Refined HTTP request headers that were actually transmitted over the network. (optional)
+	RequestHeaders *Headers `json:"requestHeaders,omitempty"`
+
+	// HTTP request headers text. (optional)
+	RequestHeadersText string `json:"requestHeadersText,omitempty"`
+
+	// Specifies whether physical connection was actually reused for this request.
+	ConnectionReused bool `json:"connectionReused"`
+
+	// Physical connection id that was actually used for this request.
+	ConnectionId float64 `json:"connectionId"`
+
+	// Remote IP address. (optional, experimental)
+	RemoteIPAddress string `json:"remoteIPAddress,omitempty"`
+
+	// Remote port. (optional, experimental)
+	RemotePort int `json:"remotePort,omitempty"`
+
+	// Specifies that the request was served from the disk cache. (optional)
+	FromDiskCache bool `json:"fromDiskCache,omitempty"`
+
+	// Specifies that the request was served from the ServiceWorker. (optional)
+	FromServiceWorker bool `json:"fromServiceWorker,omitempty"`
+
+	// Total number of bytes received for this request so far.
+	EncodedDataLength float64 `json:"encodedDataLength"`
+
+	// Timing information for the given request. (optional)
+	Timing *ResourceTiming `json:"timing,omitempty"`
+
+	// Protocol used to fetch this request. (optional)
+	Protocol string `json:"protocol,omitempty"`
+
+	// Security state of the request resource.
+	SecurityState interface{} `json:"securityState"`
+
+	// Security details for the request. (optional)
+	SecurityDetails *SecurityDetails `json:"securityDetails,omitempty"`
+}
 
 // WebSocket request data. (experimental)
-type WebSocketRequest interface{}
+
+type WebSocketRequest struct {
+	// HTTP request headers.
+	Headers *Headers `json:"headers"`
+}
 
 // WebSocket response data. (experimental)
-type WebSocketResponse interface{}
+
+type WebSocketResponse struct {
+	// HTTP response status code.
+	Status float64 `json:"status"`
+
+	// HTTP response status text.
+	StatusText string `json:"statusText"`
+
+	// HTTP response headers.
+	Headers *Headers `json:"headers"`
+
+	// HTTP response headers text. (optional)
+	HeadersText string `json:"headersText,omitempty"`
+
+	// HTTP request headers. (optional)
+	RequestHeaders *Headers `json:"requestHeaders,omitempty"`
+
+	// HTTP request headers text. (optional)
+	RequestHeadersText string `json:"requestHeadersText,omitempty"`
+}
 
 // WebSocket frame data. (experimental)
-type WebSocketFrame interface{}
+
+type WebSocketFrame struct {
+	// WebSocket frame opcode.
+	Opcode float64 `json:"opcode"`
+
+	// WebSocke frame mask.
+	Mask bool `json:"mask"`
+
+	// WebSocke frame payload data.
+	PayloadData string `json:"payloadData"`
+}
 
 // Information about the cached resource.
-type CachedResource interface{}
+
+type CachedResource struct {
+	// Resource URL. This is the url of the original network request.
+	URL string `json:"url"`
+
+	// Type of this resource.
+	Type interface{} `json:"type"`
+
+	// Cached response data. (optional)
+	Response *Response `json:"response,omitempty"`
+
+	// Cached response body size.
+	BodySize float64 `json:"bodySize"`
+}
 
 // Information about the request initiator.
-type Initiator interface{}
+
+type Initiator struct {
+	// Type of this initiator.
+	Type string `json:"type"`
+
+	// Initiator JavaScript stack trace, set for Script only. (optional)
+	Stack interface{} `json:"stack,omitempty"`
+
+	// Initiator URL, set for Parser type only. (optional)
+	URL string `json:"url,omitempty"`
+
+	// Initiator line number, set for Parser type only (0-based). (optional)
+	LineNumber float64 `json:"lineNumber,omitempty"`
+}
 
 // Cookie object (experimental)
-type Cookie interface{}
+
+type Cookie struct {
+	// Cookie name.
+	Name string `json:"name"`
+
+	// Cookie value.
+	Value string `json:"value"`
+
+	// Cookie domain.
+	Domain string `json:"domain"`
+
+	// Cookie path.
+	Path string `json:"path"`
+
+	// Cookie expiration date as the number of seconds since the UNIX epoch.
+	Expires float64 `json:"expires"`
+
+	// Cookie size.
+	Size int `json:"size"`
+
+	// True if cookie is http-only.
+	HttpOnly bool `json:"httpOnly"`
+
+	// True if cookie is secure.
+	Secure bool `json:"secure"`
+
+	// True in case of session cookie.
+	Session bool `json:"session"`
+
+	// Cookie SameSite type. (optional)
+	SameSite *CookieSameSite `json:"sameSite,omitempty"`
+}
 
 type EnableOpts struct {
 	// Buffer size in bytes to use when preserving network payloads (XHRs, etc). (optional, experimental)
@@ -100,7 +393,7 @@ func (d *Domain) SetUserAgentOverride(opts *SetUserAgentOverrideOpts) error {
 
 type SetExtraHTTPHeadersOpts struct {
 	// Map with extra HTTP headers.
-	Headers Headers `json:"headers"`
+	Headers *Headers `json:"headers"`
 }
 
 // Specifies whether to always send extra HTTP headers with the requests from this page.
@@ -110,7 +403,7 @@ func (d *Domain) SetExtraHTTPHeaders(opts *SetExtraHTTPHeadersOpts) error {
 
 type GetResponseBodyOpts struct {
 	// Identifier of the network request to get content for.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 }
 
 type GetResponseBodyResult struct {
@@ -140,7 +433,7 @@ func (d *Domain) SetBlockedURLs(opts *SetBlockedURLsOpts) error {
 
 type ReplayXHROpts struct {
 	// Identifier of XHR to replay.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 }
 
 // This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password. (experimental)
@@ -189,7 +482,7 @@ type GetCookiesOpts struct {
 
 type GetCookiesResult struct {
 	// Array of cookie objects.
-	Cookies []Cookie `json:"cookies"`
+	Cookies []*Cookie `json:"cookies"`
 }
 
 // Returns all browser cookies for the current URL. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
@@ -201,7 +494,7 @@ func (d *Domain) GetCookies(opts *GetCookiesOpts) (*GetCookiesResult, error) {
 
 type GetAllCookiesResult struct {
 	// Array of cookie objects.
-	Cookies []Cookie `json:"cookies"`
+	Cookies []*Cookie `json:"cookies"`
 }
 
 // Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
@@ -247,10 +540,10 @@ type SetCookieOpts struct {
 	HttpOnly bool `json:"httpOnly,omitempty"`
 
 	// Defaults to browser default behavior. (optional)
-	SameSite CookieSameSite `json:"sameSite,omitempty"`
+	SameSite *CookieSameSite `json:"sameSite,omitempty"`
 
 	// If omitted, the cookie becomes a session cookie. (optional)
-	ExpirationDate Timestamp `json:"expirationDate,omitempty"`
+	ExpirationDate *Timestamp `json:"expirationDate,omitempty"`
 }
 
 type SetCookieResult struct {
@@ -291,7 +584,7 @@ type EmulateNetworkConditionsOpts struct {
 	UploadThroughput float64 `json:"uploadThroughput"`
 
 	// Connection type if known. (optional)
-	ConnectionType ConnectionType `json:"connectionType,omitempty"`
+	ConnectionType *ConnectionType `json:"connectionType,omitempty"`
 }
 
 // Activates emulation of network conditions.
@@ -350,13 +643,13 @@ func (d *Domain) GetCertificate(opts *GetCertificateOpts) (*GetCertificateResult
 
 type ResourceChangedPriorityEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// New priority
-	NewPriority ResourcePriority `json:"newPriority"`
+	NewPriority *ResourcePriority `json:"newPriority"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 }
 
 // Fired when resource loading priority is changed (experimental)
@@ -373,31 +666,31 @@ func (d *Domain) OnResourceChangedPriority(listener func(*ResourceChangedPriorit
 
 type RequestWillBeSentEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Frame identifier.
 	FrameId interface{} `json:"frameId"`
 
 	// Loader identifier.
-	LoaderId LoaderId `json:"loaderId"`
+	LoaderId *LoaderId `json:"loaderId"`
 
 	// URL of the document this request is loaded for.
 	DocumentURL string `json:"documentURL"`
 
 	// Request data.
-	Request Request `json:"request"`
+	Request *Request `json:"request"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// UTC Timestamp.
-	WallTime Timestamp `json:"wallTime"`
+	WallTime *Timestamp `json:"wallTime"`
 
 	// Request initiator.
-	Initiator Initiator `json:"initiator"`
+	Initiator *Initiator `json:"initiator"`
 
 	// Redirect response data. (optional)
-	RedirectResponse Response `json:"redirectResponse"`
+	RedirectResponse *Response `json:"redirectResponse"`
 
 	// Type of this resource. (optional, experimental)
 	Type interface{} `json:"type"`
@@ -417,7 +710,7 @@ func (d *Domain) OnRequestWillBeSent(listener func(*RequestWillBeSentEvent)) {
 
 type RequestServedFromCacheEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 }
 
 // Fired if request ended up loading from cache.
@@ -434,22 +727,22 @@ func (d *Domain) OnRequestServedFromCache(listener func(*RequestServedFromCacheE
 
 type ResponseReceivedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Frame identifier.
 	FrameId interface{} `json:"frameId"`
 
 	// Loader identifier.
-	LoaderId LoaderId `json:"loaderId"`
+	LoaderId *LoaderId `json:"loaderId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// Resource type.
 	Type interface{} `json:"type"`
 
 	// Response data.
-	Response Response `json:"response"`
+	Response *Response `json:"response"`
 }
 
 // Fired when HTTP response is available.
@@ -466,10 +759,10 @@ func (d *Domain) OnResponseReceived(listener func(*ResponseReceivedEvent)) {
 
 type DataReceivedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// Data chunk length.
 	DataLength int `json:"dataLength"`
@@ -492,10 +785,10 @@ func (d *Domain) OnDataReceived(listener func(*DataReceivedEvent)) {
 
 type LoadingFinishedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// Total number of bytes received for this request.
 	EncodedDataLength float64 `json:"encodedDataLength"`
@@ -515,10 +808,10 @@ func (d *Domain) OnLoadingFinished(listener func(*LoadingFinishedEvent)) {
 
 type LoadingFailedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// Resource type.
 	Type interface{} `json:"type"`
@@ -530,7 +823,7 @@ type LoadingFailedEvent struct {
 	Canceled bool `json:"canceled"`
 
 	// The reason why loading was blocked, if any. (optional, experimental)
-	BlockedReason BlockedReason `json:"blockedReason"`
+	BlockedReason *BlockedReason `json:"blockedReason"`
 }
 
 // Fired when HTTP request has failed to load.
@@ -547,16 +840,16 @@ func (d *Domain) OnLoadingFailed(listener func(*LoadingFailedEvent)) {
 
 type WebSocketWillSendHandshakeRequestEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// UTC Timestamp.
-	WallTime Timestamp `json:"wallTime"`
+	WallTime *Timestamp `json:"wallTime"`
 
 	// WebSocket request data.
-	Request WebSocketRequest `json:"request"`
+	Request *WebSocketRequest `json:"request"`
 }
 
 // Fired when WebSocket is about to initiate handshake. (experimental)
@@ -573,13 +866,13 @@ func (d *Domain) OnWebSocketWillSendHandshakeRequest(listener func(*WebSocketWil
 
 type WebSocketHandshakeResponseReceivedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// WebSocket response data.
-	Response WebSocketResponse `json:"response"`
+	Response *WebSocketResponse `json:"response"`
 }
 
 // Fired when WebSocket handshake response becomes available. (experimental)
@@ -596,13 +889,13 @@ func (d *Domain) OnWebSocketHandshakeResponseReceived(listener func(*WebSocketHa
 
 type WebSocketCreatedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// WebSocket request URL.
 	URL string `json:"url"`
 
 	// Request initiator. (optional)
-	Initiator Initiator `json:"initiator"`
+	Initiator *Initiator `json:"initiator"`
 }
 
 // Fired upon WebSocket creation. (experimental)
@@ -619,10 +912,10 @@ func (d *Domain) OnWebSocketCreated(listener func(*WebSocketCreatedEvent)) {
 
 type WebSocketClosedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 }
 
 // Fired when WebSocket is closed. (experimental)
@@ -639,13 +932,13 @@ func (d *Domain) OnWebSocketClosed(listener func(*WebSocketClosedEvent)) {
 
 type WebSocketFrameReceivedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// WebSocket response data.
-	Response WebSocketFrame `json:"response"`
+	Response *WebSocketFrame `json:"response"`
 }
 
 // Fired when WebSocket frame is received. (experimental)
@@ -662,10 +955,10 @@ func (d *Domain) OnWebSocketFrameReceived(listener func(*WebSocketFrameReceivedE
 
 type WebSocketFrameErrorEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// WebSocket frame error message.
 	ErrorMessage string `json:"errorMessage"`
@@ -685,13 +978,13 @@ func (d *Domain) OnWebSocketFrameError(listener func(*WebSocketFrameErrorEvent))
 
 type WebSocketFrameSentEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// WebSocket response data.
-	Response WebSocketFrame `json:"response"`
+	Response *WebSocketFrame `json:"response"`
 }
 
 // Fired when WebSocket frame is sent. (experimental)
@@ -708,10 +1001,10 @@ func (d *Domain) OnWebSocketFrameSent(listener func(*WebSocketFrameSentEvent)) {
 
 type EventSourceMessageReceivedEvent struct {
 	// Request identifier.
-	RequestId RequestId `json:"requestId"`
+	RequestId *RequestId `json:"requestId"`
 
 	// Timestamp.
-	Timestamp Timestamp `json:"timestamp"`
+	Timestamp *Timestamp `json:"timestamp"`
 
 	// Message type.
 	EventName string `json:"eventName"`

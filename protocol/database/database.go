@@ -14,13 +14,34 @@ type Domain struct {
 }
 
 // Unique identifier of Database object. (experimental)
-type DatabaseId interface{}
+
+type DatabaseId string
 
 // Database object. (experimental)
-type Database interface{}
+
+type Database struct {
+	// Database ID.
+	Id *DatabaseId `json:"id"`
+
+	// Database domain.
+	Domain string `json:"domain"`
+
+	// Database name.
+	Name string `json:"name"`
+
+	// Database version.
+	Version string `json:"version"`
+}
 
 // Database error.
-type Error interface{}
+
+type Error struct {
+	// Error message.
+	Message string `json:"message"`
+
+	// Error code.
+	Code int `json:"code"`
+}
 
 // Enables database tracking, database events will now be delivered to the client.
 func (d *Domain) Enable() error {
@@ -33,7 +54,7 @@ func (d *Domain) Disable() error {
 }
 
 type GetDatabaseTableNamesOpts struct {
-	DatabaseId DatabaseId `json:"databaseId"`
+	DatabaseId *DatabaseId `json:"databaseId"`
 }
 
 type GetDatabaseTableNamesResult struct {
@@ -47,7 +68,7 @@ func (d *Domain) GetDatabaseTableNames(opts *GetDatabaseTableNamesOpts) (*GetDat
 }
 
 type ExecuteSQLOpts struct {
-	DatabaseId DatabaseId `json:"databaseId"`
+	DatabaseId *DatabaseId `json:"databaseId"`
 
 	Query string `json:"query"`
 }
@@ -60,7 +81,7 @@ type ExecuteSQLResult struct {
 	Values []interface{} `json:"values"`
 
 	// (optional)
-	SqlError Error `json:"sqlError"`
+	SqlError *Error `json:"sqlError"`
 }
 
 func (d *Domain) ExecuteSQL(opts *ExecuteSQLOpts) (*ExecuteSQLResult, error) {
@@ -70,7 +91,7 @@ func (d *Domain) ExecuteSQL(opts *ExecuteSQLOpts) (*ExecuteSQLResult, error) {
 }
 
 type AddDatabaseEvent struct {
-	Database Database `json:"database"`
+	Database *Database `json:"database"`
 }
 
 func (d *Domain) OnAddDatabase(listener func(*AddDatabaseEvent)) {

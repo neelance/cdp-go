@@ -14,10 +14,18 @@ type Domain struct {
 }
 
 // DOM Storage identifier. (experimental)
-type StorageId interface{}
+
+type StorageId struct {
+	// Security origin for the storage.
+	SecurityOrigin string `json:"securityOrigin"`
+
+	// Whether the storage is local storage (not session storage).
+	IsLocalStorage bool `json:"isLocalStorage"`
+}
 
 // DOM Storage item. (experimental)
-type Item interface{}
+
+type Item []string
 
 // Enables storage tracking, storage events will now be delivered to the client.
 func (d *Domain) Enable() error {
@@ -30,7 +38,7 @@ func (d *Domain) Disable() error {
 }
 
 type ClearOpts struct {
-	StorageId StorageId `json:"storageId"`
+	StorageId *StorageId `json:"storageId"`
 }
 
 func (d *Domain) Clear(opts *ClearOpts) error {
@@ -38,11 +46,11 @@ func (d *Domain) Clear(opts *ClearOpts) error {
 }
 
 type GetDOMStorageItemsOpts struct {
-	StorageId StorageId `json:"storageId"`
+	StorageId *StorageId `json:"storageId"`
 }
 
 type GetDOMStorageItemsResult struct {
-	Entries []Item `json:"entries"`
+	Entries []*Item `json:"entries"`
 }
 
 func (d *Domain) GetDOMStorageItems(opts *GetDOMStorageItemsOpts) (*GetDOMStorageItemsResult, error) {
@@ -52,7 +60,7 @@ func (d *Domain) GetDOMStorageItems(opts *GetDOMStorageItemsOpts) (*GetDOMStorag
 }
 
 type SetDOMStorageItemOpts struct {
-	StorageId StorageId `json:"storageId"`
+	StorageId *StorageId `json:"storageId"`
 
 	Key string `json:"key"`
 
@@ -64,7 +72,7 @@ func (d *Domain) SetDOMStorageItem(opts *SetDOMStorageItemOpts) error {
 }
 
 type RemoveDOMStorageItemOpts struct {
-	StorageId StorageId `json:"storageId"`
+	StorageId *StorageId `json:"storageId"`
 
 	Key string `json:"key"`
 }
@@ -74,7 +82,7 @@ func (d *Domain) RemoveDOMStorageItem(opts *RemoveDOMStorageItemOpts) error {
 }
 
 type DomStorageItemsClearedEvent struct {
-	StorageId StorageId `json:"storageId"`
+	StorageId *StorageId `json:"storageId"`
 }
 
 func (d *Domain) OnDomStorageItemsCleared(listener func(*DomStorageItemsClearedEvent)) {
@@ -89,7 +97,7 @@ func (d *Domain) OnDomStorageItemsCleared(listener func(*DomStorageItemsClearedE
 }
 
 type DomStorageItemRemovedEvent struct {
-	StorageId StorageId `json:"storageId"`
+	StorageId *StorageId `json:"storageId"`
 
 	Key string `json:"key"`
 }
@@ -106,7 +114,7 @@ func (d *Domain) OnDomStorageItemRemoved(listener func(*DomStorageItemRemovedEve
 }
 
 type DomStorageItemAddedEvent struct {
-	StorageId StorageId `json:"storageId"`
+	StorageId *StorageId `json:"storageId"`
 
 	Key string `json:"key"`
 
@@ -125,7 +133,7 @@ func (d *Domain) OnDomStorageItemAdded(listener func(*DomStorageItemAddedEvent))
 }
 
 type DomStorageItemUpdatedEvent struct {
-	StorageId StorageId `json:"storageId"`
+	StorageId *StorageId `json:"storageId"`
 
 	Key string `json:"key"`
 
