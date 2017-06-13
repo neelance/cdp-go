@@ -94,42 +94,40 @@ type Layer struct {
 
 type PaintProfile []float64
 
-// Enables compositing tree inspection.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables compositing tree inspection.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables compositing tree inspection.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("LayerTree.enable", r.opts, nil)
 }
 
-// Disables compositing tree inspection.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables compositing tree inspection.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables compositing tree inspection.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("LayerTree.disable", r.opts, nil)
 }
 
-// Provides the reasons why the given layer was composited.
 type CompositingReasonsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Provides the reasons why the given layer was composited.
 func (d *Client) CompositingReasons() *CompositingReasonsRequest {
 	return &CompositingReasonsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -151,12 +149,12 @@ func (r *CompositingReasonsRequest) Do() (*CompositingReasonsResult, error) {
 	return &result, err
 }
 
-// Returns the layer snapshot identifier.
 type MakeSnapshotRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the layer snapshot identifier.
 func (d *Client) MakeSnapshot() *MakeSnapshotRequest {
 	return &MakeSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -178,12 +176,12 @@ func (r *MakeSnapshotRequest) Do() (*MakeSnapshotResult, error) {
 	return &result, err
 }
 
-// Returns the snapshot identifier.
 type LoadSnapshotRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the snapshot identifier.
 func (d *Client) LoadSnapshot() *LoadSnapshotRequest {
 	return &LoadSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -205,12 +203,12 @@ func (r *LoadSnapshotRequest) Do() (*LoadSnapshotResult, error) {
 	return &result, err
 }
 
-// Releases layer snapshot captured by the back-end.
 type ReleaseSnapshotRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Releases layer snapshot captured by the back-end.
 func (d *Client) ReleaseSnapshot() *ReleaseSnapshotRequest {
 	return &ReleaseSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -221,7 +219,6 @@ func (r *ReleaseSnapshotRequest) SnapshotId(v SnapshotId) *ReleaseSnapshotReques
 	return r
 }
 
-// Releases layer snapshot captured by the back-end.
 func (r *ReleaseSnapshotRequest) Do() error {
 	return r.client.Call("LayerTree.releaseSnapshot", r.opts, nil)
 }
@@ -270,12 +267,12 @@ func (r *ProfileSnapshotRequest) Do() (*ProfileSnapshotResult, error) {
 	return &result, err
 }
 
-// Replays the layer snapshot and returns the resulting bitmap.
 type ReplaySnapshotRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Replays the layer snapshot and returns the resulting bitmap.
 func (d *Client) ReplaySnapshot() *ReplaySnapshotRequest {
 	return &ReplaySnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -315,12 +312,12 @@ func (r *ReplaySnapshotRequest) Do() (*ReplaySnapshotResult, error) {
 	return &result, err
 }
 
-// Replays the layer snapshot and returns canvas log.
 type SnapshotCommandLogRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Replays the layer snapshot and returns canvas log.
 func (d *Client) SnapshotCommandLog() *SnapshotCommandLogRequest {
 	return &SnapshotCommandLogRequest{opts: make(map[string]interface{}), client: d.Client}
 }

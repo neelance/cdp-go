@@ -41,12 +41,12 @@ type TraceConfig struct {
 	MemoryDumpConfig *MemoryDumpConfig `json:"memoryDumpConfig,omitempty"`
 }
 
-// Start trace events collection.
 type StartRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Start trace events collection.
 func (d *Client) Start() *StartRequest {
 	return &StartRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -81,32 +81,30 @@ func (r *StartRequest) TraceConfig(v *TraceConfig) *StartRequest {
 	return r
 }
 
-// Start trace events collection.
 func (r *StartRequest) Do() error {
 	return r.client.Call("Tracing.start", r.opts, nil)
 }
 
-// Stop trace events collection.
 type EndRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Stop trace events collection.
 func (d *Client) End() *EndRequest {
 	return &EndRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Stop trace events collection.
 func (r *EndRequest) Do() error {
 	return r.client.Call("Tracing.end", r.opts, nil)
 }
 
-// Gets supported tracing categories.
 type GetCategoriesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Gets supported tracing categories.
 func (d *Client) GetCategories() *GetCategoriesRequest {
 	return &GetCategoriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -122,12 +120,12 @@ func (r *GetCategoriesRequest) Do() (*GetCategoriesResult, error) {
 	return &result, err
 }
 
-// Request a global memory dump.
 type RequestMemoryDumpRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Request a global memory dump.
 func (d *Client) RequestMemoryDump() *RequestMemoryDumpRequest {
 	return &RequestMemoryDumpRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -146,12 +144,12 @@ func (r *RequestMemoryDumpRequest) Do() (*RequestMemoryDumpResult, error) {
 	return &result, err
 }
 
-// Record a clock sync marker in the trace.
 type RecordClockSyncMarkerRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Record a clock sync marker in the trace.
 func (d *Client) RecordClockSyncMarker() *RecordClockSyncMarkerRequest {
 	return &RecordClockSyncMarkerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -162,7 +160,6 @@ func (r *RecordClockSyncMarkerRequest) SyncId(v string) *RecordClockSyncMarkerRe
 	return r
 }
 
-// Record a clock sync marker in the trace.
 func (r *RecordClockSyncMarkerRequest) Do() error {
 	return r.client.Call("Tracing.recordClockSyncMarker", r.opts, nil)
 }

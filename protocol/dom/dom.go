@@ -200,42 +200,40 @@ type Rect struct {
 	Height float64 `json:"height"`
 }
 
-// Enables DOM agent for the given page.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables DOM agent for the given page.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables DOM agent for the given page.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("DOM.enable", r.opts, nil)
 }
 
-// Disables DOM agent for the given page.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables DOM agent for the given page.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables DOM agent for the given page.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("DOM.disable", r.opts, nil)
 }
 
-// Returns the root DOM node (and optionally the subtree) to the caller.
 type GetDocumentRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the root DOM node (and optionally the subtree) to the caller.
 func (d *Client) GetDocument() *GetDocumentRequest {
 	return &GetDocumentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -263,12 +261,12 @@ func (r *GetDocumentRequest) Do() (*GetDocumentResult, error) {
 	return &result, err
 }
 
-// Returns the root DOM node (and optionally the subtree) to the caller.
 type GetFlattenedDocumentRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the root DOM node (and optionally the subtree) to the caller.
 func (d *Client) GetFlattenedDocument() *GetFlattenedDocumentRequest {
 	return &GetFlattenedDocumentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -296,12 +294,12 @@ func (r *GetFlattenedDocumentRequest) Do() (*GetFlattenedDocumentResult, error) 
 	return &result, err
 }
 
-// Collects class names for the node with given id and all of it's child nodes. (experimental)
 type CollectClassNamesFromSubtreeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Collects class names for the node with given id and all of it's child nodes. (experimental)
 func (d *Client) CollectClassNamesFromSubtree() *CollectClassNamesFromSubtreeRequest {
 	return &CollectClassNamesFromSubtreeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -323,12 +321,12 @@ func (r *CollectClassNamesFromSubtreeRequest) Do() (*CollectClassNamesFromSubtre
 	return &result, err
 }
 
-// Requests that children of the node with given id are returned to the caller in form of <code>setChildNodes</code> events where not only immediate children are retrieved, but all children down to the specified depth.
 type RequestChildNodesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that children of the node with given id are returned to the caller in form of <code>setChildNodes</code> events where not only immediate children are retrieved, but all children down to the specified depth.
 func (d *Client) RequestChildNodes() *RequestChildNodesRequest {
 	return &RequestChildNodesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -351,17 +349,16 @@ func (r *RequestChildNodesRequest) Pierce(v bool) *RequestChildNodesRequest {
 	return r
 }
 
-// Requests that children of the node with given id are returned to the caller in form of <code>setChildNodes</code> events where not only immediate children are retrieved, but all children down to the specified depth.
 func (r *RequestChildNodesRequest) Do() error {
 	return r.client.Call("DOM.requestChildNodes", r.opts, nil)
 }
 
-// Executes <code>querySelector</code> on a given node.
 type QuerySelectorRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Executes <code>querySelector</code> on a given node.
 func (d *Client) QuerySelector() *QuerySelectorRequest {
 	return &QuerySelectorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -389,12 +386,12 @@ func (r *QuerySelectorRequest) Do() (*QuerySelectorResult, error) {
 	return &result, err
 }
 
-// Executes <code>querySelectorAll</code> on a given node.
 type QuerySelectorAllRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Executes <code>querySelectorAll</code> on a given node.
 func (d *Client) QuerySelectorAll() *QuerySelectorAllRequest {
 	return &QuerySelectorAllRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -422,12 +419,12 @@ func (r *QuerySelectorAllRequest) Do() (*QuerySelectorAllResult, error) {
 	return &result, err
 }
 
-// Sets node name for a node with given id.
 type SetNodeNameRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets node name for a node with given id.
 func (d *Client) SetNodeName() *SetNodeNameRequest {
 	return &SetNodeNameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -455,12 +452,12 @@ func (r *SetNodeNameRequest) Do() (*SetNodeNameResult, error) {
 	return &result, err
 }
 
-// Sets node value for a node with given id.
 type SetNodeValueRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets node value for a node with given id.
 func (d *Client) SetNodeValue() *SetNodeValueRequest {
 	return &SetNodeValueRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -477,17 +474,16 @@ func (r *SetNodeValueRequest) Value(v string) *SetNodeValueRequest {
 	return r
 }
 
-// Sets node value for a node with given id.
 func (r *SetNodeValueRequest) Do() error {
 	return r.client.Call("DOM.setNodeValue", r.opts, nil)
 }
 
-// Removes node with given id.
 type RemoveNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Removes node with given id.
 func (d *Client) RemoveNode() *RemoveNodeRequest {
 	return &RemoveNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -498,17 +494,16 @@ func (r *RemoveNodeRequest) NodeId(v NodeId) *RemoveNodeRequest {
 	return r
 }
 
-// Removes node with given id.
 func (r *RemoveNodeRequest) Do() error {
 	return r.client.Call("DOM.removeNode", r.opts, nil)
 }
 
-// Sets attribute for an element with given id.
 type SetAttributeValueRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets attribute for an element with given id.
 func (d *Client) SetAttributeValue() *SetAttributeValueRequest {
 	return &SetAttributeValueRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -531,17 +526,16 @@ func (r *SetAttributeValueRequest) Value(v string) *SetAttributeValueRequest {
 	return r
 }
 
-// Sets attribute for an element with given id.
 func (r *SetAttributeValueRequest) Do() error {
 	return r.client.Call("DOM.setAttributeValue", r.opts, nil)
 }
 
-// Sets attributes on element with given id. This method is useful when user edits some existing attribute value and types in several attribute name/value pairs.
 type SetAttributesAsTextRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets attributes on element with given id. This method is useful when user edits some existing attribute value and types in several attribute name/value pairs.
 func (d *Client) SetAttributesAsText() *SetAttributesAsTextRequest {
 	return &SetAttributesAsTextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -564,17 +558,16 @@ func (r *SetAttributesAsTextRequest) Name(v string) *SetAttributesAsTextRequest 
 	return r
 }
 
-// Sets attributes on element with given id. This method is useful when user edits some existing attribute value and types in several attribute name/value pairs.
 func (r *SetAttributesAsTextRequest) Do() error {
 	return r.client.Call("DOM.setAttributesAsText", r.opts, nil)
 }
 
-// Removes attribute with given name from an element with given id.
 type RemoveAttributeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Removes attribute with given name from an element with given id.
 func (d *Client) RemoveAttribute() *RemoveAttributeRequest {
 	return &RemoveAttributeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -591,17 +584,16 @@ func (r *RemoveAttributeRequest) Name(v string) *RemoveAttributeRequest {
 	return r
 }
 
-// Removes attribute with given name from an element with given id.
 func (r *RemoveAttributeRequest) Do() error {
 	return r.client.Call("DOM.removeAttribute", r.opts, nil)
 }
 
-// Returns node's HTML markup.
 type GetOuterHTMLRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns node's HTML markup.
 func (d *Client) GetOuterHTML() *GetOuterHTMLRequest {
 	return &GetOuterHTMLRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -623,12 +615,12 @@ func (r *GetOuterHTMLRequest) Do() (*GetOuterHTMLResult, error) {
 	return &result, err
 }
 
-// Sets node HTML markup, returns new node id.
 type SetOuterHTMLRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets node HTML markup, returns new node id.
 func (d *Client) SetOuterHTML() *SetOuterHTMLRequest {
 	return &SetOuterHTMLRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -645,17 +637,16 @@ func (r *SetOuterHTMLRequest) OuterHTML(v string) *SetOuterHTMLRequest {
 	return r
 }
 
-// Sets node HTML markup, returns new node id.
 func (r *SetOuterHTMLRequest) Do() error {
 	return r.client.Call("DOM.setOuterHTML", r.opts, nil)
 }
 
-// Searches for a given string in the DOM tree. Use <code>getSearchResults</code> to access search results or <code>cancelSearch</code> to end this search session. (experimental)
 type PerformSearchRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Searches for a given string in the DOM tree. Use <code>getSearchResults</code> to access search results or <code>cancelSearch</code> to end this search session. (experimental)
 func (d *Client) PerformSearch() *PerformSearchRequest {
 	return &PerformSearchRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -686,12 +677,12 @@ func (r *PerformSearchRequest) Do() (*PerformSearchResult, error) {
 	return &result, err
 }
 
-// Returns search results from given <code>fromIndex</code> to given <code>toIndex</code> from the sarch with the given identifier. (experimental)
 type GetSearchResultsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns search results from given <code>fromIndex</code> to given <code>toIndex</code> from the sarch with the given identifier. (experimental)
 func (d *Client) GetSearchResults() *GetSearchResultsRequest {
 	return &GetSearchResultsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -725,12 +716,12 @@ func (r *GetSearchResultsRequest) Do() (*GetSearchResultsResult, error) {
 	return &result, err
 }
 
-// Discards search results from the session with the given id. <code>getSearchResults</code> should no longer be called for that search. (experimental)
 type DiscardSearchResultsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Discards search results from the session with the given id. <code>getSearchResults</code> should no longer be called for that search. (experimental)
 func (d *Client) DiscardSearchResults() *DiscardSearchResultsRequest {
 	return &DiscardSearchResultsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -741,17 +732,16 @@ func (r *DiscardSearchResultsRequest) SearchId(v string) *DiscardSearchResultsRe
 	return r
 }
 
-// Discards search results from the session with the given id. <code>getSearchResults</code> should no longer be called for that search. (experimental)
 func (r *DiscardSearchResultsRequest) Do() error {
 	return r.client.Call("DOM.discardSearchResults", r.opts, nil)
 }
 
-// Requests that the node is sent to the caller given the JavaScript node object reference. All nodes that form the path from the node to the root are also sent to the client as a series of <code>setChildNodes</code> notifications.
 type RequestNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that the node is sent to the caller given the JavaScript node object reference. All nodes that form the path from the node to the root are also sent to the client as a series of <code>setChildNodes</code> notifications.
 func (d *Client) RequestNode() *RequestNodeRequest {
 	return &RequestNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -773,57 +763,54 @@ func (r *RequestNodeRequest) Do() (*RequestNodeResult, error) {
 	return &result, err
 }
 
-// Highlights given rectangle.
 type HighlightRectRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Highlights given rectangle.
 func (d *Client) HighlightRect() *HighlightRectRequest {
 	return &HighlightRectRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Highlights given rectangle.
 func (r *HighlightRectRequest) Do() error {
 	return r.client.Call("DOM.highlightRect", r.opts, nil)
 }
 
-// Highlights DOM node.
 type HighlightNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Highlights DOM node.
 func (d *Client) HighlightNode() *HighlightNodeRequest {
 	return &HighlightNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Highlights DOM node.
 func (r *HighlightNodeRequest) Do() error {
 	return r.client.Call("DOM.highlightNode", r.opts, nil)
 }
 
-// Hides any highlight.
 type HideHighlightRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Hides any highlight.
 func (d *Client) HideHighlight() *HideHighlightRequest {
 	return &HideHighlightRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Hides any highlight.
 func (r *HideHighlightRequest) Do() error {
 	return r.client.Call("DOM.hideHighlight", r.opts, nil)
 }
 
-// Requests that the node is sent to the caller given its path. // FIXME, use XPath (experimental)
 type PushNodeByPathToFrontendRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that the node is sent to the caller given its path. // FIXME, use XPath (experimental)
 func (d *Client) PushNodeByPathToFrontend() *PushNodeByPathToFrontendRequest {
 	return &PushNodeByPathToFrontendRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -845,12 +832,12 @@ func (r *PushNodeByPathToFrontendRequest) Do() (*PushNodeByPathToFrontendResult,
 	return &result, err
 }
 
-// Requests that a batch of nodes is sent to the caller given their backend node ids. (experimental)
 type PushNodesByBackendIdsToFrontendRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that a batch of nodes is sent to the caller given their backend node ids. (experimental)
 func (d *Client) PushNodesByBackendIdsToFrontend() *PushNodesByBackendIdsToFrontendRequest {
 	return &PushNodesByBackendIdsToFrontendRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -872,12 +859,12 @@ func (r *PushNodesByBackendIdsToFrontendRequest) Do() (*PushNodesByBackendIdsToF
 	return &result, err
 }
 
-// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions). (experimental)
 type SetInspectedNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions). (experimental)
 func (d *Client) SetInspectedNode() *SetInspectedNodeRequest {
 	return &SetInspectedNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -888,17 +875,16 @@ func (r *SetInspectedNodeRequest) NodeId(v NodeId) *SetInspectedNodeRequest {
 	return r
 }
 
-// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions). (experimental)
 func (r *SetInspectedNodeRequest) Do() error {
 	return r.client.Call("DOM.setInspectedNode", r.opts, nil)
 }
 
-// Resolves JavaScript node object for given node id.
 type ResolveNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Resolves JavaScript node object for given node id.
 func (d *Client) ResolveNode() *ResolveNodeRequest {
 	return &ResolveNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -926,12 +912,12 @@ func (r *ResolveNodeRequest) Do() (*ResolveNodeResult, error) {
 	return &result, err
 }
 
-// Returns attributes for the specified node.
 type GetAttributesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns attributes for the specified node.
 func (d *Client) GetAttributes() *GetAttributesRequest {
 	return &GetAttributesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -953,12 +939,12 @@ func (r *GetAttributesRequest) Do() (*GetAttributesResult, error) {
 	return &result, err
 }
 
-// Creates a deep copy of the specified node and places it into the target container before the given anchor. (experimental)
 type CopyToRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Creates a deep copy of the specified node and places it into the target container before the given anchor. (experimental)
 func (d *Client) CopyTo() *CopyToRequest {
 	return &CopyToRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -992,12 +978,12 @@ func (r *CopyToRequest) Do() (*CopyToResult, error) {
 	return &result, err
 }
 
-// Moves node into the new container, places it before the given anchor.
 type MoveToRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Moves node into the new container, places it before the given anchor.
 func (d *Client) MoveTo() *MoveToRequest {
 	return &MoveToRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1031,57 +1017,54 @@ func (r *MoveToRequest) Do() (*MoveToResult, error) {
 	return &result, err
 }
 
-// Undoes the last performed action. (experimental)
 type UndoRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Undoes the last performed action. (experimental)
 func (d *Client) Undo() *UndoRequest {
 	return &UndoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Undoes the last performed action. (experimental)
 func (r *UndoRequest) Do() error {
 	return r.client.Call("DOM.undo", r.opts, nil)
 }
 
-// Re-does the last undone action. (experimental)
 type RedoRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Re-does the last undone action. (experimental)
 func (d *Client) Redo() *RedoRequest {
 	return &RedoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Re-does the last undone action. (experimental)
 func (r *RedoRequest) Do() error {
 	return r.client.Call("DOM.redo", r.opts, nil)
 }
 
-// Marks last undoable state. (experimental)
 type MarkUndoableStateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Marks last undoable state. (experimental)
 func (d *Client) MarkUndoableState() *MarkUndoableStateRequest {
 	return &MarkUndoableStateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Marks last undoable state. (experimental)
 func (r *MarkUndoableStateRequest) Do() error {
 	return r.client.Call("DOM.markUndoableState", r.opts, nil)
 }
 
-// Focuses the given element. (experimental)
 type FocusRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Focuses the given element. (experimental)
 func (d *Client) Focus() *FocusRequest {
 	return &FocusRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1092,17 +1075,16 @@ func (r *FocusRequest) NodeId(v NodeId) *FocusRequest {
 	return r
 }
 
-// Focuses the given element. (experimental)
 func (r *FocusRequest) Do() error {
 	return r.client.Call("DOM.focus", r.opts, nil)
 }
 
-// Sets files for the given file input element. (experimental)
 type SetFileInputFilesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets files for the given file input element. (experimental)
 func (d *Client) SetFileInputFiles() *SetFileInputFilesRequest {
 	return &SetFileInputFilesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1119,17 +1101,16 @@ func (r *SetFileInputFilesRequest) Files(v []string) *SetFileInputFilesRequest {
 	return r
 }
 
-// Sets files for the given file input element. (experimental)
 func (r *SetFileInputFilesRequest) Do() error {
 	return r.client.Call("DOM.setFileInputFiles", r.opts, nil)
 }
 
-// Returns boxes for the currently selected nodes. (experimental)
 type GetBoxModelRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns boxes for the currently selected nodes. (experimental)
 func (d *Client) GetBoxModel() *GetBoxModelRequest {
 	return &GetBoxModelRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1151,12 +1132,12 @@ func (r *GetBoxModelRequest) Do() (*GetBoxModelResult, error) {
 	return &result, err
 }
 
-// Returns node id at given location. (experimental)
 type GetNodeForLocationRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns node id at given location. (experimental)
 func (d *Client) GetNodeForLocation() *GetNodeForLocationRequest {
 	return &GetNodeForLocationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1190,12 +1171,12 @@ func (r *GetNodeForLocationRequest) Do() (*GetNodeForLocationResult, error) {
 	return &result, err
 }
 
-// Returns the id of the nearest ancestor that is a relayout boundary. (experimental)
 type GetRelayoutBoundaryRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the id of the nearest ancestor that is a relayout boundary. (experimental)
 func (d *Client) GetRelayoutBoundary() *GetRelayoutBoundaryRequest {
 	return &GetRelayoutBoundaryRequest{opts: make(map[string]interface{}), client: d.Client}
 }

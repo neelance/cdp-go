@@ -98,42 +98,40 @@ type KeyframeStyle struct {
 	Easing string `json:"easing"`
 }
 
-// Enables animation domain notifications.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables animation domain notifications.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables animation domain notifications.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("Animation.enable", r.opts, nil)
 }
 
-// Disables animation domain notifications.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables animation domain notifications.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables animation domain notifications.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("Animation.disable", r.opts, nil)
 }
 
-// Gets the playback rate of the document timeline.
 type GetPlaybackRateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Gets the playback rate of the document timeline.
 func (d *Client) GetPlaybackRate() *GetPlaybackRateRequest {
 	return &GetPlaybackRateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -149,12 +147,12 @@ func (r *GetPlaybackRateRequest) Do() (*GetPlaybackRateResult, error) {
 	return &result, err
 }
 
-// Sets the playback rate of the document timeline.
 type SetPlaybackRateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets the playback rate of the document timeline.
 func (d *Client) SetPlaybackRate() *SetPlaybackRateRequest {
 	return &SetPlaybackRateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -165,17 +163,16 @@ func (r *SetPlaybackRateRequest) PlaybackRate(v float64) *SetPlaybackRateRequest
 	return r
 }
 
-// Sets the playback rate of the document timeline.
 func (r *SetPlaybackRateRequest) Do() error {
 	return r.client.Call("Animation.setPlaybackRate", r.opts, nil)
 }
 
-// Returns the current time of the an animation.
 type GetCurrentTimeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the current time of the an animation.
 func (d *Client) GetCurrentTime() *GetCurrentTimeRequest {
 	return &GetCurrentTimeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -197,12 +194,12 @@ func (r *GetCurrentTimeRequest) Do() (*GetCurrentTimeResult, error) {
 	return &result, err
 }
 
-// Sets the paused state of a set of animations.
 type SetPausedRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets the paused state of a set of animations.
 func (d *Client) SetPaused() *SetPausedRequest {
 	return &SetPausedRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -219,17 +216,16 @@ func (r *SetPausedRequest) Paused(v bool) *SetPausedRequest {
 	return r
 }
 
-// Sets the paused state of a set of animations.
 func (r *SetPausedRequest) Do() error {
 	return r.client.Call("Animation.setPaused", r.opts, nil)
 }
 
-// Sets the timing of an animation node.
 type SetTimingRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets the timing of an animation node.
 func (d *Client) SetTiming() *SetTimingRequest {
 	return &SetTimingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -252,17 +248,16 @@ func (r *SetTimingRequest) Delay(v float64) *SetTimingRequest {
 	return r
 }
 
-// Sets the timing of an animation node.
 func (r *SetTimingRequest) Do() error {
 	return r.client.Call("Animation.setTiming", r.opts, nil)
 }
 
-// Seek a set of animations to a particular time within each animation.
 type SeekAnimationsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Seek a set of animations to a particular time within each animation.
 func (d *Client) SeekAnimations() *SeekAnimationsRequest {
 	return &SeekAnimationsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -279,17 +274,16 @@ func (r *SeekAnimationsRequest) CurrentTime(v float64) *SeekAnimationsRequest {
 	return r
 }
 
-// Seek a set of animations to a particular time within each animation.
 func (r *SeekAnimationsRequest) Do() error {
 	return r.client.Call("Animation.seekAnimations", r.opts, nil)
 }
 
-// Releases a set of animations to no longer be manipulated.
 type ReleaseAnimationsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Releases a set of animations to no longer be manipulated.
 func (d *Client) ReleaseAnimations() *ReleaseAnimationsRequest {
 	return &ReleaseAnimationsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -300,17 +294,16 @@ func (r *ReleaseAnimationsRequest) Animations(v []string) *ReleaseAnimationsRequ
 	return r
 }
 
-// Releases a set of animations to no longer be manipulated.
 func (r *ReleaseAnimationsRequest) Do() error {
 	return r.client.Call("Animation.releaseAnimations", r.opts, nil)
 }
 
-// Gets the remote object of the Animation.
 type ResolveAnimationRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Gets the remote object of the Animation.
 func (d *Client) ResolveAnimation() *ResolveAnimationRequest {
 	return &ResolveAnimationRequest{opts: make(map[string]interface{}), client: d.Client}
 }

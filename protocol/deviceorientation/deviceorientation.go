@@ -10,12 +10,12 @@ type Client struct {
 	*rpc.Client
 }
 
-// Overrides the Device Orientation.
 type SetDeviceOrientationOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Overrides the Device Orientation.
 func (d *Client) SetDeviceOrientationOverride() *SetDeviceOrientationOverrideRequest {
 	return &SetDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -38,22 +38,20 @@ func (r *SetDeviceOrientationOverrideRequest) Gamma(v float64) *SetDeviceOrienta
 	return r
 }
 
-// Overrides the Device Orientation.
 func (r *SetDeviceOrientationOverrideRequest) Do() error {
 	return r.client.Call("DeviceOrientation.setDeviceOrientationOverride", r.opts, nil)
 }
 
-// Clears the overridden Device Orientation.
 type ClearDeviceOrientationOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears the overridden Device Orientation.
 func (d *Client) ClearDeviceOrientationOverride() *ClearDeviceOrientationOverrideRequest {
 	return &ClearDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Clears the overridden Device Orientation.
 func (r *ClearDeviceOrientationOverrideRequest) Do() error {
 	return r.client.Call("DeviceOrientation.clearDeviceOrientationOverride", r.opts, nil)
 }

@@ -24,32 +24,30 @@ type StorageId struct {
 
 type Item []string
 
-// Enables storage tracking, storage events will now be delivered to the client.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables storage tracking, storage events will now be delivered to the client.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables storage tracking, storage events will now be delivered to the client.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("DOMStorage.enable", r.opts, nil)
 }
 
-// Disables storage tracking, prevents storage events from being sent to the client.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables storage tracking, prevents storage events from being sent to the client.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables storage tracking, prevents storage events from being sent to the client.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("DOMStorage.disable", r.opts, nil)
 }

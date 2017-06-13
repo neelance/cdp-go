@@ -55,12 +55,12 @@ type FrameWithManifest struct {
 	Status int `json:"status"`
 }
 
-// Returns array of frame identifiers with manifest urls for each frame containing a document associated with some application cache.
 type GetFramesWithManifestsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns array of frame identifiers with manifest urls for each frame containing a document associated with some application cache.
 func (d *Client) GetFramesWithManifests() *GetFramesWithManifestsRequest {
 	return &GetFramesWithManifestsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -76,27 +76,26 @@ func (r *GetFramesWithManifestsRequest) Do() (*GetFramesWithManifestsResult, err
 	return &result, err
 }
 
-// Enables application cache domain notifications.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables application cache domain notifications.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables application cache domain notifications.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("ApplicationCache.enable", r.opts, nil)
 }
 
-// Returns manifest URL for document in the given frame.
 type GetManifestForFrameRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns manifest URL for document in the given frame.
 func (d *Client) GetManifestForFrame() *GetManifestForFrameRequest {
 	return &GetManifestForFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -118,12 +117,12 @@ func (r *GetManifestForFrameRequest) Do() (*GetManifestForFrameResult, error) {
 	return &result, err
 }
 
-// Returns relevant application cache data for the document in given frame.
 type GetApplicationCacheForFrameRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns relevant application cache data for the document in given frame.
 func (d *Client) GetApplicationCacheForFrame() *GetApplicationCacheForFrameRequest {
 	return &GetApplicationCacheForFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }

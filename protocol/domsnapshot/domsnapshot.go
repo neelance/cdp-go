@@ -101,12 +101,12 @@ type NameValue struct {
 	Value string `json:"value"`
 }
 
-// Returns a document snapshot, including the full DOM tree of the root node (including iframes, template contents, and imported documents) in a flattened array, as well as layout and white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is flattened.
 type GetSnapshotRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns a document snapshot, including the full DOM tree of the root node (including iframes, template contents, and imported documents) in a flattened array, as well as layout and white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is flattened.
 func (d *Client) GetSnapshot() *GetSnapshotRequest {
 	return &GetSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }

@@ -37,12 +37,12 @@ func (r *GetDOMCountersRequest) Do() (*GetDOMCountersResult, error) {
 	return &result, err
 }
 
-// Enable/disable suppressing memory pressure notifications in all processes.
 type SetPressureNotificationsSuppressedRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enable/disable suppressing memory pressure notifications in all processes.
 func (d *Client) SetPressureNotificationsSuppressed() *SetPressureNotificationsSuppressedRequest {
 	return &SetPressureNotificationsSuppressedRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -53,17 +53,16 @@ func (r *SetPressureNotificationsSuppressedRequest) Suppressed(v bool) *SetPress
 	return r
 }
 
-// Enable/disable suppressing memory pressure notifications in all processes.
 func (r *SetPressureNotificationsSuppressedRequest) Do() error {
 	return r.client.Call("Memory.setPressureNotificationsSuppressed", r.opts, nil)
 }
 
-// Simulate a memory pressure notification in all processes.
 type SimulatePressureNotificationRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Simulate a memory pressure notification in all processes.
 func (d *Client) SimulatePressureNotification() *SimulatePressureNotificationRequest {
 	return &SimulatePressureNotificationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -74,7 +73,6 @@ func (r *SimulatePressureNotificationRequest) Level(v PressureLevel) *SimulatePr
 	return r
 }
 
-// Simulate a memory pressure notification in all processes.
 func (r *SimulatePressureNotificationRequest) Do() error {
 	return r.client.Call("Memory.simulatePressureNotification", r.opts, nil)
 }

@@ -146,12 +146,12 @@ type AXNode struct {
 	BackendDOMNodeId interface{} `json:"backendDOMNodeId,omitempty"`
 }
 
-// Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists. (experimental)
 type GetPartialAXTreeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists. (experimental)
 func (d *Client) GetPartialAXTree() *GetPartialAXTreeRequest {
 	return &GetPartialAXTreeRequest{opts: make(map[string]interface{}), client: d.Client}
 }

@@ -63,57 +63,54 @@ type InsecureContentStatus struct {
 
 type CertificateErrorAction string
 
-// Enables tracking security state changes.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables tracking security state changes.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables tracking security state changes.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("Security.enable", r.opts, nil)
 }
 
-// Disables tracking security state changes.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables tracking security state changes.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables tracking security state changes.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("Security.disable", r.opts, nil)
 }
 
-// Displays native dialog with the certificate details.
 type ShowCertificateViewerRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Displays native dialog with the certificate details.
 func (d *Client) ShowCertificateViewer() *ShowCertificateViewerRequest {
 	return &ShowCertificateViewerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Displays native dialog with the certificate details.
 func (r *ShowCertificateViewerRequest) Do() error {
 	return r.client.Call("Security.showCertificateViewer", r.opts, nil)
 }
 
-// Handles a certificate error that fired a certificateError event.
 type HandleCertificateErrorRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Handles a certificate error that fired a certificateError event.
 func (d *Client) HandleCertificateError() *HandleCertificateErrorRequest {
 	return &HandleCertificateErrorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -130,17 +127,16 @@ func (r *HandleCertificateErrorRequest) Action(v CertificateErrorAction) *Handle
 	return r
 }
 
-// Handles a certificate error that fired a certificateError event.
 func (r *HandleCertificateErrorRequest) Do() error {
 	return r.client.Call("Security.handleCertificateError", r.opts, nil)
 }
 
-// Enable/disable overriding certificate errors. If enabled, all certificate error events need to be handled by the DevTools client and should be answered with handleCertificateError commands.
 type SetOverrideCertificateErrorsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enable/disable overriding certificate errors. If enabled, all certificate error events need to be handled by the DevTools client and should be answered with handleCertificateError commands.
 func (d *Client) SetOverrideCertificateErrors() *SetOverrideCertificateErrorsRequest {
 	return &SetOverrideCertificateErrorsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -151,7 +147,6 @@ func (r *SetOverrideCertificateErrorsRequest) Override(v bool) *SetOverrideCerti
 	return r
 }
 
-// Enable/disable overriding certificate errors. If enabled, all certificate error events need to be handled by the DevTools client and should be answered with handleCertificateError commands.
 func (r *SetOverrideCertificateErrorsRequest) Do() error {
 	return r.client.Call("Security.setOverrideCertificateErrors", r.opts, nil)
 }

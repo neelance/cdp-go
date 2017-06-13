@@ -40,12 +40,12 @@ type TouchPoint struct {
 
 type GestureSourceType string
 
-// Ignores input events (useful while auditing page).
 type SetIgnoreInputEventsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Ignores input events (useful while auditing page).
 func (d *Client) SetIgnoreInputEvents() *SetIgnoreInputEventsRequest {
 	return &SetIgnoreInputEventsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -56,17 +56,16 @@ func (r *SetIgnoreInputEventsRequest) Ignore(v bool) *SetIgnoreInputEventsReques
 	return r
 }
 
-// Ignores input events (useful while auditing page).
 func (r *SetIgnoreInputEventsRequest) Do() error {
 	return r.client.Call("Input.setIgnoreInputEvents", r.opts, nil)
 }
 
-// Dispatches a key event to the page.
 type DispatchKeyEventRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Dispatches a key event to the page.
 func (d *Client) DispatchKeyEvent() *DispatchKeyEventRequest {
 	return &DispatchKeyEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -149,17 +148,16 @@ func (r *DispatchKeyEventRequest) IsSystemKey(v bool) *DispatchKeyEventRequest {
 	return r
 }
 
-// Dispatches a key event to the page.
 func (r *DispatchKeyEventRequest) Do() error {
 	return r.client.Call("Input.dispatchKeyEvent", r.opts, nil)
 }
 
-// Dispatches a mouse event to the page.
 type DispatchMouseEventRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Dispatches a mouse event to the page.
 func (d *Client) DispatchMouseEvent() *DispatchMouseEventRequest {
 	return &DispatchMouseEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -206,17 +204,16 @@ func (r *DispatchMouseEventRequest) ClickCount(v int) *DispatchMouseEventRequest
 	return r
 }
 
-// Dispatches a mouse event to the page.
 func (r *DispatchMouseEventRequest) Do() error {
 	return r.client.Call("Input.dispatchMouseEvent", r.opts, nil)
 }
 
-// Dispatches a touch event to the page. (experimental)
 type DispatchTouchEventRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Dispatches a touch event to the page. (experimental)
 func (d *Client) DispatchTouchEvent() *DispatchTouchEventRequest {
 	return &DispatchTouchEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -245,17 +242,16 @@ func (r *DispatchTouchEventRequest) Timestamp(v float64) *DispatchTouchEventRequ
 	return r
 }
 
-// Dispatches a touch event to the page. (experimental)
 func (r *DispatchTouchEventRequest) Do() error {
 	return r.client.Call("Input.dispatchTouchEvent", r.opts, nil)
 }
 
-// Emulates touch event from the mouse event parameters. (experimental)
 type EmulateTouchFromMouseEventRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Emulates touch event from the mouse event parameters. (experimental)
 func (d *Client) EmulateTouchFromMouseEvent() *EmulateTouchFromMouseEventRequest {
 	return &EmulateTouchFromMouseEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -314,17 +310,16 @@ func (r *EmulateTouchFromMouseEventRequest) ClickCount(v int) *EmulateTouchFromM
 	return r
 }
 
-// Emulates touch event from the mouse event parameters. (experimental)
 func (r *EmulateTouchFromMouseEventRequest) Do() error {
 	return r.client.Call("Input.emulateTouchFromMouseEvent", r.opts, nil)
 }
 
-// Synthesizes a pinch gesture over a time period by issuing appropriate touch events. (experimental)
 type SynthesizePinchGestureRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Synthesizes a pinch gesture over a time period by issuing appropriate touch events. (experimental)
 func (d *Client) SynthesizePinchGesture() *SynthesizePinchGestureRequest {
 	return &SynthesizePinchGestureRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -359,17 +354,16 @@ func (r *SynthesizePinchGestureRequest) GestureSourceType(v GestureSourceType) *
 	return r
 }
 
-// Synthesizes a pinch gesture over a time period by issuing appropriate touch events. (experimental)
 func (r *SynthesizePinchGestureRequest) Do() error {
 	return r.client.Call("Input.synthesizePinchGesture", r.opts, nil)
 }
 
-// Synthesizes a scroll gesture over a time period by issuing appropriate touch events. (experimental)
 type SynthesizeScrollGestureRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Synthesizes a scroll gesture over a time period by issuing appropriate touch events. (experimental)
 func (d *Client) SynthesizeScrollGesture() *SynthesizeScrollGestureRequest {
 	return &SynthesizeScrollGestureRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -446,17 +440,16 @@ func (r *SynthesizeScrollGestureRequest) InteractionMarkerName(v string) *Synthe
 	return r
 }
 
-// Synthesizes a scroll gesture over a time period by issuing appropriate touch events. (experimental)
 func (r *SynthesizeScrollGestureRequest) Do() error {
 	return r.client.Call("Input.synthesizeScrollGesture", r.opts, nil)
 }
 
-// Synthesizes a tap gesture over a time period by issuing appropriate touch events. (experimental)
 type SynthesizeTapGestureRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Synthesizes a tap gesture over a time period by issuing appropriate touch events. (experimental)
 func (d *Client) SynthesizeTapGesture() *SynthesizeTapGestureRequest {
 	return &SynthesizeTapGestureRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -491,7 +484,6 @@ func (r *SynthesizeTapGestureRequest) GestureSourceType(v GestureSourceType) *Sy
 	return r
 }
 
-// Synthesizes a tap gesture over a time period by issuing appropriate touch events. (experimental)
 func (r *SynthesizeTapGestureRequest) Do() error {
 	return r.client.Call("Input.synthesizeTapGesture", r.opts, nil)
 }

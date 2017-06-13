@@ -109,42 +109,40 @@ type BreakLocation struct {
 	Type string `json:"type,omitempty"`
 }
 
-// Enables debugger for the given page. Clients should not assume that the debugging has been enabled until the result for this command is received.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables debugger for the given page. Clients should not assume that the debugging has been enabled until the result for this command is received.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables debugger for the given page. Clients should not assume that the debugging has been enabled until the result for this command is received.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("Debugger.enable", r.opts, nil)
 }
 
-// Disables debugger for given page.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables debugger for given page.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables debugger for given page.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("Debugger.disable", r.opts, nil)
 }
 
-// Activates / deactivates all breakpoints on the page.
 type SetBreakpointsActiveRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Activates / deactivates all breakpoints on the page.
 func (d *Client) SetBreakpointsActive() *SetBreakpointsActiveRequest {
 	return &SetBreakpointsActiveRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -155,17 +153,16 @@ func (r *SetBreakpointsActiveRequest) Active(v bool) *SetBreakpointsActiveReques
 	return r
 }
 
-// Activates / deactivates all breakpoints on the page.
 func (r *SetBreakpointsActiveRequest) Do() error {
 	return r.client.Call("Debugger.setBreakpointsActive", r.opts, nil)
 }
 
-// Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
 type SetSkipAllPausesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
 func (d *Client) SetSkipAllPauses() *SetSkipAllPausesRequest {
 	return &SetSkipAllPausesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -176,17 +173,16 @@ func (r *SetSkipAllPausesRequest) Skip(v bool) *SetSkipAllPausesRequest {
 	return r
 }
 
-// Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
 func (r *SetSkipAllPausesRequest) Do() error {
 	return r.client.Call("Debugger.setSkipAllPauses", r.opts, nil)
 }
 
-// Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this command is issued, all existing parsed scripts will have breakpoints resolved and returned in <code>locations</code> property. Further matching script parsing will result in subsequent <code>breakpointResolved</code> events issued. This logical breakpoint will survive page reloads.
 type SetBreakpointByUrlRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this command is issued, all existing parsed scripts will have breakpoints resolved and returned in <code>locations</code> property. Further matching script parsing will result in subsequent <code>breakpointResolved</code> events issued. This logical breakpoint will survive page reloads.
 func (d *Client) SetBreakpointByUrl() *SetBreakpointByUrlRequest {
 	return &SetBreakpointByUrlRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -235,12 +231,12 @@ func (r *SetBreakpointByUrlRequest) Do() (*SetBreakpointByUrlResult, error) {
 	return &result, err
 }
 
-// Sets JavaScript breakpoint at a given location.
 type SetBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets JavaScript breakpoint at a given location.
 func (d *Client) SetBreakpoint() *SetBreakpointRequest {
 	return &SetBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -271,12 +267,12 @@ func (r *SetBreakpointRequest) Do() (*SetBreakpointResult, error) {
 	return &result, err
 }
 
-// Removes JavaScript breakpoint.
 type RemoveBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Removes JavaScript breakpoint.
 func (d *Client) RemoveBreakpoint() *RemoveBreakpointRequest {
 	return &RemoveBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -286,17 +282,16 @@ func (r *RemoveBreakpointRequest) BreakpointId(v BreakpointId) *RemoveBreakpoint
 	return r
 }
 
-// Removes JavaScript breakpoint.
 func (r *RemoveBreakpointRequest) Do() error {
 	return r.client.Call("Debugger.removeBreakpoint", r.opts, nil)
 }
 
-// Returns possible locations for breakpoint. scriptId in start and end range locations should be the same. (experimental)
 type GetPossibleBreakpointsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns possible locations for breakpoint. scriptId in start and end range locations should be the same. (experimental)
 func (d *Client) GetPossibleBreakpoints() *GetPossibleBreakpointsRequest {
 	return &GetPossibleBreakpointsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -330,12 +325,12 @@ func (r *GetPossibleBreakpointsRequest) Do() (*GetPossibleBreakpointsResult, err
 	return &result, err
 }
 
-// Continues execution until specific location is reached.
 type ContinueToLocationRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Continues execution until specific location is reached.
 func (d *Client) ContinueToLocation() *ContinueToLocationRequest {
 	return &ContinueToLocationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -352,107 +347,100 @@ func (r *ContinueToLocationRequest) TargetCallFrames(v string) *ContinueToLocati
 	return r
 }
 
-// Continues execution until specific location is reached.
 func (r *ContinueToLocationRequest) Do() error {
 	return r.client.Call("Debugger.continueToLocation", r.opts, nil)
 }
 
-// Steps over the statement.
 type StepOverRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Steps over the statement.
 func (d *Client) StepOver() *StepOverRequest {
 	return &StepOverRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Steps over the statement.
 func (r *StepOverRequest) Do() error {
 	return r.client.Call("Debugger.stepOver", r.opts, nil)
 }
 
-// Steps into the function call.
 type StepIntoRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Steps into the function call.
 func (d *Client) StepInto() *StepIntoRequest {
 	return &StepIntoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Steps into the function call.
 func (r *StepIntoRequest) Do() error {
 	return r.client.Call("Debugger.stepInto", r.opts, nil)
 }
 
-// Steps out of the function call.
 type StepOutRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Steps out of the function call.
 func (d *Client) StepOut() *StepOutRequest {
 	return &StepOutRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Steps out of the function call.
 func (r *StepOutRequest) Do() error {
 	return r.client.Call("Debugger.stepOut", r.opts, nil)
 }
 
-// Stops on the next JavaScript statement.
 type PauseRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Stops on the next JavaScript statement.
 func (d *Client) Pause() *PauseRequest {
 	return &PauseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Stops on the next JavaScript statement.
 func (r *PauseRequest) Do() error {
 	return r.client.Call("Debugger.pause", r.opts, nil)
 }
 
-// Steps into next scheduled async task if any is scheduled before next pause. Returns success when async task is actually scheduled, returns error if no task were scheduled or another scheduleStepIntoAsync was called. (experimental)
 type ScheduleStepIntoAsyncRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Steps into next scheduled async task if any is scheduled before next pause. Returns success when async task is actually scheduled, returns error if no task were scheduled or another scheduleStepIntoAsync was called. (experimental)
 func (d *Client) ScheduleStepIntoAsync() *ScheduleStepIntoAsyncRequest {
 	return &ScheduleStepIntoAsyncRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Steps into next scheduled async task if any is scheduled before next pause. Returns success when async task is actually scheduled, returns error if no task were scheduled or another scheduleStepIntoAsync was called. (experimental)
 func (r *ScheduleStepIntoAsyncRequest) Do() error {
 	return r.client.Call("Debugger.scheduleStepIntoAsync", r.opts, nil)
 }
 
-// Resumes JavaScript execution.
 type ResumeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Resumes JavaScript execution.
 func (d *Client) Resume() *ResumeRequest {
 	return &ResumeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Resumes JavaScript execution.
 func (r *ResumeRequest) Do() error {
 	return r.client.Call("Debugger.resume", r.opts, nil)
 }
 
-// Searches for given string in script content. (experimental)
 type SearchInContentRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Searches for given string in script content. (experimental)
 func (d *Client) SearchInContent() *SearchInContentRequest {
 	return &SearchInContentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -492,12 +480,12 @@ func (r *SearchInContentRequest) Do() (*SearchInContentResult, error) {
 	return &result, err
 }
 
-// Edits JavaScript source live.
 type SetScriptSourceRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Edits JavaScript source live.
 func (d *Client) SetScriptSource() *SetScriptSourceRequest {
 	return &SetScriptSourceRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -540,12 +528,12 @@ func (r *SetScriptSourceRequest) Do() (*SetScriptSourceResult, error) {
 	return &result, err
 }
 
-// Restarts particular call frame from the beginning.
 type RestartFrameRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Restarts particular call frame from the beginning.
 func (d *Client) RestartFrame() *RestartFrameRequest {
 	return &RestartFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -570,12 +558,12 @@ func (r *RestartFrameRequest) Do() (*RestartFrameResult, error) {
 	return &result, err
 }
 
-// Returns source for the script with given id.
 type GetScriptSourceRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns source for the script with given id.
 func (d *Client) GetScriptSource() *GetScriptSourceRequest {
 	return &GetScriptSourceRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -597,12 +585,12 @@ func (r *GetScriptSourceRequest) Do() (*GetScriptSourceResult, error) {
 	return &result, err
 }
 
-// Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or no exceptions. Initial pause on exceptions state is <code>none</code>.
 type SetPauseOnExceptionsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or no exceptions. Initial pause on exceptions state is <code>none</code>.
 func (d *Client) SetPauseOnExceptions() *SetPauseOnExceptionsRequest {
 	return &SetPauseOnExceptionsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -613,17 +601,16 @@ func (r *SetPauseOnExceptionsRequest) State(v string) *SetPauseOnExceptionsReque
 	return r
 }
 
-// Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or no exceptions. Initial pause on exceptions state is <code>none</code>.
 func (r *SetPauseOnExceptionsRequest) Do() error {
 	return r.client.Call("Debugger.setPauseOnExceptions", r.opts, nil)
 }
 
-// Evaluates expression on a given call frame.
 type EvaluateOnCallFrameRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Evaluates expression on a given call frame.
 func (d *Client) EvaluateOnCallFrame() *EvaluateOnCallFrameRequest {
 	return &EvaluateOnCallFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -690,12 +677,12 @@ func (r *EvaluateOnCallFrameRequest) Do() (*EvaluateOnCallFrameResult, error) {
 	return &result, err
 }
 
-// Changes value of variable in a callframe. Object-based scopes are not supported and must be mutated manually.
 type SetVariableValueRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Changes value of variable in a callframe. Object-based scopes are not supported and must be mutated manually.
 func (d *Client) SetVariableValue() *SetVariableValueRequest {
 	return &SetVariableValueRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -724,17 +711,16 @@ func (r *SetVariableValueRequest) CallFrameId(v CallFrameId) *SetVariableValueRe
 	return r
 }
 
-// Changes value of variable in a callframe. Object-based scopes are not supported and must be mutated manually.
 func (r *SetVariableValueRequest) Do() error {
 	return r.client.Call("Debugger.setVariableValue", r.opts, nil)
 }
 
-// Enables or disables async call stacks tracking.
 type SetAsyncCallStackDepthRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables or disables async call stacks tracking.
 func (d *Client) SetAsyncCallStackDepth() *SetAsyncCallStackDepthRequest {
 	return &SetAsyncCallStackDepthRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -745,17 +731,16 @@ func (r *SetAsyncCallStackDepthRequest) MaxDepth(v int) *SetAsyncCallStackDepthR
 	return r
 }
 
-// Enables or disables async call stacks tracking.
 func (r *SetAsyncCallStackDepthRequest) Do() error {
 	return r.client.Call("Debugger.setAsyncCallStackDepth", r.opts, nil)
 }
 
-// Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in scripts with url matching one of the patterns. VM will try to leave blackboxed script by performing 'step in' several times, finally resorting to 'step out' if unsuccessful. (experimental)
 type SetBlackboxPatternsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in scripts with url matching one of the patterns. VM will try to leave blackboxed script by performing 'step in' several times, finally resorting to 'step out' if unsuccessful. (experimental)
 func (d *Client) SetBlackboxPatterns() *SetBlackboxPatternsRequest {
 	return &SetBlackboxPatternsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -766,17 +751,16 @@ func (r *SetBlackboxPatternsRequest) Patterns(v []string) *SetBlackboxPatternsRe
 	return r
 }
 
-// Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in scripts with url matching one of the patterns. VM will try to leave blackboxed script by performing 'step in' several times, finally resorting to 'step out' if unsuccessful. (experimental)
 func (r *SetBlackboxPatternsRequest) Do() error {
 	return r.client.Call("Debugger.setBlackboxPatterns", r.opts, nil)
 }
 
-// Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful. Positions array contains positions where blackbox state is changed. First interval isn't blackboxed. Array should be sorted. (experimental)
 type SetBlackboxedRangesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful. Positions array contains positions where blackbox state is changed. First interval isn't blackboxed. Array should be sorted. (experimental)
 func (d *Client) SetBlackboxedRanges() *SetBlackboxedRangesRequest {
 	return &SetBlackboxedRangesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -792,7 +776,6 @@ func (r *SetBlackboxedRangesRequest) Positions(v []*ScriptPosition) *SetBlackbox
 	return r
 }
 
-// Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful. Positions array contains positions where blackbox state is changed. First interval isn't blackboxed. Array should be sorted. (experimental)
 func (r *SetBlackboxedRangesRequest) Do() error {
 	return r.client.Call("Debugger.setBlackboxedRanges", r.opts, nil)
 }

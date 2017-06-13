@@ -160,12 +160,12 @@ func (r *GetObjectByHeapObjectIdRequest) Do() (*GetObjectByHeapObjectIdResult, e
 	return &result, err
 }
 
-// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions).
 type AddInspectedHeapObjectRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions).
 func (d *Client) AddInspectedHeapObject() *AddInspectedHeapObjectRequest {
 	return &AddInspectedHeapObjectRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -176,7 +176,6 @@ func (r *AddInspectedHeapObjectRequest) HeapObjectId(v HeapSnapshotObjectId) *Ad
 	return r
 }
 
-// Enables console to refer to the node with given id via $x (see Command Line API for more details $x functions).
 func (r *AddInspectedHeapObjectRequest) Do() error {
 	return r.client.Call("HeapProfiler.addInspectedHeapObject", r.opts, nil)
 }

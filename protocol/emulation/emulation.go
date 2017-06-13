@@ -24,12 +24,12 @@ type ScreenOrientation struct {
 
 type VirtualTimePolicy string
 
-// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
 type SetDeviceMetricsOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
 func (d *Client) SetDeviceMetricsOverride() *SetDeviceMetricsOverrideRequest {
 	return &SetDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -112,32 +112,30 @@ func (r *SetDeviceMetricsOverrideRequest) ScreenOrientation(v *ScreenOrientation
 	return r
 }
 
-// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results).
 func (r *SetDeviceMetricsOverrideRequest) Do() error {
 	return r.client.Call("Emulation.setDeviceMetricsOverride", r.opts, nil)
 }
 
-// Clears the overriden device metrics.
 type ClearDeviceMetricsOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears the overriden device metrics.
 func (d *Client) ClearDeviceMetricsOverride() *ClearDeviceMetricsOverrideRequest {
 	return &ClearDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Clears the overriden device metrics.
 func (r *ClearDeviceMetricsOverrideRequest) Do() error {
 	return r.client.Call("Emulation.clearDeviceMetricsOverride", r.opts, nil)
 }
 
-// Overrides the visible area of the page. The change is hidden from the page, i.e. the observable scroll position and page scale does not change. In effect, the command moves the specified area of the page into the top-left corner of the frame. (experimental)
 type ForceViewportRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Overrides the visible area of the page. The change is hidden from the page, i.e. the observable scroll position and page scale does not change. In effect, the command moves the specified area of the page into the top-left corner of the frame. (experimental)
 func (d *Client) ForceViewport() *ForceViewportRequest {
 	return &ForceViewportRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -160,47 +158,44 @@ func (r *ForceViewportRequest) Scale(v float64) *ForceViewportRequest {
 	return r
 }
 
-// Overrides the visible area of the page. The change is hidden from the page, i.e. the observable scroll position and page scale does not change. In effect, the command moves the specified area of the page into the top-left corner of the frame. (experimental)
 func (r *ForceViewportRequest) Do() error {
 	return r.client.Call("Emulation.forceViewport", r.opts, nil)
 }
 
-// Resets the visible area of the page to the original viewport, undoing any effects of the <code>forceViewport</code> command. (experimental)
 type ResetViewportRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Resets the visible area of the page to the original viewport, undoing any effects of the <code>forceViewport</code> command. (experimental)
 func (d *Client) ResetViewport() *ResetViewportRequest {
 	return &ResetViewportRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Resets the visible area of the page to the original viewport, undoing any effects of the <code>forceViewport</code> command. (experimental)
 func (r *ResetViewportRequest) Do() error {
 	return r.client.Call("Emulation.resetViewport", r.opts, nil)
 }
 
-// Requests that page scale factor is reset to initial values. (experimental)
 type ResetPageScaleFactorRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that page scale factor is reset to initial values. (experimental)
 func (d *Client) ResetPageScaleFactor() *ResetPageScaleFactorRequest {
 	return &ResetPageScaleFactorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Requests that page scale factor is reset to initial values. (experimental)
 func (r *ResetPageScaleFactorRequest) Do() error {
 	return r.client.Call("Emulation.resetPageScaleFactor", r.opts, nil)
 }
 
-// Sets a specified page scale factor. (experimental)
 type SetPageScaleFactorRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets a specified page scale factor. (experimental)
 func (d *Client) SetPageScaleFactor() *SetPageScaleFactorRequest {
 	return &SetPageScaleFactorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -211,17 +206,16 @@ func (r *SetPageScaleFactorRequest) PageScaleFactor(v float64) *SetPageScaleFact
 	return r
 }
 
-// Sets a specified page scale factor. (experimental)
 func (r *SetPageScaleFactorRequest) Do() error {
 	return r.client.Call("Emulation.setPageScaleFactor", r.opts, nil)
 }
 
-// Resizes the frame/viewport of the page. Note that this does not affect the frame's container (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported on Android. (experimental)
 type SetVisibleSizeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Resizes the frame/viewport of the page. Note that this does not affect the frame's container (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported on Android. (experimental)
 func (d *Client) SetVisibleSize() *SetVisibleSizeRequest {
 	return &SetVisibleSizeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -238,17 +232,16 @@ func (r *SetVisibleSizeRequest) Height(v int) *SetVisibleSizeRequest {
 	return r
 }
 
-// Resizes the frame/viewport of the page. Note that this does not affect the frame's container (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported on Android. (experimental)
 func (r *SetVisibleSizeRequest) Do() error {
 	return r.client.Call("Emulation.setVisibleSize", r.opts, nil)
 }
 
-// Switches script execution in the page. (experimental)
 type SetScriptExecutionDisabledRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Switches script execution in the page. (experimental)
 func (d *Client) SetScriptExecutionDisabled() *SetScriptExecutionDisabledRequest {
 	return &SetScriptExecutionDisabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -259,17 +252,16 @@ func (r *SetScriptExecutionDisabledRequest) Value(v bool) *SetScriptExecutionDis
 	return r
 }
 
-// Switches script execution in the page. (experimental)
 func (r *SetScriptExecutionDisabledRequest) Do() error {
 	return r.client.Call("Emulation.setScriptExecutionDisabled", r.opts, nil)
 }
 
-// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable. (experimental)
 type SetGeolocationOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable. (experimental)
 func (d *Client) SetGeolocationOverride() *SetGeolocationOverrideRequest {
 	return &SetGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -292,32 +284,30 @@ func (r *SetGeolocationOverrideRequest) Accuracy(v float64) *SetGeolocationOverr
 	return r
 }
 
-// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable. (experimental)
 func (r *SetGeolocationOverrideRequest) Do() error {
 	return r.client.Call("Emulation.setGeolocationOverride", r.opts, nil)
 }
 
-// Clears the overriden Geolocation Position and Error. (experimental)
 type ClearGeolocationOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears the overriden Geolocation Position and Error. (experimental)
 func (d *Client) ClearGeolocationOverride() *ClearGeolocationOverrideRequest {
 	return &ClearGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Clears the overriden Geolocation Position and Error. (experimental)
 func (r *ClearGeolocationOverrideRequest) Do() error {
 	return r.client.Call("Emulation.clearGeolocationOverride", r.opts, nil)
 }
 
-// Toggles mouse event-based touch event emulation.
 type SetTouchEmulationEnabledRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Toggles mouse event-based touch event emulation.
 func (d *Client) SetTouchEmulationEnabled() *SetTouchEmulationEnabledRequest {
 	return &SetTouchEmulationEnabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -334,17 +324,16 @@ func (r *SetTouchEmulationEnabledRequest) Configuration(v string) *SetTouchEmula
 	return r
 }
 
-// Toggles mouse event-based touch event emulation.
 func (r *SetTouchEmulationEnabledRequest) Do() error {
 	return r.client.Call("Emulation.setTouchEmulationEnabled", r.opts, nil)
 }
 
-// Emulates the given media for CSS media queries.
 type SetEmulatedMediaRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Emulates the given media for CSS media queries.
 func (d *Client) SetEmulatedMedia() *SetEmulatedMediaRequest {
 	return &SetEmulatedMediaRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -355,17 +344,16 @@ func (r *SetEmulatedMediaRequest) Media(v string) *SetEmulatedMediaRequest {
 	return r
 }
 
-// Emulates the given media for CSS media queries.
 func (r *SetEmulatedMediaRequest) Do() error {
 	return r.client.Call("Emulation.setEmulatedMedia", r.opts, nil)
 }
 
-// Enables CPU throttling to emulate slow CPUs. (experimental)
 type SetCPUThrottlingRateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables CPU throttling to emulate slow CPUs. (experimental)
 func (d *Client) SetCPUThrottlingRate() *SetCPUThrottlingRateRequest {
 	return &SetCPUThrottlingRateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -376,17 +364,16 @@ func (r *SetCPUThrottlingRateRequest) Rate(v float64) *SetCPUThrottlingRateReque
 	return r
 }
 
-// Enables CPU throttling to emulate slow CPUs. (experimental)
 func (r *SetCPUThrottlingRateRequest) Do() error {
 	return r.client.Call("Emulation.setCPUThrottlingRate", r.opts, nil)
 }
 
-// Tells whether emulation is supported. (experimental)
 type CanEmulateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Tells whether emulation is supported. (experimental)
 func (d *Client) CanEmulate() *CanEmulateRequest {
 	return &CanEmulateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -402,12 +389,12 @@ func (r *CanEmulateRequest) Do() (*CanEmulateResult, error) {
 	return &result, err
 }
 
-// Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets the current virtual time policy.  Note this supersedes any previous time budget. (experimental)
 type SetVirtualTimePolicyRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets the current virtual time policy.  Note this supersedes any previous time budget. (experimental)
 func (d *Client) SetVirtualTimePolicy() *SetVirtualTimePolicyRequest {
 	return &SetVirtualTimePolicyRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -423,17 +410,16 @@ func (r *SetVirtualTimePolicyRequest) Budget(v int) *SetVirtualTimePolicyRequest
 	return r
 }
 
-// Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets the current virtual time policy.  Note this supersedes any previous time budget. (experimental)
 func (r *SetVirtualTimePolicyRequest) Do() error {
 	return r.client.Call("Emulation.setVirtualTimePolicy", r.opts, nil)
 }
 
-// Sets or clears an override of the default background color of the frame. This override is used if the content does not specify one. (experimental)
 type SetDefaultBackgroundColorOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets or clears an override of the default background color of the frame. This override is used if the content does not specify one. (experimental)
 func (d *Client) SetDefaultBackgroundColorOverride() *SetDefaultBackgroundColorOverrideRequest {
 	return &SetDefaultBackgroundColorOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -444,7 +430,6 @@ func (r *SetDefaultBackgroundColorOverrideRequest) Color(v interface{}) *SetDefa
 	return r
 }
 
-// Sets or clears an override of the default background color of the frame. This override is used if the content does not specify one. (experimental)
 func (r *SetDefaultBackgroundColorOverrideRequest) Do() error {
 	return r.client.Call("Emulation.setDefaultBackgroundColorOverride", r.opts, nil)
 }

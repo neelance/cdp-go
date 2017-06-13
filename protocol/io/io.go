@@ -12,12 +12,12 @@ type Client struct {
 
 type StreamHandle string
 
-// Read a chunk of the stream
 type ReadRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Read a chunk of the stream
 func (d *Client) Read() *ReadRequest {
 	return &ReadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -54,12 +54,12 @@ func (r *ReadRequest) Do() (*ReadResult, error) {
 	return &result, err
 }
 
-// Close the stream, discard any temporary backing storage.
 type CloseRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Close the stream, discard any temporary backing storage.
 func (d *Client) Close() *CloseRequest {
 	return &CloseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -70,7 +70,6 @@ func (r *CloseRequest) Handle(v StreamHandle) *CloseRequest {
 	return r
 }
 
-// Close the stream, discard any temporary backing storage.
 func (r *CloseRequest) Do() error {
 	return r.client.Call("IO.close", r.opts, nil)
 }

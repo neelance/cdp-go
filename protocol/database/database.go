@@ -40,32 +40,30 @@ type Error struct {
 	Code int `json:"code"`
 }
 
-// Enables database tracking, database events will now be delivered to the client.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables database tracking, database events will now be delivered to the client.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables database tracking, database events will now be delivered to the client.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("Database.enable", r.opts, nil)
 }
 
-// Disables database tracking, prevents database events from being sent to the client.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables database tracking, prevents database events from being sent to the client.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables database tracking, prevents database events from being sent to the client.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("Database.disable", r.opts, nil)
 }

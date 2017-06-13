@@ -367,42 +367,40 @@ type ComputedStyle struct {
 	Properties []*CSSComputedStyleProperty `json:"properties"`
 }
 
-// Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been enabled until the result of this command is received.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been enabled until the result of this command is received.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables the CSS agent for the given page. Clients should not assume that the CSS agent has been enabled until the result of this command is received.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("CSS.enable", r.opts, nil)
 }
 
-// Disables the CSS agent for the given page.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables the CSS agent for the given page.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables the CSS agent for the given page.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("CSS.disable", r.opts, nil)
 }
 
-// Returns requested styles for a DOM node identified by <code>nodeId</code>.
 type GetMatchedStylesForNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns requested styles for a DOM node identified by <code>nodeId</code>.
 func (d *Client) GetMatchedStylesForNode() *GetMatchedStylesForNodeRequest {
 	return &GetMatchedStylesForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -438,12 +436,12 @@ func (r *GetMatchedStylesForNodeRequest) Do() (*GetMatchedStylesForNodeResult, e
 	return &result, err
 }
 
-// Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM attributes) for a DOM node identified by <code>nodeId</code>.
 type GetInlineStylesForNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM attributes) for a DOM node identified by <code>nodeId</code>.
 func (d *Client) GetInlineStylesForNode() *GetInlineStylesForNodeRequest {
 	return &GetInlineStylesForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -467,12 +465,12 @@ func (r *GetInlineStylesForNodeRequest) Do() (*GetInlineStylesForNodeResult, err
 	return &result, err
 }
 
-// Returns the computed style for a DOM node identified by <code>nodeId</code>.
 type GetComputedStyleForNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the computed style for a DOM node identified by <code>nodeId</code>.
 func (d *Client) GetComputedStyleForNode() *GetComputedStyleForNodeRequest {
 	return &GetComputedStyleForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -493,12 +491,12 @@ func (r *GetComputedStyleForNodeRequest) Do() (*GetComputedStyleForNodeResult, e
 	return &result, err
 }
 
-// Requests information about platform fonts which we used to render child TextNodes in the given node. (experimental)
 type GetPlatformFontsForNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests information about platform fonts which we used to render child TextNodes in the given node. (experimental)
 func (d *Client) GetPlatformFontsForNode() *GetPlatformFontsForNodeRequest {
 	return &GetPlatformFontsForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -519,12 +517,12 @@ func (r *GetPlatformFontsForNodeRequest) Do() (*GetPlatformFontsForNodeResult, e
 	return &result, err
 }
 
-// Returns the current textual content and the URL for a stylesheet.
 type GetStyleSheetTextRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the current textual content and the URL for a stylesheet.
 func (d *Client) GetStyleSheetText() *GetStyleSheetTextRequest {
 	return &GetStyleSheetTextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -545,12 +543,12 @@ func (r *GetStyleSheetTextRequest) Do() (*GetStyleSheetTextResult, error) {
 	return &result, err
 }
 
-// Returns all class names from specified stylesheet. (experimental)
 type CollectClassNamesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns all class names from specified stylesheet. (experimental)
 func (d *Client) CollectClassNames() *CollectClassNamesRequest {
 	return &CollectClassNamesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -571,12 +569,12 @@ func (r *CollectClassNamesRequest) Do() (*CollectClassNamesResult, error) {
 	return &result, err
 }
 
-// Sets the new stylesheet text.
 type SetStyleSheetTextRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets the new stylesheet text.
 func (d *Client) SetStyleSheetText() *SetStyleSheetTextRequest {
 	return &SetStyleSheetTextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -602,12 +600,12 @@ func (r *SetStyleSheetTextRequest) Do() (*SetStyleSheetTextResult, error) {
 	return &result, err
 }
 
-// Modifies the rule selector.
 type SetRuleSelectorRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Modifies the rule selector.
 func (d *Client) SetRuleSelector() *SetRuleSelectorRequest {
 	return &SetRuleSelectorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -638,12 +636,12 @@ func (r *SetRuleSelectorRequest) Do() (*SetRuleSelectorResult, error) {
 	return &result, err
 }
 
-// Modifies the keyframe rule key text.
 type SetKeyframeKeyRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Modifies the keyframe rule key text.
 func (d *Client) SetKeyframeKey() *SetKeyframeKeyRequest {
 	return &SetKeyframeKeyRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -674,12 +672,12 @@ func (r *SetKeyframeKeyRequest) Do() (*SetKeyframeKeyResult, error) {
 	return &result, err
 }
 
-// Applies specified style edits one after another in the given order.
 type SetStyleTextsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Applies specified style edits one after another in the given order.
 func (d *Client) SetStyleTexts() *SetStyleTextsRequest {
 	return &SetStyleTextsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -700,12 +698,12 @@ func (r *SetStyleTextsRequest) Do() (*SetStyleTextsResult, error) {
 	return &result, err
 }
 
-// Modifies the rule selector.
 type SetMediaTextRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Modifies the rule selector.
 func (d *Client) SetMediaText() *SetMediaTextRequest {
 	return &SetMediaTextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -736,12 +734,12 @@ func (r *SetMediaTextRequest) Do() (*SetMediaTextResult, error) {
 	return &result, err
 }
 
-// Creates a new special "via-inspector" stylesheet in the frame with given <code>frameId</code>.
 type CreateStyleSheetRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Creates a new special "via-inspector" stylesheet in the frame with given <code>frameId</code>.
 func (d *Client) CreateStyleSheet() *CreateStyleSheetRequest {
 	return &CreateStyleSheetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -763,12 +761,12 @@ func (r *CreateStyleSheetRequest) Do() (*CreateStyleSheetResult, error) {
 	return &result, err
 }
 
-// Inserts a new rule with the given <code>ruleText</code> in a stylesheet with given <code>styleSheetId</code>, at the position specified by <code>location</code>.
 type AddRuleRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Inserts a new rule with the given <code>ruleText</code> in a stylesheet with given <code>styleSheetId</code>, at the position specified by <code>location</code>.
 func (d *Client) AddRule() *AddRuleRequest {
 	return &AddRuleRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -802,12 +800,12 @@ func (r *AddRuleRequest) Do() (*AddRuleResult, error) {
 	return &result, err
 }
 
-// Ensures that the given node will have specified pseudo-classes whenever its style is computed by the browser.
 type ForcePseudoStateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Ensures that the given node will have specified pseudo-classes whenever its style is computed by the browser.
 func (d *Client) ForcePseudoState() *ForcePseudoStateRequest {
 	return &ForcePseudoStateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -824,17 +822,16 @@ func (r *ForcePseudoStateRequest) ForcedPseudoClasses(v []string) *ForcePseudoSt
 	return r
 }
 
-// Ensures that the given node will have specified pseudo-classes whenever its style is computed by the browser.
 func (r *ForcePseudoStateRequest) Do() error {
 	return r.client.Call("CSS.forcePseudoState", r.opts, nil)
 }
 
-// Returns all media queries parsed by the rendering engine. (experimental)
 type GetMediaQueriesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns all media queries parsed by the rendering engine. (experimental)
 func (d *Client) GetMediaQueries() *GetMediaQueriesRequest {
 	return &GetMediaQueriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -849,12 +846,12 @@ func (r *GetMediaQueriesRequest) Do() (*GetMediaQueriesResult, error) {
 	return &result, err
 }
 
-// Find a rule with the given active property for the given node and set the new value for this property (experimental)
 type SetEffectivePropertyValueForNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Find a rule with the given active property for the given node and set the new value for this property (experimental)
 func (d *Client) SetEffectivePropertyValueForNode() *SetEffectivePropertyValueForNodeRequest {
 	return &SetEffectivePropertyValueForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -875,17 +872,16 @@ func (r *SetEffectivePropertyValueForNodeRequest) Value(v string) *SetEffectiveP
 	return r
 }
 
-// Find a rule with the given active property for the given node and set the new value for this property (experimental)
 func (r *SetEffectivePropertyValueForNodeRequest) Do() error {
 	return r.client.Call("CSS.setEffectivePropertyValueForNode", r.opts, nil)
 }
 
-// (experimental)
 type GetBackgroundColorsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// (experimental)
 func (d *Client) GetBackgroundColors() *GetBackgroundColorsRequest {
 	return &GetBackgroundColorsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -907,12 +903,12 @@ func (r *GetBackgroundColorsRequest) Do() (*GetBackgroundColorsResult, error) {
 	return &result, err
 }
 
-// For the main document and any content documents, return the LayoutTreeNodes and a whitelisted subset of the computed style. It only returns pushed nodes, on way to pull all nodes is to call DOM.getDocument with a depth of -1. (experimental)
 type GetLayoutTreeAndStylesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// For the main document and any content documents, return the LayoutTreeNodes and a whitelisted subset of the computed style. It only returns pushed nodes, on way to pull all nodes is to call DOM.getDocument with a depth of -1. (experimental)
 func (d *Client) GetLayoutTreeAndStyles() *GetLayoutTreeAndStylesRequest {
 	return &GetLayoutTreeAndStylesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -935,27 +931,26 @@ func (r *GetLayoutTreeAndStylesRequest) Do() (*GetLayoutTreeAndStylesResult, err
 	return &result, err
 }
 
-// Enables the selector recording. (experimental)
 type StartRuleUsageTrackingRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables the selector recording. (experimental)
 func (d *Client) StartRuleUsageTracking() *StartRuleUsageTrackingRequest {
 	return &StartRuleUsageTrackingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables the selector recording. (experimental)
 func (r *StartRuleUsageTrackingRequest) Do() error {
 	return r.client.Call("CSS.startRuleUsageTracking", r.opts, nil)
 }
 
-// Obtain list of rules that became used since last call to this method (or since start of coverage instrumentation) (experimental)
 type TakeCoverageDeltaRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Obtain list of rules that became used since last call to this method (or since start of coverage instrumentation) (experimental)
 func (d *Client) TakeCoverageDelta() *TakeCoverageDeltaRequest {
 	return &TakeCoverageDeltaRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -970,12 +965,12 @@ func (r *TakeCoverageDeltaRequest) Do() (*TakeCoverageDeltaResult, error) {
 	return &result, err
 }
 
-// The list of rules with an indication of whether these were used (experimental)
 type StopRuleUsageTrackingRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// The list of rules with an indication of whether these were used (experimental)
 func (d *Client) StopRuleUsageTracking() *StopRuleUsageTrackingRequest {
 	return &StopRuleUsageTrackingRequest{opts: make(map[string]interface{}), client: d.Client}
 }

@@ -40,12 +40,12 @@ type Cache struct {
 	CacheName string `json:"cacheName"`
 }
 
-// Requests cache names.
 type RequestCacheNamesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests cache names.
 func (d *Client) RequestCacheNames() *RequestCacheNamesRequest {
 	return &RequestCacheNamesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -67,12 +67,12 @@ func (r *RequestCacheNamesRequest) Do() (*RequestCacheNamesResult, error) {
 	return &result, err
 }
 
-// Requests data from cache.
 type RequestEntriesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests data from cache.
 func (d *Client) RequestEntries() *RequestEntriesRequest {
 	return &RequestEntriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -109,12 +109,12 @@ func (r *RequestEntriesRequest) Do() (*RequestEntriesResult, error) {
 	return &result, err
 }
 
-// Deletes a cache.
 type DeleteCacheRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Deletes a cache.
 func (d *Client) DeleteCache() *DeleteCacheRequest {
 	return &DeleteCacheRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -125,17 +125,16 @@ func (r *DeleteCacheRequest) CacheId(v CacheId) *DeleteCacheRequest {
 	return r
 }
 
-// Deletes a cache.
 func (r *DeleteCacheRequest) Do() error {
 	return r.client.Call("CacheStorage.deleteCache", r.opts, nil)
 }
 
-// Deletes a cache entry.
 type DeleteEntryRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Deletes a cache entry.
 func (d *Client) DeleteEntry() *DeleteEntryRequest {
 	return &DeleteEntryRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -152,7 +151,6 @@ func (r *DeleteEntryRequest) Request(v string) *DeleteEntryRequest {
 	return r
 }
 
-// Deletes a cache entry.
 func (r *DeleteEntryRequest) Do() error {
 	return r.client.Call("CacheStorage.deleteEntry", r.opts, nil)
 }

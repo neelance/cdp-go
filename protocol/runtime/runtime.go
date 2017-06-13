@@ -266,12 +266,12 @@ type StackTrace struct {
 	PromiseCreationFrame *CallFrame `json:"promiseCreationFrame,omitempty"`
 }
 
-// Evaluates expression on global object.
 type EvaluateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Evaluates expression on global object.
 func (d *Client) Evaluate() *EvaluateRequest {
 	return &EvaluateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -344,12 +344,12 @@ func (r *EvaluateRequest) Do() (*EvaluateResult, error) {
 	return &result, err
 }
 
-// Add handler to promise with given promise object id.
 type AwaitPromiseRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Add handler to promise with given promise object id.
 func (d *Client) AwaitPromise() *AwaitPromiseRequest {
 	return &AwaitPromiseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -386,12 +386,12 @@ func (r *AwaitPromiseRequest) Do() (*AwaitPromiseResult, error) {
 	return &result, err
 }
 
-// Calls function with given declaration on the given object. Object group of the result is inherited from the target object.
 type CallFunctionOnRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Calls function with given declaration on the given object. Object group of the result is inherited from the target object.
 func (d *Client) CallFunctionOn() *CallFunctionOnRequest {
 	return &CallFunctionOnRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -458,12 +458,12 @@ func (r *CallFunctionOnRequest) Do() (*CallFunctionOnResult, error) {
 	return &result, err
 }
 
-// Returns properties of a given object. Object group of the result is inherited from the target object.
 type GetPropertiesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns properties of a given object. Object group of the result is inherited from the target object.
 func (d *Client) GetProperties() *GetPropertiesRequest {
 	return &GetPropertiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -509,12 +509,12 @@ func (r *GetPropertiesRequest) Do() (*GetPropertiesResult, error) {
 	return &result, err
 }
 
-// Releases remote object with given id.
 type ReleaseObjectRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Releases remote object with given id.
 func (d *Client) ReleaseObject() *ReleaseObjectRequest {
 	return &ReleaseObjectRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -525,17 +525,16 @@ func (r *ReleaseObjectRequest) ObjectId(v RemoteObjectId) *ReleaseObjectRequest 
 	return r
 }
 
-// Releases remote object with given id.
 func (r *ReleaseObjectRequest) Do() error {
 	return r.client.Call("Runtime.releaseObject", r.opts, nil)
 }
 
-// Releases all remote objects that belong to a given group.
 type ReleaseObjectGroupRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Releases all remote objects that belong to a given group.
 func (d *Client) ReleaseObjectGroup() *ReleaseObjectGroupRequest {
 	return &ReleaseObjectGroupRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -546,77 +545,72 @@ func (r *ReleaseObjectGroupRequest) ObjectGroup(v string) *ReleaseObjectGroupReq
 	return r
 }
 
-// Releases all remote objects that belong to a given group.
 func (r *ReleaseObjectGroupRequest) Do() error {
 	return r.client.Call("Runtime.releaseObjectGroup", r.opts, nil)
 }
 
-// Tells inspected instance to run if it was waiting for debugger to attach.
 type RunIfWaitingForDebuggerRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Tells inspected instance to run if it was waiting for debugger to attach.
 func (d *Client) RunIfWaitingForDebugger() *RunIfWaitingForDebuggerRequest {
 	return &RunIfWaitingForDebuggerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Tells inspected instance to run if it was waiting for debugger to attach.
 func (r *RunIfWaitingForDebuggerRequest) Do() error {
 	return r.client.Call("Runtime.runIfWaitingForDebugger", r.opts, nil)
 }
 
-// Enables reporting of execution contexts creation by means of <code>executionContextCreated</code> event. When the reporting gets enabled the event will be sent immediately for each existing execution context.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables reporting of execution contexts creation by means of <code>executionContextCreated</code> event. When the reporting gets enabled the event will be sent immediately for each existing execution context.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables reporting of execution contexts creation by means of <code>executionContextCreated</code> event. When the reporting gets enabled the event will be sent immediately for each existing execution context.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("Runtime.enable", r.opts, nil)
 }
 
-// Disables reporting of execution contexts creation.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables reporting of execution contexts creation.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables reporting of execution contexts creation.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("Runtime.disable", r.opts, nil)
 }
 
-// Discards collected exceptions and console API calls.
 type DiscardConsoleEntriesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Discards collected exceptions and console API calls.
 func (d *Client) DiscardConsoleEntries() *DiscardConsoleEntriesRequest {
 	return &DiscardConsoleEntriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Discards collected exceptions and console API calls.
 func (r *DiscardConsoleEntriesRequest) Do() error {
 	return r.client.Call("Runtime.discardConsoleEntries", r.opts, nil)
 }
 
-// (experimental)
 type SetCustomObjectFormatterEnabledRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// (experimental)
 func (d *Client) SetCustomObjectFormatterEnabled() *SetCustomObjectFormatterEnabledRequest {
 	return &SetCustomObjectFormatterEnabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -626,17 +620,16 @@ func (r *SetCustomObjectFormatterEnabledRequest) Enabled(v bool) *SetCustomObjec
 	return r
 }
 
-// (experimental)
 func (r *SetCustomObjectFormatterEnabledRequest) Do() error {
 	return r.client.Call("Runtime.setCustomObjectFormatterEnabled", r.opts, nil)
 }
 
-// Compiles expression.
 type CompileScriptRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Compiles expression.
 func (d *Client) CompileScript() *CompileScriptRequest {
 	return &CompileScriptRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -679,12 +672,12 @@ func (r *CompileScriptRequest) Do() (*CompileScriptResult, error) {
 	return &result, err
 }
 
-// Runs script with given id in a given context.
 type RunScriptRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Runs script with given id in a given context.
 func (d *Client) RunScript() *RunScriptRequest {
 	return &RunScriptRequest{opts: make(map[string]interface{}), client: d.Client}
 }

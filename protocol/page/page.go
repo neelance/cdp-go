@@ -198,42 +198,40 @@ type VisualViewport struct {
 	Scale float64 `json:"scale"`
 }
 
-// Enables page domain notifications.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables page domain notifications.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables page domain notifications.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("Page.enable", r.opts, nil)
 }
 
-// Disables page domain notifications.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables page domain notifications.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables page domain notifications.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("Page.disable", r.opts, nil)
 }
 
-// (experimental)
 type AddScriptToEvaluateOnLoadRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// (experimental)
 func (d *Client) AddScriptToEvaluateOnLoad() *AddScriptToEvaluateOnLoadRequest {
 	return &AddScriptToEvaluateOnLoadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -254,12 +252,12 @@ func (r *AddScriptToEvaluateOnLoadRequest) Do() (*AddScriptToEvaluateOnLoadResul
 	return &result, err
 }
 
-// (experimental)
 type RemoveScriptToEvaluateOnLoadRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// (experimental)
 func (d *Client) RemoveScriptToEvaluateOnLoad() *RemoveScriptToEvaluateOnLoadRequest {
 	return &RemoveScriptToEvaluateOnLoadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -269,17 +267,16 @@ func (r *RemoveScriptToEvaluateOnLoadRequest) Identifier(v ScriptIdentifier) *Re
 	return r
 }
 
-// (experimental)
 func (r *RemoveScriptToEvaluateOnLoadRequest) Do() error {
 	return r.client.Call("Page.removeScriptToEvaluateOnLoad", r.opts, nil)
 }
 
-// Controls whether browser will open a new inspector window for connected pages. (experimental)
 type SetAutoAttachToCreatedPagesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Controls whether browser will open a new inspector window for connected pages. (experimental)
 func (d *Client) SetAutoAttachToCreatedPages() *SetAutoAttachToCreatedPagesRequest {
 	return &SetAutoAttachToCreatedPagesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -290,17 +287,16 @@ func (r *SetAutoAttachToCreatedPagesRequest) AutoAttach(v bool) *SetAutoAttachTo
 	return r
 }
 
-// Controls whether browser will open a new inspector window for connected pages. (experimental)
 func (r *SetAutoAttachToCreatedPagesRequest) Do() error {
 	return r.client.Call("Page.setAutoAttachToCreatedPages", r.opts, nil)
 }
 
-// Reloads given page optionally ignoring the cache.
 type ReloadRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Reloads given page optionally ignoring the cache.
 func (d *Client) Reload() *ReloadRequest {
 	return &ReloadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -317,17 +313,16 @@ func (r *ReloadRequest) ScriptToEvaluateOnLoad(v string) *ReloadRequest {
 	return r
 }
 
-// Reloads given page optionally ignoring the cache.
 func (r *ReloadRequest) Do() error {
 	return r.client.Call("Page.reload", r.opts, nil)
 }
 
-// Navigates current page to the given URL.
 type NavigateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Navigates current page to the given URL.
 func (d *Client) Navigate() *NavigateRequest {
 	return &NavigateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -361,27 +356,26 @@ func (r *NavigateRequest) Do() (*NavigateResult, error) {
 	return &result, err
 }
 
-// Force the page stop all navigations and pending resource fetches. (experimental)
 type StopLoadingRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Force the page stop all navigations and pending resource fetches. (experimental)
 func (d *Client) StopLoading() *StopLoadingRequest {
 	return &StopLoadingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Force the page stop all navigations and pending resource fetches. (experimental)
 func (r *StopLoadingRequest) Do() error {
 	return r.client.Call("Page.stopLoading", r.opts, nil)
 }
 
-// Returns navigation history for the current page. (experimental)
 type GetNavigationHistoryRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns navigation history for the current page. (experimental)
 func (d *Client) GetNavigationHistory() *GetNavigationHistoryRequest {
 	return &GetNavigationHistoryRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -400,12 +394,12 @@ func (r *GetNavigationHistoryRequest) Do() (*GetNavigationHistoryResult, error) 
 	return &result, err
 }
 
-// Navigates current page to the given history entry. (experimental)
 type NavigateToHistoryEntryRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Navigates current page to the given history entry. (experimental)
 func (d *Client) NavigateToHistoryEntry() *NavigateToHistoryEntryRequest {
 	return &NavigateToHistoryEntryRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -416,17 +410,16 @@ func (r *NavigateToHistoryEntryRequest) EntryId(v int) *NavigateToHistoryEntryRe
 	return r
 }
 
-// Navigates current page to the given history entry. (experimental)
 func (r *NavigateToHistoryEntryRequest) Do() error {
 	return r.client.Call("Page.navigateToHistoryEntry", r.opts, nil)
 }
 
-// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
 type GetCookiesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
 func (d *Client) GetCookies() *GetCookiesRequest {
 	return &GetCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -442,12 +435,12 @@ func (r *GetCookiesRequest) Do() (*GetCookiesResult, error) {
 	return &result, err
 }
 
-// Deletes browser cookie with given name, domain and path. (experimental)
 type DeleteCookieRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Deletes browser cookie with given name, domain and path. (experimental)
 func (d *Client) DeleteCookie() *DeleteCookieRequest {
 	return &DeleteCookieRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -464,17 +457,16 @@ func (r *DeleteCookieRequest) URL(v string) *DeleteCookieRequest {
 	return r
 }
 
-// Deletes browser cookie with given name, domain and path. (experimental)
 func (r *DeleteCookieRequest) Do() error {
 	return r.client.Call("Page.deleteCookie", r.opts, nil)
 }
 
-// Returns present frame / resource tree structure. (experimental)
 type GetResourceTreeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns present frame / resource tree structure. (experimental)
 func (d *Client) GetResourceTree() *GetResourceTreeRequest {
 	return &GetResourceTreeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -490,12 +482,12 @@ func (r *GetResourceTreeRequest) Do() (*GetResourceTreeResult, error) {
 	return &result, err
 }
 
-// Returns content of the given resource. (experimental)
 type GetResourceContentRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns content of the given resource. (experimental)
 func (d *Client) GetResourceContent() *GetResourceContentRequest {
 	return &GetResourceContentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -526,12 +518,12 @@ func (r *GetResourceContentRequest) Do() (*GetResourceContentResult, error) {
 	return &result, err
 }
 
-// Searches for given string in resource content. (experimental)
 type SearchInResourceRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Searches for given string in resource content. (experimental)
 func (d *Client) SearchInResource() *SearchInResourceRequest {
 	return &SearchInResourceRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -577,12 +569,12 @@ func (r *SearchInResourceRequest) Do() (*SearchInResourceResult, error) {
 	return &result, err
 }
 
-// Sets given markup as the document's HTML. (experimental)
 type SetDocumentContentRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets given markup as the document's HTML. (experimental)
 func (d *Client) SetDocumentContent() *SetDocumentContentRequest {
 	return &SetDocumentContentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -599,17 +591,16 @@ func (r *SetDocumentContentRequest) Html(v string) *SetDocumentContentRequest {
 	return r
 }
 
-// Sets given markup as the document's HTML. (experimental)
 func (r *SetDocumentContentRequest) Do() error {
 	return r.client.Call("Page.setDocumentContent", r.opts, nil)
 }
 
-// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results). (experimental)
 type SetDeviceMetricsOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results). (experimental)
 func (d *Client) SetDeviceMetricsOverride() *SetDeviceMetricsOverrideRequest {
 	return &SetDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -692,32 +683,30 @@ func (r *SetDeviceMetricsOverrideRequest) ScreenOrientation(v interface{}) *SetD
 	return r
 }
 
-// Overrides the values of device screen dimensions (window.screen.width, window.screen.height, window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media query results). (experimental)
 func (r *SetDeviceMetricsOverrideRequest) Do() error {
 	return r.client.Call("Page.setDeviceMetricsOverride", r.opts, nil)
 }
 
-// Clears the overriden device metrics. (experimental)
 type ClearDeviceMetricsOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears the overriden device metrics. (experimental)
 func (d *Client) ClearDeviceMetricsOverride() *ClearDeviceMetricsOverrideRequest {
 	return &ClearDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Clears the overriden device metrics. (experimental)
 func (r *ClearDeviceMetricsOverrideRequest) Do() error {
 	return r.client.Call("Page.clearDeviceMetricsOverride", r.opts, nil)
 }
 
-// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
 type SetGeolocationOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
 func (d *Client) SetGeolocationOverride() *SetGeolocationOverrideRequest {
 	return &SetGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -740,32 +729,30 @@ func (r *SetGeolocationOverrideRequest) Accuracy(v float64) *SetGeolocationOverr
 	return r
 }
 
-// Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position unavailable.
 func (r *SetGeolocationOverrideRequest) Do() error {
 	return r.client.Call("Page.setGeolocationOverride", r.opts, nil)
 }
 
-// Clears the overriden Geolocation Position and Error.
 type ClearGeolocationOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears the overriden Geolocation Position and Error.
 func (d *Client) ClearGeolocationOverride() *ClearGeolocationOverrideRequest {
 	return &ClearGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Clears the overriden Geolocation Position and Error.
 func (r *ClearGeolocationOverrideRequest) Do() error {
 	return r.client.Call("Page.clearGeolocationOverride", r.opts, nil)
 }
 
-// Overrides the Device Orientation. (experimental)
 type SetDeviceOrientationOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Overrides the Device Orientation. (experimental)
 func (d *Client) SetDeviceOrientationOverride() *SetDeviceOrientationOverrideRequest {
 	return &SetDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -788,32 +775,30 @@ func (r *SetDeviceOrientationOverrideRequest) Gamma(v float64) *SetDeviceOrienta
 	return r
 }
 
-// Overrides the Device Orientation. (experimental)
 func (r *SetDeviceOrientationOverrideRequest) Do() error {
 	return r.client.Call("Page.setDeviceOrientationOverride", r.opts, nil)
 }
 
-// Clears the overridden Device Orientation. (experimental)
 type ClearDeviceOrientationOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears the overridden Device Orientation. (experimental)
 func (d *Client) ClearDeviceOrientationOverride() *ClearDeviceOrientationOverrideRequest {
 	return &ClearDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Clears the overridden Device Orientation. (experimental)
 func (r *ClearDeviceOrientationOverrideRequest) Do() error {
 	return r.client.Call("Page.clearDeviceOrientationOverride", r.opts, nil)
 }
 
-// Toggles mouse event-based touch event emulation. (experimental)
 type SetTouchEmulationEnabledRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Toggles mouse event-based touch event emulation. (experimental)
 func (d *Client) SetTouchEmulationEnabled() *SetTouchEmulationEnabledRequest {
 	return &SetTouchEmulationEnabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -830,17 +815,16 @@ func (r *SetTouchEmulationEnabledRequest) Configuration(v string) *SetTouchEmula
 	return r
 }
 
-// Toggles mouse event-based touch event emulation. (experimental)
 func (r *SetTouchEmulationEnabledRequest) Do() error {
 	return r.client.Call("Page.setTouchEmulationEnabled", r.opts, nil)
 }
 
-// Capture page screenshot. (experimental)
 type CaptureScreenshotRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Capture page screenshot. (experimental)
 func (d *Client) CaptureScreenshot() *CaptureScreenshotRequest {
 	return &CaptureScreenshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -874,12 +858,12 @@ func (r *CaptureScreenshotRequest) Do() (*CaptureScreenshotResult, error) {
 	return &result, err
 }
 
-// Print page as PDF. (experimental)
 type PrintToPDFRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Print page as PDF. (experimental)
 func (d *Client) PrintToPDF() *PrintToPDFRequest {
 	return &PrintToPDFRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -961,12 +945,12 @@ func (r *PrintToPDFRequest) Do() (*PrintToPDFResult, error) {
 	return &result, err
 }
 
-// Starts sending each frame using the <code>screencastFrame</code> event. (experimental)
 type StartScreencastRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Starts sending each frame using the <code>screencastFrame</code> event. (experimental)
 func (d *Client) StartScreencast() *StartScreencastRequest {
 	return &StartScreencastRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1001,32 +985,30 @@ func (r *StartScreencastRequest) EveryNthFrame(v int) *StartScreencastRequest {
 	return r
 }
 
-// Starts sending each frame using the <code>screencastFrame</code> event. (experimental)
 func (r *StartScreencastRequest) Do() error {
 	return r.client.Call("Page.startScreencast", r.opts, nil)
 }
 
-// Stops sending each frame in the <code>screencastFrame</code>. (experimental)
 type StopScreencastRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Stops sending each frame in the <code>screencastFrame</code>. (experimental)
 func (d *Client) StopScreencast() *StopScreencastRequest {
 	return &StopScreencastRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Stops sending each frame in the <code>screencastFrame</code>. (experimental)
 func (r *StopScreencastRequest) Do() error {
 	return r.client.Call("Page.stopScreencast", r.opts, nil)
 }
 
-// Acknowledges that a screencast frame has been received by the frontend. (experimental)
 type ScreencastFrameAckRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Acknowledges that a screencast frame has been received by the frontend. (experimental)
 func (d *Client) ScreencastFrameAck() *ScreencastFrameAckRequest {
 	return &ScreencastFrameAckRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1037,17 +1019,16 @@ func (r *ScreencastFrameAckRequest) SessionId(v int) *ScreencastFrameAckRequest 
 	return r
 }
 
-// Acknowledges that a screencast frame has been received by the frontend. (experimental)
 func (r *ScreencastFrameAckRequest) Do() error {
 	return r.client.Call("Page.screencastFrameAck", r.opts, nil)
 }
 
-// Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 type HandleJavaScriptDialogRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 func (d *Client) HandleJavaScriptDialog() *HandleJavaScriptDialogRequest {
 	return &HandleJavaScriptDialogRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1064,17 +1045,16 @@ func (r *HandleJavaScriptDialogRequest) PromptText(v string) *HandleJavaScriptDi
 	return r
 }
 
-// Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
 func (r *HandleJavaScriptDialogRequest) Do() error {
 	return r.client.Call("Page.handleJavaScriptDialog", r.opts, nil)
 }
 
-// (experimental)
 type GetAppManifestRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// (experimental)
 func (d *Client) GetAppManifest() *GetAppManifestRequest {
 	return &GetAppManifestRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1095,27 +1075,26 @@ func (r *GetAppManifestRequest) Do() (*GetAppManifestResult, error) {
 	return &result, err
 }
 
-// (experimental)
 type RequestAppBannerRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// (experimental)
 func (d *Client) RequestAppBanner() *RequestAppBannerRequest {
 	return &RequestAppBannerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// (experimental)
 func (r *RequestAppBannerRequest) Do() error {
 	return r.client.Call("Page.requestAppBanner", r.opts, nil)
 }
 
-// Toggles navigation throttling which allows programatic control over navigation and redirect response. (experimental)
 type SetControlNavigationsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Toggles navigation throttling which allows programatic control over navigation and redirect response. (experimental)
 func (d *Client) SetControlNavigations() *SetControlNavigationsRequest {
 	return &SetControlNavigationsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1125,17 +1104,16 @@ func (r *SetControlNavigationsRequest) Enabled(v bool) *SetControlNavigationsReq
 	return r
 }
 
-// Toggles navigation throttling which allows programatic control over navigation and redirect response. (experimental)
 func (r *SetControlNavigationsRequest) Do() error {
 	return r.client.Call("Page.setControlNavigations", r.opts, nil)
 }
 
-// Should be sent in response to a navigationRequested or a redirectRequested event, telling the browser how to handle the navigation. (experimental)
 type ProcessNavigationRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Should be sent in response to a navigationRequested or a redirectRequested event, telling the browser how to handle the navigation. (experimental)
 func (d *Client) ProcessNavigation() *ProcessNavigationRequest {
 	return &ProcessNavigationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1150,17 +1128,16 @@ func (r *ProcessNavigationRequest) NavigationId(v int) *ProcessNavigationRequest
 	return r
 }
 
-// Should be sent in response to a navigationRequested or a redirectRequested event, telling the browser how to handle the navigation. (experimental)
 func (r *ProcessNavigationRequest) Do() error {
 	return r.client.Call("Page.processNavigation", r.opts, nil)
 }
 
-// Returns metrics relating to the layouting of the page, such as viewport bounds/scale. (experimental)
 type GetLayoutMetricsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns metrics relating to the layouting of the page, such as viewport bounds/scale. (experimental)
 func (d *Client) GetLayoutMetrics() *GetLayoutMetricsRequest {
 	return &GetLayoutMetricsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1182,12 +1159,12 @@ func (r *GetLayoutMetricsRequest) Do() (*GetLayoutMetricsResult, error) {
 	return &result, err
 }
 
-// Creates an isolated world for the given frame. (experimental)
 type CreateIsolatedWorldRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Creates an isolated world for the given frame. (experimental)
 func (d *Client) CreateIsolatedWorld() *CreateIsolatedWorldRequest {
 	return &CreateIsolatedWorldRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -1210,7 +1187,6 @@ func (r *CreateIsolatedWorldRequest) GrantUniveralAccess(v bool) *CreateIsolated
 	return r
 }
 
-// Creates an isolated world for the given frame. (experimental)
 func (r *CreateIsolatedWorldRequest) Do() error {
 	return r.client.Call("Page.createIsolatedWorld", r.opts, nil)
 }

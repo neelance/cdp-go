@@ -254,12 +254,12 @@ type Client struct {
 
 {{range .Commands}}
 	{{$reqType := .GoRequestType}}
-	{{if .Doc}}// {{.Doc}}{{end}}
 	type {{$reqType}} struct {
 		client *rpc.Client
 		opts map[string]interface{}
 	}
 
+	{{if .Doc}}// {{.Doc}}{{end}}
 	func (d *Client) {{.GoName}}() *{{$reqType}} {
 		return &{{$reqType}}{opts: make(map[string]interface{}), client: d.Client}
 	}
@@ -286,7 +286,6 @@ type Client struct {
 			return &result, err
 		}
 	{{else}}
-		{{if .Doc}}// {{.Doc}}{{end}}
 		func (r *{{.GoRequestType}}) Do() error {
 			return r.client.Call("{{$domain.Domain}}.{{.Name}}", r.opts, nil)
 		}

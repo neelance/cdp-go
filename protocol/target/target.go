@@ -30,12 +30,12 @@ type RemoteLocation struct {
 	Port int `json:"port"`
 }
 
-// Controls whether to discover available targets and notify via <code>targetCreated/targetDestroyed</code> events.
 type SetDiscoverTargetsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Controls whether to discover available targets and notify via <code>targetCreated/targetDestroyed</code> events.
 func (d *Client) SetDiscoverTargets() *SetDiscoverTargetsRequest {
 	return &SetDiscoverTargetsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -46,17 +46,16 @@ func (r *SetDiscoverTargetsRequest) Discover(v bool) *SetDiscoverTargetsRequest 
 	return r
 }
 
-// Controls whether to discover available targets and notify via <code>targetCreated/targetDestroyed</code> events.
 func (r *SetDiscoverTargetsRequest) Do() error {
 	return r.client.Call("Target.setDiscoverTargets", r.opts, nil)
 }
 
-// Controls whether to automatically attach to new targets which are considered to be related to this one. When turned on, attaches to all existing related targets as well. When turned off, automatically detaches from all currently attached targets.
 type SetAutoAttachRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Controls whether to automatically attach to new targets which are considered to be related to this one. When turned on, attaches to all existing related targets as well. When turned off, automatically detaches from all currently attached targets.
 func (d *Client) SetAutoAttach() *SetAutoAttachRequest {
 	return &SetAutoAttachRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -73,7 +72,6 @@ func (r *SetAutoAttachRequest) WaitForDebuggerOnStart(v bool) *SetAutoAttachRequ
 	return r
 }
 
-// Controls whether to automatically attach to new targets which are considered to be related to this one. When turned on, attaches to all existing related targets as well. When turned off, automatically detaches from all currently attached targets.
 func (r *SetAutoAttachRequest) Do() error {
 	return r.client.Call("Target.setAutoAttach", r.opts, nil)
 }
@@ -97,12 +95,12 @@ func (r *SetAttachToFramesRequest) Do() error {
 	return r.client.Call("Target.setAttachToFrames", r.opts, nil)
 }
 
-// Enables target discovery for the specified locations, when <code>setDiscoverTargets</code> was set to <code>true</code>.
 type SetRemoteLocationsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables target discovery for the specified locations, when <code>setDiscoverTargets</code> was set to <code>true</code>.
 func (d *Client) SetRemoteLocations() *SetRemoteLocationsRequest {
 	return &SetRemoteLocationsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -113,17 +111,16 @@ func (r *SetRemoteLocationsRequest) Locations(v []*RemoteLocation) *SetRemoteLoc
 	return r
 }
 
-// Enables target discovery for the specified locations, when <code>setDiscoverTargets</code> was set to <code>true</code>.
 func (r *SetRemoteLocationsRequest) Do() error {
 	return r.client.Call("Target.setRemoteLocations", r.opts, nil)
 }
 
-// Sends protocol message to the target with given id.
 type SendMessageToTargetRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sends protocol message to the target with given id.
 func (d *Client) SendMessageToTarget() *SendMessageToTargetRequest {
 	return &SendMessageToTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -138,17 +135,16 @@ func (r *SendMessageToTargetRequest) Message(v string) *SendMessageToTargetReque
 	return r
 }
 
-// Sends protocol message to the target with given id.
 func (r *SendMessageToTargetRequest) Do() error {
 	return r.client.Call("Target.sendMessageToTarget", r.opts, nil)
 }
 
-// Returns information about a target.
 type GetTargetInfoRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns information about a target.
 func (d *Client) GetTargetInfo() *GetTargetInfoRequest {
 	return &GetTargetInfoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -168,12 +164,12 @@ func (r *GetTargetInfoRequest) Do() (*GetTargetInfoResult, error) {
 	return &result, err
 }
 
-// Activates (focuses) the target.
 type ActivateTargetRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Activates (focuses) the target.
 func (d *Client) ActivateTarget() *ActivateTargetRequest {
 	return &ActivateTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -183,17 +179,16 @@ func (r *ActivateTargetRequest) TargetId(v TargetID) *ActivateTargetRequest {
 	return r
 }
 
-// Activates (focuses) the target.
 func (r *ActivateTargetRequest) Do() error {
 	return r.client.Call("Target.activateTarget", r.opts, nil)
 }
 
-// Closes the target. If the target is a page that gets closed too.
 type CloseTargetRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Closes the target. If the target is a page that gets closed too.
 func (d *Client) CloseTarget() *CloseTargetRequest {
 	return &CloseTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -213,12 +208,12 @@ func (r *CloseTargetRequest) Do() (*CloseTargetResult, error) {
 	return &result, err
 }
 
-// Attaches to the target with given id.
 type AttachToTargetRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Attaches to the target with given id.
 func (d *Client) AttachToTarget() *AttachToTargetRequest {
 	return &AttachToTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -239,12 +234,12 @@ func (r *AttachToTargetRequest) Do() (*AttachToTargetResult, error) {
 	return &result, err
 }
 
-// Detaches from the target with given id.
 type DetachFromTargetRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Detaches from the target with given id.
 func (d *Client) DetachFromTarget() *DetachFromTargetRequest {
 	return &DetachFromTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -254,17 +249,16 @@ func (r *DetachFromTargetRequest) TargetId(v TargetID) *DetachFromTargetRequest 
 	return r
 }
 
-// Detaches from the target with given id.
 func (r *DetachFromTargetRequest) Do() error {
 	return r.client.Call("Target.detachFromTarget", r.opts, nil)
 }
 
-// Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than one.
 type CreateBrowserContextRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than one.
 func (d *Client) CreateBrowserContext() *CreateBrowserContextRequest {
 	return &CreateBrowserContextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -280,12 +274,12 @@ func (r *CreateBrowserContextRequest) Do() (*CreateBrowserContextResult, error) 
 	return &result, err
 }
 
-// Deletes a BrowserContext, will fail of any open page uses it.
 type DisposeBrowserContextRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Deletes a BrowserContext, will fail of any open page uses it.
 func (d *Client) DisposeBrowserContext() *DisposeBrowserContextRequest {
 	return &DisposeBrowserContextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -305,12 +299,12 @@ func (r *DisposeBrowserContextRequest) Do() (*DisposeBrowserContextResult, error
 	return &result, err
 }
 
-// Creates a new page.
 type CreateTargetRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Creates a new page.
 func (d *Client) CreateTarget() *CreateTargetRequest {
 	return &CreateTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -350,12 +344,12 @@ func (r *CreateTargetRequest) Do() (*CreateTargetResult, error) {
 	return &result, err
 }
 
-// Retrieves a list of available targets.
 type GetTargetsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Retrieves a list of available targets.
 func (d *Client) GetTargets() *GetTargetsRequest {
 	return &GetTargetsRequest{opts: make(map[string]interface{}), client: d.Client}
 }

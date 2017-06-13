@@ -116,42 +116,40 @@ type KeyPath struct {
 	Array []string `json:"array,omitempty"`
 }
 
-// Enables events from backend.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables events from backend.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables events from backend.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("IndexedDB.enable", r.opts, nil)
 }
 
-// Disables events from backend.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables events from backend.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables events from backend.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("IndexedDB.disable", r.opts, nil)
 }
 
-// Requests database names for given security origin.
 type RequestDatabaseNamesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests database names for given security origin.
 func (d *Client) RequestDatabaseNames() *RequestDatabaseNamesRequest {
 	return &RequestDatabaseNamesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -173,12 +171,12 @@ func (r *RequestDatabaseNamesRequest) Do() (*RequestDatabaseNamesResult, error) 
 	return &result, err
 }
 
-// Requests database with given name in given frame.
 type RequestDatabaseRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests database with given name in given frame.
 func (d *Client) RequestDatabase() *RequestDatabaseRequest {
 	return &RequestDatabaseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -206,12 +204,12 @@ func (r *RequestDatabaseRequest) Do() (*RequestDatabaseResult, error) {
 	return &result, err
 }
 
-// Requests data from object store or index.
 type RequestDataRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests data from object store or index.
 func (d *Client) RequestData() *RequestDataRequest {
 	return &RequestDataRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -272,12 +270,12 @@ func (r *RequestDataRequest) Do() (*RequestDataResult, error) {
 	return &result, err
 }
 
-// Clears all entries from an object store.
 type ClearObjectStoreRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears all entries from an object store.
 func (d *Client) ClearObjectStore() *ClearObjectStoreRequest {
 	return &ClearObjectStoreRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -300,17 +298,16 @@ func (r *ClearObjectStoreRequest) ObjectStoreName(v string) *ClearObjectStoreReq
 	return r
 }
 
-// Clears all entries from an object store.
 func (r *ClearObjectStoreRequest) Do() error {
 	return r.client.Call("IndexedDB.clearObjectStore", r.opts, nil)
 }
 
-// Deletes a database.
 type DeleteDatabaseRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Deletes a database.
 func (d *Client) DeleteDatabase() *DeleteDatabaseRequest {
 	return &DeleteDatabaseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -327,7 +324,6 @@ func (r *DeleteDatabaseRequest) DatabaseName(v string) *DeleteDatabaseRequest {
 	return r
 }
 
-// Deletes a database.
 func (r *DeleteDatabaseRequest) Do() error {
 	return r.client.Call("IndexedDB.deleteDatabase", r.opts, nil)
 }

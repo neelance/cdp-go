@@ -121,12 +121,12 @@ func (r *DisableRequest) Do() error {
 	return r.client.Call("Profiler.disable", r.opts, nil)
 }
 
-// Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
 type SetSamplingIntervalRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
 func (d *Client) SetSamplingInterval() *SetSamplingIntervalRequest {
 	return &SetSamplingIntervalRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -137,7 +137,6 @@ func (r *SetSamplingIntervalRequest) Interval(v int) *SetSamplingIntervalRequest
 	return r
 }
 
-// Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
 func (r *SetSamplingIntervalRequest) Do() error {
 	return r.client.Call("Profiler.setSamplingInterval", r.opts, nil)
 }
@@ -175,12 +174,12 @@ func (r *StopRequest) Do() (*StopResult, error) {
 	return &result, err
 }
 
-// Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code coverage may be incomplete. Enabling prevents running optimized code and resets execution counters. (experimental)
 type StartPreciseCoverageRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code coverage may be incomplete. Enabling prevents running optimized code and resets execution counters. (experimental)
 func (d *Client) StartPreciseCoverage() *StartPreciseCoverageRequest {
 	return &StartPreciseCoverageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -191,32 +190,30 @@ func (r *StartPreciseCoverageRequest) CallCount(v bool) *StartPreciseCoverageReq
 	return r
 }
 
-// Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code coverage may be incomplete. Enabling prevents running optimized code and resets execution counters. (experimental)
 func (r *StartPreciseCoverageRequest) Do() error {
 	return r.client.Call("Profiler.startPreciseCoverage", r.opts, nil)
 }
 
-// Disable precise code coverage. Disabling releases unnecessary execution count records and allows executing optimized code. (experimental)
 type StopPreciseCoverageRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disable precise code coverage. Disabling releases unnecessary execution count records and allows executing optimized code. (experimental)
 func (d *Client) StopPreciseCoverage() *StopPreciseCoverageRequest {
 	return &StopPreciseCoverageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disable precise code coverage. Disabling releases unnecessary execution count records and allows executing optimized code. (experimental)
 func (r *StopPreciseCoverageRequest) Do() error {
 	return r.client.Call("Profiler.stopPreciseCoverage", r.opts, nil)
 }
 
-// Collect coverage data for the current isolate, and resets execution counters. Precise code coverage needs to have started. (experimental)
 type TakePreciseCoverageRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Collect coverage data for the current isolate, and resets execution counters. Precise code coverage needs to have started. (experimental)
 func (d *Client) TakePreciseCoverage() *TakePreciseCoverageRequest {
 	return &TakePreciseCoverageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -232,12 +229,12 @@ func (r *TakePreciseCoverageRequest) Do() (*TakePreciseCoverageResult, error) {
 	return &result, err
 }
 
-// Collect coverage data for the current isolate. The coverage data may be incomplete due to garbage collection. (experimental)
 type GetBestEffortCoverageRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Collect coverage data for the current isolate. The coverage data may be incomplete due to garbage collection. (experimental)
 func (d *Client) GetBestEffortCoverage() *GetBestEffortCoverageRequest {
 	return &GetBestEffortCoverageRequest{opts: make(map[string]interface{}), client: d.Client}
 }

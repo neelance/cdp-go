@@ -42,12 +42,12 @@ type GPUInfo struct {
 	DriverBugWorkarounds []string `json:"driverBugWorkarounds"`
 }
 
-// Returns information about the system.
 type GetInfoRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns information about the system.
 func (d *Client) GetInfo() *GetInfoRequest {
 	return &GetInfoRequest{opts: make(map[string]interface{}), client: d.Client}
 }

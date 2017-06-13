@@ -10,12 +10,12 @@ type Client struct {
 	*rpc.Client
 }
 
-// Request browser port binding.
 type BindRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Request browser port binding.
 func (d *Client) Bind() *BindRequest {
 	return &BindRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -26,17 +26,16 @@ func (r *BindRequest) Port(v int) *BindRequest {
 	return r
 }
 
-// Request browser port binding.
 func (r *BindRequest) Do() error {
 	return r.client.Call("Tethering.bind", r.opts, nil)
 }
 
-// Request browser port unbinding.
 type UnbindRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Request browser port unbinding.
 func (d *Client) Unbind() *UnbindRequest {
 	return &UnbindRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -47,7 +46,6 @@ func (r *UnbindRequest) Port(v int) *UnbindRequest {
 	return r
 }
 
-// Request browser port unbinding.
 func (r *UnbindRequest) Do() error {
 	return r.client.Call("Tethering.unbind", r.opts, nil)
 }

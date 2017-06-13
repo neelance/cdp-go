@@ -35,12 +35,12 @@ type Bounds struct {
 	WindowState WindowState `json:"windowState,omitempty"`
 }
 
-// Get the browser window that contains the devtools target.
 type GetWindowForTargetRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Get the browser window that contains the devtools target.
 func (d *Client) GetWindowForTarget() *GetWindowForTargetRequest {
 	return &GetWindowForTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -65,12 +65,12 @@ func (r *GetWindowForTargetRequest) Do() (*GetWindowForTargetResult, error) {
 	return &result, err
 }
 
-// Set position and/or size of the browser window.
 type SetWindowBoundsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Set position and/or size of the browser window.
 func (d *Client) SetWindowBounds() *SetWindowBoundsRequest {
 	return &SetWindowBoundsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -87,17 +87,16 @@ func (r *SetWindowBoundsRequest) Bounds(v *Bounds) *SetWindowBoundsRequest {
 	return r
 }
 
-// Set position and/or size of the browser window.
 func (r *SetWindowBoundsRequest) Do() error {
 	return r.client.Call("Browser.setWindowBounds", r.opts, nil)
 }
 
-// Get position and size of the browser window.
 type GetWindowBoundsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Get position and size of the browser window.
 func (d *Client) GetWindowBounds() *GetWindowBoundsRequest {
 	return &GetWindowBoundsRequest{opts: make(map[string]interface{}), client: d.Client}
 }

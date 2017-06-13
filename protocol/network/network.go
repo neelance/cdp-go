@@ -368,12 +368,12 @@ type Cookie struct {
 	SameSite CookieSameSite `json:"sameSite,omitempty"`
 }
 
-// Enables network tracking, network events will now be delivered to the client.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables network tracking, network events will now be delivered to the client.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -390,32 +390,30 @@ func (r *EnableRequest) MaxResourceBufferSize(v int) *EnableRequest {
 	return r
 }
 
-// Enables network tracking, network events will now be delivered to the client.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("Network.enable", r.opts, nil)
 }
 
-// Disables network tracking, prevents network events from being sent to the client.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables network tracking, prevents network events from being sent to the client.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables network tracking, prevents network events from being sent to the client.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("Network.disable", r.opts, nil)
 }
 
-// Allows overriding user agent with the given string.
 type SetUserAgentOverrideRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Allows overriding user agent with the given string.
 func (d *Client) SetUserAgentOverride() *SetUserAgentOverrideRequest {
 	return &SetUserAgentOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -426,17 +424,16 @@ func (r *SetUserAgentOverrideRequest) UserAgent(v string) *SetUserAgentOverrideR
 	return r
 }
 
-// Allows overriding user agent with the given string.
 func (r *SetUserAgentOverrideRequest) Do() error {
 	return r.client.Call("Network.setUserAgentOverride", r.opts, nil)
 }
 
-// Specifies whether to always send extra HTTP headers with the requests from this page.
 type SetExtraHTTPHeadersRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Specifies whether to always send extra HTTP headers with the requests from this page.
 func (d *Client) SetExtraHTTPHeaders() *SetExtraHTTPHeadersRequest {
 	return &SetExtraHTTPHeadersRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -447,17 +444,16 @@ func (r *SetExtraHTTPHeadersRequest) Headers(v *Headers) *SetExtraHTTPHeadersReq
 	return r
 }
 
-// Specifies whether to always send extra HTTP headers with the requests from this page.
 func (r *SetExtraHTTPHeadersRequest) Do() error {
 	return r.client.Call("Network.setExtraHTTPHeaders", r.opts, nil)
 }
 
-// Returns content served for the given request.
 type GetResponseBodyRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns content served for the given request.
 func (d *Client) GetResponseBody() *GetResponseBodyRequest {
 	return &GetResponseBodyRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -482,12 +478,12 @@ func (r *GetResponseBodyRequest) Do() (*GetResponseBodyResult, error) {
 	return &result, err
 }
 
-// Blocks URLs from loading. (experimental)
 type SetBlockedURLsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Blocks URLs from loading. (experimental)
 func (d *Client) SetBlockedURLs() *SetBlockedURLsRequest {
 	return &SetBlockedURLsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -498,17 +494,16 @@ func (r *SetBlockedURLsRequest) Urls(v []string) *SetBlockedURLsRequest {
 	return r
 }
 
-// Blocks URLs from loading. (experimental)
 func (r *SetBlockedURLsRequest) Do() error {
 	return r.client.Call("Network.setBlockedURLs", r.opts, nil)
 }
 
-// This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password. (experimental)
 type ReplayXHRRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password. (experimental)
 func (d *Client) ReplayXHR() *ReplayXHRRequest {
 	return &ReplayXHRRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -519,17 +514,16 @@ func (r *ReplayXHRRequest) RequestId(v RequestId) *ReplayXHRRequest {
 	return r
 }
 
-// This method sends a new XMLHttpRequest which is identical to the original one. The following parameters should be identical: method, url, async, request body, extra headers, withCredentials attribute, user, password. (experimental)
 func (r *ReplayXHRRequest) Do() error {
 	return r.client.Call("Network.replayXHR", r.opts, nil)
 }
 
-// Tells whether clearing browser cache is supported.
 type CanClearBrowserCacheRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Tells whether clearing browser cache is supported.
 func (d *Client) CanClearBrowserCache() *CanClearBrowserCacheRequest {
 	return &CanClearBrowserCacheRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -545,27 +539,26 @@ func (r *CanClearBrowserCacheRequest) Do() (*CanClearBrowserCacheResult, error) 
 	return &result, err
 }
 
-// Clears browser cache.
 type ClearBrowserCacheRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears browser cache.
 func (d *Client) ClearBrowserCache() *ClearBrowserCacheRequest {
 	return &ClearBrowserCacheRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Clears browser cache.
 func (r *ClearBrowserCacheRequest) Do() error {
 	return r.client.Call("Network.clearBrowserCache", r.opts, nil)
 }
 
-// Tells whether clearing browser cookies is supported.
 type CanClearBrowserCookiesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Tells whether clearing browser cookies is supported.
 func (d *Client) CanClearBrowserCookies() *CanClearBrowserCookiesRequest {
 	return &CanClearBrowserCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -581,27 +574,26 @@ func (r *CanClearBrowserCookiesRequest) Do() (*CanClearBrowserCookiesResult, err
 	return &result, err
 }
 
-// Clears browser cookies.
 type ClearBrowserCookiesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears browser cookies.
 func (d *Client) ClearBrowserCookies() *ClearBrowserCookiesRequest {
 	return &ClearBrowserCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Clears browser cookies.
 func (r *ClearBrowserCookiesRequest) Do() error {
 	return r.client.Call("Network.clearBrowserCookies", r.opts, nil)
 }
 
-// Returns all browser cookies for the current URL. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
 type GetCookiesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns all browser cookies for the current URL. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
 func (d *Client) GetCookies() *GetCookiesRequest {
 	return &GetCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -623,12 +615,12 @@ func (r *GetCookiesRequest) Do() (*GetCookiesResult, error) {
 	return &result, err
 }
 
-// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
 type GetAllCookiesRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the <code>cookies</code> field. (experimental)
 func (d *Client) GetAllCookies() *GetAllCookiesRequest {
 	return &GetAllCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -644,12 +636,12 @@ func (r *GetAllCookiesRequest) Do() (*GetAllCookiesResult, error) {
 	return &result, err
 }
 
-// Deletes browser cookie with given name, domain and path. (experimental)
 type DeleteCookieRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Deletes browser cookie with given name, domain and path. (experimental)
 func (d *Client) DeleteCookie() *DeleteCookieRequest {
 	return &DeleteCookieRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -666,17 +658,16 @@ func (r *DeleteCookieRequest) URL(v string) *DeleteCookieRequest {
 	return r
 }
 
-// Deletes browser cookie with given name, domain and path. (experimental)
 func (r *DeleteCookieRequest) Do() error {
 	return r.client.Call("Network.deleteCookie", r.opts, nil)
 }
 
-// Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist. (experimental)
 type SetCookieRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist. (experimental)
 func (d *Client) SetCookie() *SetCookieRequest {
 	return &SetCookieRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -746,12 +737,12 @@ func (r *SetCookieRequest) Do() (*SetCookieResult, error) {
 	return &result, err
 }
 
-// Tells whether emulation of network conditions is supported. (experimental)
 type CanEmulateNetworkConditionsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Tells whether emulation of network conditions is supported. (experimental)
 func (d *Client) CanEmulateNetworkConditions() *CanEmulateNetworkConditionsRequest {
 	return &CanEmulateNetworkConditionsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -767,12 +758,12 @@ func (r *CanEmulateNetworkConditionsRequest) Do() (*CanEmulateNetworkConditionsR
 	return &result, err
 }
 
-// Activates emulation of network conditions.
 type EmulateNetworkConditionsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Activates emulation of network conditions.
 func (d *Client) EmulateNetworkConditions() *EmulateNetworkConditionsRequest {
 	return &EmulateNetworkConditionsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -807,17 +798,16 @@ func (r *EmulateNetworkConditionsRequest) ConnectionType(v ConnectionType) *Emul
 	return r
 }
 
-// Activates emulation of network conditions.
 func (r *EmulateNetworkConditionsRequest) Do() error {
 	return r.client.Call("Network.emulateNetworkConditions", r.opts, nil)
 }
 
-// Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.
 type SetCacheDisabledRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.
 func (d *Client) SetCacheDisabled() *SetCacheDisabledRequest {
 	return &SetCacheDisabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -828,17 +818,16 @@ func (r *SetCacheDisabledRequest) CacheDisabled(v bool) *SetCacheDisabledRequest
 	return r
 }
 
-// Toggles ignoring cache for each request. If <code>true</code>, cache will not be used.
 func (r *SetCacheDisabledRequest) Do() error {
 	return r.client.Call("Network.setCacheDisabled", r.opts, nil)
 }
 
-// Toggles ignoring of service worker for each request. (experimental)
 type SetBypassServiceWorkerRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Toggles ignoring of service worker for each request. (experimental)
 func (d *Client) SetBypassServiceWorker() *SetBypassServiceWorkerRequest {
 	return &SetBypassServiceWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -849,17 +838,16 @@ func (r *SetBypassServiceWorkerRequest) Bypass(v bool) *SetBypassServiceWorkerRe
 	return r
 }
 
-// Toggles ignoring of service worker for each request. (experimental)
 func (r *SetBypassServiceWorkerRequest) Do() error {
 	return r.client.Call("Network.setBypassServiceWorker", r.opts, nil)
 }
 
-// For testing. (experimental)
 type SetDataSizeLimitsForTestRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// For testing. (experimental)
 func (d *Client) SetDataSizeLimitsForTest() *SetDataSizeLimitsForTestRequest {
 	return &SetDataSizeLimitsForTestRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -876,17 +864,16 @@ func (r *SetDataSizeLimitsForTestRequest) MaxResourceSize(v int) *SetDataSizeLim
 	return r
 }
 
-// For testing. (experimental)
 func (r *SetDataSizeLimitsForTestRequest) Do() error {
 	return r.client.Call("Network.setDataSizeLimitsForTest", r.opts, nil)
 }
 
-// Returns the DER-encoded certificate. (experimental)
 type GetCertificateRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns the DER-encoded certificate. (experimental)
 func (d *Client) GetCertificate() *GetCertificateRequest {
 	return &GetCertificateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -907,12 +894,12 @@ func (r *GetCertificateRequest) Do() (*GetCertificateResult, error) {
 	return &result, err
 }
 
-// (experimental)
 type EnableRequestInterceptionRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// (experimental)
 func (d *Client) EnableRequestInterception() *EnableRequestInterceptionRequest {
 	return &EnableRequestInterceptionRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -923,17 +910,16 @@ func (r *EnableRequestInterceptionRequest) Enabled(v bool) *EnableRequestInterce
 	return r
 }
 
-// (experimental)
 func (r *EnableRequestInterceptionRequest) Do() error {
 	return r.client.Call("Network.enableRequestInterception", r.opts, nil)
 }
 
-// Response to Network.requestIntercepted which either modifies the request to continue with any modifications, or blocks it, or completes it with the provided response bytes. If a network fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted event will be sent with the same InterceptionId. (experimental)
 type ContinueInterceptedRequestRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Response to Network.requestIntercepted which either modifies the request to continue with any modifications, or blocks it, or completes it with the provided response bytes. If a network fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted event will be sent with the same InterceptionId. (experimental)
 func (d *Client) ContinueInterceptedRequest() *ContinueInterceptedRequestRequest {
 	return &ContinueInterceptedRequestRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -979,7 +965,6 @@ func (r *ContinueInterceptedRequestRequest) Headers(v *Headers) *ContinueInterce
 	return r
 }
 
-// Response to Network.requestIntercepted which either modifies the request to continue with any modifications, or blocks it, or completes it with the provided response bytes. If a network fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted event will be sent with the same InterceptionId. (experimental)
 func (r *ContinueInterceptedRequestRequest) Do() error {
 	return r.client.Call("Network.continueInterceptedRequest", r.opts, nil)
 }

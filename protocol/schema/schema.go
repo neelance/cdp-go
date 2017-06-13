@@ -20,12 +20,12 @@ type Domain struct {
 	Version string `json:"version"`
 }
 
-// Returns supported domains.
 type GetDomainsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns supported domains.
 func (d *Client) GetDomains() *GetDomainsRequest {
 	return &GetDomainsRequest{opts: make(map[string]interface{}), client: d.Client}
 }

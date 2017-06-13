@@ -48,12 +48,12 @@ type EventListener struct {
 	BackendNodeId interface{} `json:"backendNodeId,omitempty"`
 }
 
-// Sets breakpoint on particular operation with DOM.
 type SetDOMBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets breakpoint on particular operation with DOM.
 func (d *Client) SetDOMBreakpoint() *SetDOMBreakpointRequest {
 	return &SetDOMBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -70,17 +70,16 @@ func (r *SetDOMBreakpointRequest) Type(v DOMBreakpointType) *SetDOMBreakpointReq
 	return r
 }
 
-// Sets breakpoint on particular operation with DOM.
 func (r *SetDOMBreakpointRequest) Do() error {
 	return r.client.Call("DOMDebugger.setDOMBreakpoint", r.opts, nil)
 }
 
-// Removes DOM breakpoint that was set using <code>setDOMBreakpoint</code>.
 type RemoveDOMBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Removes DOM breakpoint that was set using <code>setDOMBreakpoint</code>.
 func (d *Client) RemoveDOMBreakpoint() *RemoveDOMBreakpointRequest {
 	return &RemoveDOMBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -97,17 +96,16 @@ func (r *RemoveDOMBreakpointRequest) Type(v DOMBreakpointType) *RemoveDOMBreakpo
 	return r
 }
 
-// Removes DOM breakpoint that was set using <code>setDOMBreakpoint</code>.
 func (r *RemoveDOMBreakpointRequest) Do() error {
 	return r.client.Call("DOMDebugger.removeDOMBreakpoint", r.opts, nil)
 }
 
-// Sets breakpoint on particular DOM event.
 type SetEventListenerBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets breakpoint on particular DOM event.
 func (d *Client) SetEventListenerBreakpoint() *SetEventListenerBreakpointRequest {
 	return &SetEventListenerBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -124,17 +122,16 @@ func (r *SetEventListenerBreakpointRequest) TargetName(v string) *SetEventListen
 	return r
 }
 
-// Sets breakpoint on particular DOM event.
 func (r *SetEventListenerBreakpointRequest) Do() error {
 	return r.client.Call("DOMDebugger.setEventListenerBreakpoint", r.opts, nil)
 }
 
-// Removes breakpoint on particular DOM event.
 type RemoveEventListenerBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Removes breakpoint on particular DOM event.
 func (d *Client) RemoveEventListenerBreakpoint() *RemoveEventListenerBreakpointRequest {
 	return &RemoveEventListenerBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -151,17 +148,16 @@ func (r *RemoveEventListenerBreakpointRequest) TargetName(v string) *RemoveEvent
 	return r
 }
 
-// Removes breakpoint on particular DOM event.
 func (r *RemoveEventListenerBreakpointRequest) Do() error {
 	return r.client.Call("DOMDebugger.removeEventListenerBreakpoint", r.opts, nil)
 }
 
-// Sets breakpoint on particular native event. (experimental)
 type SetInstrumentationBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets breakpoint on particular native event. (experimental)
 func (d *Client) SetInstrumentationBreakpoint() *SetInstrumentationBreakpointRequest {
 	return &SetInstrumentationBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -172,17 +168,16 @@ func (r *SetInstrumentationBreakpointRequest) EventName(v string) *SetInstrument
 	return r
 }
 
-// Sets breakpoint on particular native event. (experimental)
 func (r *SetInstrumentationBreakpointRequest) Do() error {
 	return r.client.Call("DOMDebugger.setInstrumentationBreakpoint", r.opts, nil)
 }
 
-// Removes breakpoint on particular native event. (experimental)
 type RemoveInstrumentationBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Removes breakpoint on particular native event. (experimental)
 func (d *Client) RemoveInstrumentationBreakpoint() *RemoveInstrumentationBreakpointRequest {
 	return &RemoveInstrumentationBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -193,17 +188,16 @@ func (r *RemoveInstrumentationBreakpointRequest) EventName(v string) *RemoveInst
 	return r
 }
 
-// Removes breakpoint on particular native event. (experimental)
 func (r *RemoveInstrumentationBreakpointRequest) Do() error {
 	return r.client.Call("DOMDebugger.removeInstrumentationBreakpoint", r.opts, nil)
 }
 
-// Sets breakpoint on XMLHttpRequest.
 type SetXHRBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Sets breakpoint on XMLHttpRequest.
 func (d *Client) SetXHRBreakpoint() *SetXHRBreakpointRequest {
 	return &SetXHRBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -214,17 +208,16 @@ func (r *SetXHRBreakpointRequest) URL(v string) *SetXHRBreakpointRequest {
 	return r
 }
 
-// Sets breakpoint on XMLHttpRequest.
 func (r *SetXHRBreakpointRequest) Do() error {
 	return r.client.Call("DOMDebugger.setXHRBreakpoint", r.opts, nil)
 }
 
-// Removes breakpoint from XMLHttpRequest.
 type RemoveXHRBreakpointRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Removes breakpoint from XMLHttpRequest.
 func (d *Client) RemoveXHRBreakpoint() *RemoveXHRBreakpointRequest {
 	return &RemoveXHRBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -235,17 +228,16 @@ func (r *RemoveXHRBreakpointRequest) URL(v string) *RemoveXHRBreakpointRequest {
 	return r
 }
 
-// Removes breakpoint from XMLHttpRequest.
 func (r *RemoveXHRBreakpointRequest) Do() error {
 	return r.client.Call("DOMDebugger.removeXHRBreakpoint", r.opts, nil)
 }
 
-// Returns event listeners of the given object. (experimental)
 type GetEventListenersRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Returns event listeners of the given object. (experimental)
 func (d *Client) GetEventListeners() *GetEventListenersRequest {
 	return &GetEventListenersRequest{opts: make(map[string]interface{}), client: d.Client}
 }

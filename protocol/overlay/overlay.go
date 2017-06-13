@@ -52,42 +52,40 @@ type HighlightConfig struct {
 
 type InspectMode string
 
-// Enables domain notifications.
 type EnableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enables domain notifications.
 func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Enables domain notifications.
 func (r *EnableRequest) Do() error {
 	return r.client.Call("Overlay.enable", r.opts, nil)
 }
 
-// Disables domain notifications.
 type DisableRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Disables domain notifications.
 func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Disables domain notifications.
 func (r *DisableRequest) Do() error {
 	return r.client.Call("Overlay.disable", r.opts, nil)
 }
 
-// Requests that backend shows paint rectangles
 type SetShowPaintRectsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that backend shows paint rectangles
 func (d *Client) SetShowPaintRects() *SetShowPaintRectsRequest {
 	return &SetShowPaintRectsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -98,17 +96,16 @@ func (r *SetShowPaintRectsRequest) Result(v bool) *SetShowPaintRectsRequest {
 	return r
 }
 
-// Requests that backend shows paint rectangles
 func (r *SetShowPaintRectsRequest) Do() error {
 	return r.client.Call("Overlay.setShowPaintRects", r.opts, nil)
 }
 
-// Requests that backend shows debug borders on layers
 type SetShowDebugBordersRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that backend shows debug borders on layers
 func (d *Client) SetShowDebugBorders() *SetShowDebugBordersRequest {
 	return &SetShowDebugBordersRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -119,17 +116,16 @@ func (r *SetShowDebugBordersRequest) Show(v bool) *SetShowDebugBordersRequest {
 	return r
 }
 
-// Requests that backend shows debug borders on layers
 func (r *SetShowDebugBordersRequest) Do() error {
 	return r.client.Call("Overlay.setShowDebugBorders", r.opts, nil)
 }
 
-// Requests that backend shows the FPS counter
 type SetShowFPSCounterRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that backend shows the FPS counter
 func (d *Client) SetShowFPSCounter() *SetShowFPSCounterRequest {
 	return &SetShowFPSCounterRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -140,17 +136,16 @@ func (r *SetShowFPSCounterRequest) Show(v bool) *SetShowFPSCounterRequest {
 	return r
 }
 
-// Requests that backend shows the FPS counter
 func (r *SetShowFPSCounterRequest) Do() error {
 	return r.client.Call("Overlay.setShowFPSCounter", r.opts, nil)
 }
 
-// Requests that backend shows scroll bottleneck rects
 type SetShowScrollBottleneckRectsRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Requests that backend shows scroll bottleneck rects
 func (d *Client) SetShowScrollBottleneckRects() *SetShowScrollBottleneckRectsRequest {
 	return &SetShowScrollBottleneckRectsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -161,17 +156,16 @@ func (r *SetShowScrollBottleneckRectsRequest) Show(v bool) *SetShowScrollBottlen
 	return r
 }
 
-// Requests that backend shows scroll bottleneck rects
 func (r *SetShowScrollBottleneckRectsRequest) Do() error {
 	return r.client.Call("Overlay.setShowScrollBottleneckRects", r.opts, nil)
 }
 
-// Paints viewport size upon main frame resize.
 type SetShowViewportSizeOnResizeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Paints viewport size upon main frame resize.
 func (d *Client) SetShowViewportSizeOnResize() *SetShowViewportSizeOnResizeRequest {
 	return &SetShowViewportSizeOnResizeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -182,7 +176,6 @@ func (r *SetShowViewportSizeOnResizeRequest) Show(v bool) *SetShowViewportSizeOn
 	return r
 }
 
-// Paints viewport size upon main frame resize.
 func (r *SetShowViewportSizeOnResizeRequest) Do() error {
 	return r.client.Call("Overlay.setShowViewportSizeOnResize", r.opts, nil)
 }
@@ -225,12 +218,12 @@ func (r *SetSuspendedRequest) Do() error {
 	return r.client.Call("Overlay.setSuspended", r.opts, nil)
 }
 
-// Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted. Backend then generates 'inspectNodeRequested' event upon element selection.
 type SetInspectModeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted. Backend then generates 'inspectNodeRequested' event upon element selection.
 func (d *Client) SetInspectMode() *SetInspectModeRequest {
 	return &SetInspectModeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -247,17 +240,16 @@ func (r *SetInspectModeRequest) HighlightConfig(v *HighlightConfig) *SetInspectM
 	return r
 }
 
-// Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted. Backend then generates 'inspectNodeRequested' event upon element selection.
 func (r *SetInspectModeRequest) Do() error {
 	return r.client.Call("Overlay.setInspectMode", r.opts, nil)
 }
 
-// Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
 type HighlightRectRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
 func (d *Client) HighlightRect() *HighlightRectRequest {
 	return &HighlightRectRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -298,17 +290,16 @@ func (r *HighlightRectRequest) OutlineColor(v interface{}) *HighlightRectRequest
 	return r
 }
 
-// Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
 func (r *HighlightRectRequest) Do() error {
 	return r.client.Call("Overlay.highlightRect", r.opts, nil)
 }
 
-// Highlights given quad. Coordinates are absolute with respect to the main frame viewport.
 type HighlightQuadRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Highlights given quad. Coordinates are absolute with respect to the main frame viewport.
 func (d *Client) HighlightQuad() *HighlightQuadRequest {
 	return &HighlightQuadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -331,17 +322,16 @@ func (r *HighlightQuadRequest) OutlineColor(v interface{}) *HighlightQuadRequest
 	return r
 }
 
-// Highlights given quad. Coordinates are absolute with respect to the main frame viewport.
 func (r *HighlightQuadRequest) Do() error {
 	return r.client.Call("Overlay.highlightQuad", r.opts, nil)
 }
 
-// Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or objectId must be specified.
 type HighlightNodeRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or objectId must be specified.
 func (d *Client) HighlightNode() *HighlightNodeRequest {
 	return &HighlightNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -370,17 +360,16 @@ func (r *HighlightNodeRequest) ObjectId(v interface{}) *HighlightNodeRequest {
 	return r
 }
 
-// Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or objectId must be specified.
 func (r *HighlightNodeRequest) Do() error {
 	return r.client.Call("Overlay.highlightNode", r.opts, nil)
 }
 
-// Highlights owner element of the frame with given id.
 type HighlightFrameRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Highlights owner element of the frame with given id.
 func (d *Client) HighlightFrame() *HighlightFrameRequest {
 	return &HighlightFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -403,32 +392,30 @@ func (r *HighlightFrameRequest) ContentOutlineColor(v interface{}) *HighlightFra
 	return r
 }
 
-// Highlights owner element of the frame with given id.
 func (r *HighlightFrameRequest) Do() error {
 	return r.client.Call("Overlay.highlightFrame", r.opts, nil)
 }
 
-// Hides any highlight.
 type HideHighlightRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Hides any highlight.
 func (d *Client) HideHighlight() *HideHighlightRequest {
 	return &HideHighlightRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-// Hides any highlight.
 func (r *HideHighlightRequest) Do() error {
 	return r.client.Call("Overlay.hideHighlight", r.opts, nil)
 }
 
-// For testing.
 type GetHighlightObjectForTestRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// For testing.
 func (d *Client) GetHighlightObjectForTest() *GetHighlightObjectForTestRequest {
 	return &GetHighlightObjectForTestRequest{opts: make(map[string]interface{}), client: d.Client}
 }

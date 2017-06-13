@@ -14,12 +14,12 @@ type Client struct {
 
 type StorageType string
 
-// Clears storage for origin.
 type ClearDataForOriginRequest struct {
 	client *rpc.Client
 	opts   map[string]interface{}
 }
 
+// Clears storage for origin.
 func (d *Client) ClearDataForOrigin() *ClearDataForOriginRequest {
 	return &ClearDataForOriginRequest{opts: make(map[string]interface{}), client: d.Client}
 }
@@ -36,7 +36,6 @@ func (r *ClearDataForOriginRequest) StorageTypes(v string) *ClearDataForOriginRe
 	return r
 }
 
-// Clears storage for origin.
 func (r *ClearDataForOriginRequest) Do() error {
 	return r.client.Call("Storage.clearDataForOrigin", r.opts, nil)
 }
