@@ -20,8 +20,11 @@ type DataEntry struct {
 	// Request url spec.
 	Request string `json:"request"`
 
-	// Response stataus text.
+	// Response status text.
 	Response string `json:"response"`
+
+	// Number of seconds since epoch.
+	ResponseTime float64 `json:"responseTime"`
 }
 
 // Cache identifier.

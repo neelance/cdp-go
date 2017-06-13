@@ -40,6 +40,27 @@ type TouchPoint struct {
 
 type GestureSourceType string
 
+// Ignores input events (useful while auditing page).
+type SetIgnoreInputEventsRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) SetIgnoreInputEvents() *SetIgnoreInputEventsRequest {
+	return &SetIgnoreInputEventsRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Ignores input events processing when set to true.
+func (r *SetIgnoreInputEventsRequest) Ignore(v bool) *SetIgnoreInputEventsRequest {
+	r.opts["ignore"] = v
+	return r
+}
+
+// Ignores input events (useful while auditing page).
+func (r *SetIgnoreInputEventsRequest) Do() error {
+	return r.client.Call("Input.setIgnoreInputEvents", r.opts, nil)
+}
+
 // Dispatches a key event to the page.
 type DispatchKeyEventRequest struct {
 	client *rpc.Client

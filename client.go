@@ -1,6 +1,10 @@
 package cdp
 
 import (
+	"golang.org/x/net/websocket"
+
+	"github.com/neelance/cdp-go/rpc"
+
 	"github.com/neelance/cdp-go/protocol/accessibility"
 	"github.com/neelance/cdp-go/protocol/animation"
 	"github.com/neelance/cdp-go/protocol/applicationcache"
@@ -11,6 +15,7 @@ import (
 	"github.com/neelance/cdp-go/protocol/deviceorientation"
 	"github.com/neelance/cdp-go/protocol/dom"
 	"github.com/neelance/cdp-go/protocol/domdebugger"
+	"github.com/neelance/cdp-go/protocol/domsnapshot"
 	"github.com/neelance/cdp-go/protocol/domstorage"
 	"github.com/neelance/cdp-go/protocol/emulation"
 	"github.com/neelance/cdp-go/protocol/indexeddb"
@@ -30,9 +35,6 @@ import (
 	"github.com/neelance/cdp-go/protocol/target"
 	"github.com/neelance/cdp-go/protocol/tethering"
 	"github.com/neelance/cdp-go/protocol/tracing"
-	"github.com/neelance/cdp-go/rpc"
-
-	"golang.org/x/net/websocket"
 )
 
 type Client struct {
@@ -42,18 +44,19 @@ type Client struct {
 	Animation         animation.Domain
 	ApplicationCache  applicationcache.Domain
 	Browser           browser.Domain
-	CacheStorage      cachestorage.Domain
 	CSS               css.Domain
-	Database          database.Domain
-	DeviceOrientation deviceorientation.Domain
+	CacheStorage      cachestorage.Domain
 	DOM               dom.Domain
 	DOMDebugger       domdebugger.Domain
+	DOMSnapshot       domsnapshot.Domain
 	DOMStorage        domstorage.Domain
+	Database          database.Domain
+	DeviceOrientation deviceorientation.Domain
 	Emulation         emulation.Domain
+	IO                io.Domain
 	IndexedDB         indexeddb.Domain
 	Input             input.Domain
 	Inspector         inspector.Domain
-	IO                io.Domain
 	LayerTree         layertree.Domain
 	Log               log.Domain
 	Memory            memory.Domain
@@ -83,18 +86,19 @@ func Dial(url string) *Client {
 		Animation:         animation.Domain{Client: cl},
 		ApplicationCache:  applicationcache.Domain{Client: cl},
 		Browser:           browser.Domain{Client: cl},
-		CacheStorage:      cachestorage.Domain{Client: cl},
 		CSS:               css.Domain{Client: cl},
-		Database:          database.Domain{Client: cl},
-		DeviceOrientation: deviceorientation.Domain{Client: cl},
+		CacheStorage:      cachestorage.Domain{Client: cl},
 		DOM:               dom.Domain{Client: cl},
 		DOMDebugger:       domdebugger.Domain{Client: cl},
+		DOMSnapshot:       domsnapshot.Domain{Client: cl},
 		DOMStorage:        domstorage.Domain{Client: cl},
+		Database:          database.Domain{Client: cl},
+		DeviceOrientation: deviceorientation.Domain{Client: cl},
 		Emulation:         emulation.Domain{Client: cl},
+		IO:                io.Domain{Client: cl},
 		IndexedDB:         indexeddb.Domain{Client: cl},
 		Input:             input.Domain{Client: cl},
 		Inspector:         inspector.Domain{Client: cl},
-		IO:                io.Domain{Client: cl},
 		LayerTree:         layertree.Domain{Client: cl},
 		Log:               log.Domain{Client: cl},
 		Memory:            memory.Domain{Client: cl},

@@ -85,6 +85,10 @@ type FrameResourceTree struct {
 
 type ScriptIdentifier string
 
+// Transition type. (experimental)
+
+type TransitionType string
+
 // Navigation history entry. (experimental)
 
 type NavigationEntry struct {
@@ -94,8 +98,14 @@ type NavigationEntry struct {
 	// URL of the navigation history entry.
 	URL string `json:"url"`
 
+	// URL that the user typed in the url bar.
+	UserTypedURL string `json:"userTypedURL"`
+
 	// Title of the navigation history entry.
 	Title string `json:"title"`
+
+	// Transition type.
+	TransitionType TransitionType `json:"transitionType"`
 }
 
 // Screencast frame metadata. (experimental)
@@ -331,6 +341,12 @@ func (r *NavigateRequest) URL(v string) *NavigateRequest {
 // Referrer URL. (optional, experimental)
 func (r *NavigateRequest) Referrer(v string) *NavigateRequest {
 	r.opts["referrer"] = v
+	return r
+}
+
+// Intended transition type. (optional, experimental)
+func (r *NavigateRequest) TransitionType(v TransitionType) *NavigateRequest {
+	r.opts["transitionType"] = v
 	return r
 }
 
@@ -841,7 +857,7 @@ func (r *CaptureScreenshotRequest) Quality(v int) *CaptureScreenshotRequest {
 	return r
 }
 
-// Capture the screenshot from the surface, rather than the view. Defaults to false. (optional, experimental)
+// Capture the screenshot from the surface, rather than the view. Defaults to true. (optional, experimental)
 func (r *CaptureScreenshotRequest) FromSurface(v bool) *CaptureScreenshotRequest {
 	r.opts["fromSurface"] = v
 	return r

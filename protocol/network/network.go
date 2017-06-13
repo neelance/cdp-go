@@ -18,6 +18,14 @@ type LoaderId string
 
 type RequestId string
 
+// Unique intercepted request identifier.
+
+type InterceptionId string
+
+// Network level fetch failure reason.
+
+type ErrorReason string
+
 // Number of seconds since epoch.
 
 type Timestamp float64
@@ -899,6 +907,83 @@ func (r *GetCertificateRequest) Do() (*GetCertificateResult, error) {
 	return &result, err
 }
 
+// (experimental)
+type EnableRequestInterceptionRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) EnableRequestInterception() *EnableRequestInterceptionRequest {
+	return &EnableRequestInterceptionRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+// Whether or not HTTP requests should be intercepted and Network.requestIntercepted events sent.
+func (r *EnableRequestInterceptionRequest) Enabled(v bool) *EnableRequestInterceptionRequest {
+	r.opts["enabled"] = v
+	return r
+}
+
+// (experimental)
+func (r *EnableRequestInterceptionRequest) Do() error {
+	return r.client.Call("Network.enableRequestInterception", r.opts, nil)
+}
+
+// Response to Network.requestIntercepted which either modifies the request to continue with any modifications, or blocks it, or completes it with the provided response bytes. If a network fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted event will be sent with the same InterceptionId. (experimental)
+type ContinueInterceptedRequestRequest struct {
+	client *rpc.Client
+	opts   map[string]interface{}
+}
+
+func (d *Domain) ContinueInterceptedRequest() *ContinueInterceptedRequestRequest {
+	return &ContinueInterceptedRequestRequest{opts: make(map[string]interface{}), client: d.Client}
+}
+
+func (r *ContinueInterceptedRequestRequest) InterceptionId(v InterceptionId) *ContinueInterceptedRequestRequest {
+	r.opts["interceptionId"] = v
+	return r
+}
+
+// If set this causes the request to fail with the given reason. (optional)
+func (r *ContinueInterceptedRequestRequest) ErrorReason(v ErrorReason) *ContinueInterceptedRequestRequest {
+	r.opts["errorReason"] = v
+	return r
+}
+
+// If set the requests completes using with the provided base64 encoded raw response, including HTTP status line and headers etc... (optional)
+func (r *ContinueInterceptedRequestRequest) RawResponse(v string) *ContinueInterceptedRequestRequest {
+	r.opts["rawResponse"] = v
+	return r
+}
+
+// If set the request url will be modified in a way that's not observable by page. (optional)
+func (r *ContinueInterceptedRequestRequest) URL(v string) *ContinueInterceptedRequestRequest {
+	r.opts["url"] = v
+	return r
+}
+
+// If set this allows the request method to be overridden. (optional)
+func (r *ContinueInterceptedRequestRequest) Method(v string) *ContinueInterceptedRequestRequest {
+	r.opts["method"] = v
+	return r
+}
+
+// If set this allows postData to be set. (optional)
+func (r *ContinueInterceptedRequestRequest) PostData(v string) *ContinueInterceptedRequestRequest {
+	r.opts["postData"] = v
+	return r
+}
+
+// If set this allows the request headers to be changed. (optional)
+func (r *ContinueInterceptedRequestRequest) Headers(v *Headers) *ContinueInterceptedRequestRequest {
+	r.opts["headers"] = v
+	return r
+}
+
+// Response to Network.requestIntercepted which either modifies the request to continue with any modifications, or blocks it, or completes it with the provided response bytes. If a network fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted event will be sent with the same InterceptionId. (experimental)
+func (r *ContinueInterceptedRequestRequest) Do() error {
+	return r.client.Call("Network.continueInterceptedRequest", r.opts, nil)
+}
+
 func init() {
 	rpc.EventTypes["Network.resourceChangedPriority"] = func() interface{} { return new(ResourceChangedPriorityEvent) }
 	rpc.EventTypes["Network.requestWillBeSent"] = func() interface{} { return new(RequestWillBeSentEvent) }
@@ -915,6 +1000,7 @@ func init() {
 	rpc.EventTypes["Network.webSocketFrameError"] = func() interface{} { return new(WebSocketFrameErrorEvent) }
 	rpc.EventTypes["Network.webSocketFrameSent"] = func() interface{} { return new(WebSocketFrameSentEvent) }
 	rpc.EventTypes["Network.eventSourceMessageReceived"] = func() interface{} { return new(EventSourceMessageReceivedEvent) }
+	rpc.EventTypes["Network.requestIntercepted"] = func() interface{} { return new(RequestInterceptedEvent) }
 }
 
 // Fired when resource loading priority is changed (experimental)
@@ -1137,4 +1223,24 @@ type EventSourceMessageReceivedEvent struct {
 
 	// Message content.
 	Data string `json:"data"`
+}
+
+// Details of an intercepted HTTP request, which must be either allowed, blocked, modified or mocked. (experimental)
+type RequestInterceptedEvent struct {
+	// Each request the page makes will have a unique id, however if any redirects are encountered while processing that fetch, they will be reported with the same id as the original fetch.
+	InterceptionId InterceptionId `json:"InterceptionId"`
+
+	Request *Request `json:"request"`
+
+	// How the requested resource will be used.
+	ResourceType interface{} `json:"resourceType"`
+
+	// HTTP response headers, only sent if a redirect was intercepted. (optional)
+	RedirectHeaders *Headers `json:"redirectHeaders"`
+
+	// HTTP response code, only sent if a redirect was intercepted. (optional)
+	RedirectStatusCode int `json:"redirectStatusCode"`
+
+	// Redirect location, only sent if a redirect was intercepted. (optional)
+	RedirectUrl string `json:"redirectUrl"`
 }

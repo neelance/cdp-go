@@ -5,6 +5,7 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"sort"
 	"strings"
 	"text/template"
 )
@@ -176,7 +177,7 @@ func goType(d *Domain, t *TypeRef) string {
 }
 
 func main() {
-	in, err := os.Open("browser_protocol.json")
+	in, err := os.Open("devtools-protocol/json/browser_protocol.json")
 	if err != nil {
 		panic(err)
 	}
@@ -185,6 +186,10 @@ func main() {
 		panic(err)
 	}
 	in.Close()
+
+	sort.Slice(protocol.Domains, func(i, j int) bool {
+		return protocol.Domains[i].Domain < protocol.Domains[j].Domain
+	})
 
 	os.RemoveAll("protocol")
 	os.Mkdir("protocol", 0777)
@@ -196,15 +201,23 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		if err := t.Execute(out, d); err != nil {
+		if err := domainTmpl.Execute(out, d); err != nil {
 			panic(err)
 		}
 		out.Close()
 	}
 
+	out, err := os.Create("client.go")
+	if err != nil {
+		panic(err)
+	}
+	if err := clientTmpl.Execute(out, protocol.Domains); err != nil {
+		panic(err)
+	}
+	out.Close()
 }
 
-var t = template.Must(template.New("").Funcs(template.FuncMap{
+var domainTmpl = template.Must(template.New("").Funcs(template.FuncMap{
 	"goType": goType,
 }).Parse(`
 {{if .Doc}}// {{.Doc}}{{end}}
@@ -289,4 +302,42 @@ func init() {
 		{{end}}
 	}
 {{end}}
+`))
+
+var clientTmpl = template.Must(template.New("").Parse(`
+package cdp
+
+import (
+	"golang.org/x/net/websocket"
+
+	"github.com/neelance/cdp-go/rpc"
+
+	{{range .}}
+		"github.com/neelance/cdp-go/protocol/{{.GoPackage}}"
+	{{- end}}
+)
+
+type Client struct {
+	*rpc.Client
+
+	{{range .}}
+		{{.Domain}} {{.GoPackage}}.Domain
+	{{- end}}
+}
+
+func Dial(url string) *Client {
+	conn, err := websocket.Dial(url, "", url)
+	if err != nil {
+		panic(err)
+	}
+
+	cl := rpc.NewClient(conn)
+	return &Client{
+		Client: cl,
+
+		{{range .}}
+			{{.Domain}}: {{.GoPackage}}.Domain{Client: cl},
+		{{- end}}
+	}
+}
 `))
