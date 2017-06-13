@@ -177,24 +177,30 @@ func goType(d *Domain, t *TypeRef) string {
 }
 
 func main() {
-	in, err := os.Open("devtools-protocol/json/browser_protocol.json")
-	if err != nil {
-		panic(err)
+	var domains []*Domain
+	readProtocol := func(filename string) {
+		in, err := os.Open(filename)
+		if err != nil {
+			panic(err)
+		}
+		var protocol Protocol
+		if err := json.NewDecoder(in).Decode(&protocol); err != nil {
+			panic(err)
+		}
+		domains = append(domains, protocol.Domains...)
+		in.Close()
 	}
-	var protocol Protocol
-	if err := json.NewDecoder(in).Decode(&protocol); err != nil {
-		panic(err)
-	}
-	in.Close()
+	readProtocol("devtools-protocol/json/browser_protocol.json")
+	readProtocol("devtools-protocol/json/js_protocol.json")
 
-	sort.Slice(protocol.Domains, func(i, j int) bool {
-		return protocol.Domains[i].Domain < protocol.Domains[j].Domain
+	sort.Slice(domains, func(i, j int) bool {
+		return domains[i].Domain < domains[j].Domain
 	})
 
 	os.RemoveAll("protocol")
 	os.Mkdir("protocol", 0777)
 
-	for _, d := range protocol.Domains {
+	for _, d := range domains {
 		dir := "protocol/" + d.GoPackage()
 		os.Mkdir(dir, 0777)
 		out, err := os.Create(dir + "/" + d.GoPackage() + ".go")
@@ -211,7 +217,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	if err := clientTmpl.Execute(out, protocol.Domains); err != nil {
+	if err := clientTmpl.Execute(out, domains); err != nil {
 		panic(err)
 	}
 	out.Close()

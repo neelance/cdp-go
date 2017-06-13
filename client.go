@@ -10,14 +10,17 @@ import (
 	"github.com/neelance/cdp-go/protocol/applicationcache"
 	"github.com/neelance/cdp-go/protocol/browser"
 	"github.com/neelance/cdp-go/protocol/cachestorage"
+	"github.com/neelance/cdp-go/protocol/console"
 	"github.com/neelance/cdp-go/protocol/css"
 	"github.com/neelance/cdp-go/protocol/database"
+	"github.com/neelance/cdp-go/protocol/debugger"
 	"github.com/neelance/cdp-go/protocol/deviceorientation"
 	"github.com/neelance/cdp-go/protocol/dom"
 	"github.com/neelance/cdp-go/protocol/domdebugger"
 	"github.com/neelance/cdp-go/protocol/domsnapshot"
 	"github.com/neelance/cdp-go/protocol/domstorage"
 	"github.com/neelance/cdp-go/protocol/emulation"
+	"github.com/neelance/cdp-go/protocol/heapprofiler"
 	"github.com/neelance/cdp-go/protocol/indexeddb"
 	"github.com/neelance/cdp-go/protocol/input"
 	"github.com/neelance/cdp-go/protocol/inspector"
@@ -28,6 +31,9 @@ import (
 	"github.com/neelance/cdp-go/protocol/network"
 	"github.com/neelance/cdp-go/protocol/overlay"
 	"github.com/neelance/cdp-go/protocol/page"
+	"github.com/neelance/cdp-go/protocol/profiler"
+	"github.com/neelance/cdp-go/protocol/runtime"
+	"github.com/neelance/cdp-go/protocol/schema"
 	"github.com/neelance/cdp-go/protocol/security"
 	"github.com/neelance/cdp-go/protocol/serviceworker"
 	"github.com/neelance/cdp-go/protocol/storage"
@@ -46,13 +52,16 @@ type Client struct {
 	Browser           browser.Domain
 	CSS               css.Domain
 	CacheStorage      cachestorage.Domain
+	Console           console.Domain
 	DOM               dom.Domain
 	DOMDebugger       domdebugger.Domain
 	DOMSnapshot       domsnapshot.Domain
 	DOMStorage        domstorage.Domain
 	Database          database.Domain
+	Debugger          debugger.Domain
 	DeviceOrientation deviceorientation.Domain
 	Emulation         emulation.Domain
+	HeapProfiler      heapprofiler.Domain
 	IO                io.Domain
 	IndexedDB         indexeddb.Domain
 	Input             input.Domain
@@ -63,6 +72,9 @@ type Client struct {
 	Network           network.Domain
 	Overlay           overlay.Domain
 	Page              page.Domain
+	Profiler          profiler.Domain
+	Runtime           runtime.Domain
+	Schema            schema.Domain
 	Security          security.Domain
 	ServiceWorker     serviceworker.Domain
 	Storage           storage.Domain
@@ -88,13 +100,16 @@ func Dial(url string) *Client {
 		Browser:           browser.Domain{Client: cl},
 		CSS:               css.Domain{Client: cl},
 		CacheStorage:      cachestorage.Domain{Client: cl},
+		Console:           console.Domain{Client: cl},
 		DOM:               dom.Domain{Client: cl},
 		DOMDebugger:       domdebugger.Domain{Client: cl},
 		DOMSnapshot:       domsnapshot.Domain{Client: cl},
 		DOMStorage:        domstorage.Domain{Client: cl},
 		Database:          database.Domain{Client: cl},
+		Debugger:          debugger.Domain{Client: cl},
 		DeviceOrientation: deviceorientation.Domain{Client: cl},
 		Emulation:         emulation.Domain{Client: cl},
+		HeapProfiler:      heapprofiler.Domain{Client: cl},
 		IO:                io.Domain{Client: cl},
 		IndexedDB:         indexeddb.Domain{Client: cl},
 		Input:             input.Domain{Client: cl},
@@ -105,6 +120,9 @@ func Dial(url string) *Client {
 		Network:           network.Domain{Client: cl},
 		Overlay:           overlay.Domain{Client: cl},
 		Page:              page.Domain{Client: cl},
+		Profiler:          profiler.Domain{Client: cl},
+		Runtime:           runtime.Domain{Client: cl},
+		Schema:            schema.Domain{Client: cl},
 		Security:          security.Domain{Client: cl},
 		ServiceWorker:     serviceworker.Domain{Client: cl},
 		Storage:           storage.Domain{Client: cl},
