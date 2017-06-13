@@ -3,6 +3,8 @@ package css
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/dom"
 )
 
 // This domain exposes CSS read/write operations. All CSS objects (stylesheets, rules, and styles) have an associated <code>id</code> used in subsequent operations on the related object. Each object type has a specific <code>id</code> structure, and those are not interchangeable between objects of different kinds. CSS objects can be loaded using the <code>get*ForNode()</code> calls (which accept a DOM node id). A client can also discover all the existing stylesheets with the <code>getAllStyleSheets()</code> method (or keeping track of the <code>styleSheetAdded</code>/<code>styleSheetRemoved</code> events) and subsequently load the required stylesheet contents using the <code>getStyleSheet[Text]()</code> methods. (experimental)
@@ -20,7 +22,7 @@ type StyleSheetOrigin string
 
 type PseudoElementMatches struct {
 	// Pseudo element type.
-	PseudoType interface{} `json:"pseudoType"`
+	PseudoType dom.PseudoType `json:"pseudoType"`
 
 	// Matches of CSS rules applicable to the pseudo style.
 	Matches []*RuleMatch `json:"matches"`
@@ -73,7 +75,7 @@ type CSSStyleSheetHeader struct {
 	StyleSheetId StyleSheetId `json:"styleSheetId"`
 
 	// Owner frame identifier.
-	FrameId interface{} `json:"frameId"`
+	FrameId string `json:"frameId"`
 
 	// Stylesheet resource URL.
 	SourceURL string `json:"sourceURL"`
@@ -88,7 +90,7 @@ type CSSStyleSheetHeader struct {
 	Title string `json:"title"`
 
 	// The backend id for the owner node of the stylesheet. (optional)
-	OwnerNode interface{} `json:"ownerNode,omitempty"`
+	OwnerNode dom.BackendNodeId `json:"ownerNode,omitempty"`
 
 	// Denotes whether the stylesheet is disabled.
 	Disabled bool `json:"disabled"`
@@ -333,7 +335,7 @@ type StyleDeclarationEdit struct {
 
 type InlineTextBox struct {
 	// The absolute position bounding box.
-	BoundingBox interface{} `json:"boundingBox"`
+	BoundingBox *dom.Rect `json:"boundingBox"`
 
 	// The starting index in characters, for this post layout textbox substring.
 	StartCharacterIndex int `json:"startCharacterIndex"`
@@ -346,10 +348,10 @@ type InlineTextBox struct {
 
 type LayoutTreeNode struct {
 	// The id of the related DOM node matching one from DOM.GetDocument.
-	NodeId interface{} `json:"nodeId"`
+	NodeId dom.NodeId `json:"nodeId"`
 
 	// The absolute position bounding box.
-	BoundingBox interface{} `json:"boundingBox"`
+	BoundingBox *dom.Rect `json:"boundingBox"`
 
 	// Contents of the LayoutText if any (optional)
 	LayoutText string `json:"layoutText,omitempty"`
@@ -405,7 +407,7 @@ func (d *Client) GetMatchedStylesForNode() *GetMatchedStylesForNodeRequest {
 	return &GetMatchedStylesForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-func (r *GetMatchedStylesForNodeRequest) NodeId(v interface{}) *GetMatchedStylesForNodeRequest {
+func (r *GetMatchedStylesForNodeRequest) NodeId(v dom.NodeId) *GetMatchedStylesForNodeRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -446,7 +448,7 @@ func (d *Client) GetInlineStylesForNode() *GetInlineStylesForNodeRequest {
 	return &GetInlineStylesForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-func (r *GetInlineStylesForNodeRequest) NodeId(v interface{}) *GetInlineStylesForNodeRequest {
+func (r *GetInlineStylesForNodeRequest) NodeId(v dom.NodeId) *GetInlineStylesForNodeRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -475,7 +477,7 @@ func (d *Client) GetComputedStyleForNode() *GetComputedStyleForNodeRequest {
 	return &GetComputedStyleForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-func (r *GetComputedStyleForNodeRequest) NodeId(v interface{}) *GetComputedStyleForNodeRequest {
+func (r *GetComputedStyleForNodeRequest) NodeId(v dom.NodeId) *GetComputedStyleForNodeRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -501,7 +503,7 @@ func (d *Client) GetPlatformFontsForNode() *GetPlatformFontsForNodeRequest {
 	return &GetPlatformFontsForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
-func (r *GetPlatformFontsForNodeRequest) NodeId(v interface{}) *GetPlatformFontsForNodeRequest {
+func (r *GetPlatformFontsForNodeRequest) NodeId(v dom.NodeId) *GetPlatformFontsForNodeRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -745,7 +747,7 @@ func (d *Client) CreateStyleSheet() *CreateStyleSheetRequest {
 }
 
 // Identifier of the frame where "via-inspector" stylesheet should be created.
-func (r *CreateStyleSheetRequest) FrameId(v interface{}) *CreateStyleSheetRequest {
+func (r *CreateStyleSheetRequest) FrameId(v string) *CreateStyleSheetRequest {
 	r.opts["frameId"] = v
 	return r
 }
@@ -811,7 +813,7 @@ func (d *Client) ForcePseudoState() *ForcePseudoStateRequest {
 }
 
 // The element id for which to force the pseudo state.
-func (r *ForcePseudoStateRequest) NodeId(v interface{}) *ForcePseudoStateRequest {
+func (r *ForcePseudoStateRequest) NodeId(v dom.NodeId) *ForcePseudoStateRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -857,7 +859,7 @@ func (d *Client) SetEffectivePropertyValueForNode() *SetEffectivePropertyValueFo
 }
 
 // The element id for which to set property.
-func (r *SetEffectivePropertyValueForNodeRequest) NodeId(v interface{}) *SetEffectivePropertyValueForNodeRequest {
+func (r *SetEffectivePropertyValueForNodeRequest) NodeId(v dom.NodeId) *SetEffectivePropertyValueForNodeRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -887,7 +889,7 @@ func (d *Client) GetBackgroundColors() *GetBackgroundColorsRequest {
 }
 
 // Id of the node to get background colors for.
-func (r *GetBackgroundColorsRequest) NodeId(v interface{}) *GetBackgroundColorsRequest {
+func (r *GetBackgroundColorsRequest) NodeId(v dom.NodeId) *GetBackgroundColorsRequest {
 	r.opts["nodeId"] = v
 	return r
 }

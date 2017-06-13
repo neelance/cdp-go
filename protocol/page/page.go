@@ -3,6 +3,12 @@ package page
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/debugger"
+	"github.com/neelance/cdp-go/protocol/dom"
+	"github.com/neelance/cdp-go/protocol/emulation"
+	"github.com/neelance/cdp-go/protocol/network"
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // Actions and events related to the inspected page belong to the page domain.
@@ -28,7 +34,7 @@ type Frame struct {
 	ParentId string `json:"parentId,omitempty"`
 
 	// Identifier of the loader associated with this frame.
-	LoaderId interface{} `json:"loaderId"`
+	LoaderId network.LoaderId `json:"loaderId"`
 
 	// Frame's name as specified in the tag. (optional)
 	Name string `json:"name,omitempty"`
@@ -56,7 +62,7 @@ type FrameResource struct {
 	MimeType string `json:"mimeType"`
 
 	// last-modified timestamp as reported by server. (optional)
-	LastModified interface{} `json:"lastModified,omitempty"`
+	LastModified network.Timestamp `json:"lastModified,omitempty"`
 
 	// Resource content size. (optional)
 	ContentSize float64 `json:"contentSize,omitempty"`
@@ -426,7 +432,7 @@ func (d *Client) GetCookies() *GetCookiesRequest {
 
 type GetCookiesResult struct {
 	// Array of cookie objects.
-	Cookies []interface{} `json:"cookies"`
+	Cookies []*network.Cookie `json:"cookies"`
 }
 
 func (r *GetCookiesRequest) Do() (*GetCookiesResult, error) {
@@ -560,7 +566,7 @@ func (r *SearchInResourceRequest) IsRegex(v bool) *SearchInResourceRequest {
 
 type SearchInResourceResult struct {
 	// List of search matches.
-	Result []interface{} `json:"result"`
+	Result []*debugger.SearchMatch `json:"result"`
 }
 
 func (r *SearchInResourceRequest) Do() (*SearchInResourceResult, error) {
@@ -678,7 +684,7 @@ func (r *SetDeviceMetricsOverrideRequest) PositionY(v int) *SetDeviceMetricsOver
 }
 
 // Screen orientation override. (optional)
-func (r *SetDeviceMetricsOverrideRequest) ScreenOrientation(v interface{}) *SetDeviceMetricsOverrideRequest {
+func (r *SetDeviceMetricsOverrideRequest) ScreenOrientation(v *emulation.ScreenOrientation) *SetDeviceMetricsOverrideRequest {
 	r.opts["screenOrientation"] = v
 	return r
 }
@@ -1150,7 +1156,7 @@ type GetLayoutMetricsResult struct {
 	VisualViewport *VisualViewport `json:"visualViewport"`
 
 	// Size of scrollable area.
-	ContentSize interface{} `json:"contentSize"`
+	ContentSize *dom.Rect `json:"contentSize"`
 }
 
 func (r *GetLayoutMetricsRequest) Do() (*GetLayoutMetricsResult, error) {
@@ -1228,7 +1234,7 @@ type FrameAttachedEvent struct {
 	ParentFrameId FrameId `json:"parentFrameId"`
 
 	// JavaScript stack trace of when frame was attached, only set if frame initiated from script. (optional, experimental)
-	Stack interface{} `json:"stack"`
+	Stack *runtime.StackTrace `json:"stack"`
 }
 
 // Fired once navigation of the frame has completed. Frame is now associated with the new loader.

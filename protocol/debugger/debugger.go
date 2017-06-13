@@ -3,6 +3,8 @@ package debugger
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // Debugger domain exposes JavaScript debugging capabilities. It allows setting and removing breakpoints, stepping through execution, exploring stack traces, etc.
@@ -22,7 +24,7 @@ type CallFrameId string
 
 type Location struct {
 	// Script identifier as reported in the <code>Debugger.scriptParsed</code>.
-	ScriptId interface{} `json:"scriptId"`
+	ScriptId runtime.ScriptId `json:"scriptId"`
 
 	// Line number in the script (0-based).
 	LineNumber int `json:"lineNumber"`
@@ -58,10 +60,10 @@ type CallFrame struct {
 	ScopeChain []*Scope `json:"scopeChain"`
 
 	// <code>this</code> object for this call frame.
-	This interface{} `json:"this"`
+	This *runtime.RemoteObject `json:"this"`
 
 	// The value being returned, if the function is at return point. (optional)
-	ReturnValue interface{} `json:"returnValue,omitempty"`
+	ReturnValue *runtime.RemoteObject `json:"returnValue,omitempty"`
 }
 
 // Scope description.
@@ -71,7 +73,7 @@ type Scope struct {
 	Type string `json:"type"`
 
 	// Object representing the scope. For <code>global</code> and <code>with</code> scopes it represents the actual object; for the rest of the scopes, it is artificial transient object enumerating scope variables as its properties.
-	Object interface{} `json:"object"`
+	Object *runtime.RemoteObject `json:"object"`
 
 	// (optional)
 	Name string `json:"name,omitempty"`
@@ -97,7 +99,7 @@ type SearchMatch struct {
 
 type BreakLocation struct {
 	// Script identifier as reported in the <code>Debugger.scriptParsed</code>.
-	ScriptId interface{} `json:"scriptId"`
+	ScriptId runtime.ScriptId `json:"scriptId"`
 
 	// Line number in the script (0-based).
 	LineNumber int `json:"lineNumber"`
@@ -446,7 +448,7 @@ func (d *Client) SearchInContent() *SearchInContentRequest {
 }
 
 // Id of the script to search in.
-func (r *SearchInContentRequest) ScriptId(v interface{}) *SearchInContentRequest {
+func (r *SearchInContentRequest) ScriptId(v runtime.ScriptId) *SearchInContentRequest {
 	r.opts["scriptId"] = v
 	return r
 }
@@ -491,7 +493,7 @@ func (d *Client) SetScriptSource() *SetScriptSourceRequest {
 }
 
 // Id of the script to edit.
-func (r *SetScriptSourceRequest) ScriptId(v interface{}) *SetScriptSourceRequest {
+func (r *SetScriptSourceRequest) ScriptId(v runtime.ScriptId) *SetScriptSourceRequest {
 	r.opts["scriptId"] = v
 	return r
 }
@@ -516,10 +518,10 @@ type SetScriptSourceResult struct {
 	StackChanged bool `json:"stackChanged"`
 
 	// Async stack trace, if any. (optional)
-	AsyncStackTrace interface{} `json:"asyncStackTrace"`
+	AsyncStackTrace *runtime.StackTrace `json:"asyncStackTrace"`
 
 	// Exception details if any. (optional)
-	ExceptionDetails interface{} `json:"exceptionDetails"`
+	ExceptionDetails *runtime.ExceptionDetails `json:"exceptionDetails"`
 }
 
 func (r *SetScriptSourceRequest) Do() (*SetScriptSourceResult, error) {
@@ -549,7 +551,7 @@ type RestartFrameResult struct {
 	CallFrames []*CallFrame `json:"callFrames"`
 
 	// Async stack trace, if any. (optional)
-	AsyncStackTrace interface{} `json:"asyncStackTrace"`
+	AsyncStackTrace *runtime.StackTrace `json:"asyncStackTrace"`
 }
 
 func (r *RestartFrameRequest) Do() (*RestartFrameResult, error) {
@@ -569,7 +571,7 @@ func (d *Client) GetScriptSource() *GetScriptSourceRequest {
 }
 
 // Id of the script to get source for.
-func (r *GetScriptSourceRequest) ScriptId(v interface{}) *GetScriptSourceRequest {
+func (r *GetScriptSourceRequest) ScriptId(v runtime.ScriptId) *GetScriptSourceRequest {
 	r.opts["scriptId"] = v
 	return r
 }
@@ -665,10 +667,10 @@ func (r *EvaluateOnCallFrameRequest) ThrowOnSideEffect(v bool) *EvaluateOnCallFr
 
 type EvaluateOnCallFrameResult struct {
 	// Object wrapper for the evaluation result.
-	Result interface{} `json:"result"`
+	Result *runtime.RemoteObject `json:"result"`
 
 	// Exception details. (optional)
-	ExceptionDetails interface{} `json:"exceptionDetails"`
+	ExceptionDetails *runtime.ExceptionDetails `json:"exceptionDetails"`
 }
 
 func (r *EvaluateOnCallFrameRequest) Do() (*EvaluateOnCallFrameResult, error) {
@@ -700,7 +702,7 @@ func (r *SetVariableValueRequest) VariableName(v string) *SetVariableValueReques
 }
 
 // New variable value.
-func (r *SetVariableValueRequest) NewValue(v interface{}) *SetVariableValueRequest {
+func (r *SetVariableValueRequest) NewValue(v *runtime.CallArgument) *SetVariableValueRequest {
 	r.opts["newValue"] = v
 	return r
 }
@@ -766,7 +768,7 @@ func (d *Client) SetBlackboxedRanges() *SetBlackboxedRangesRequest {
 }
 
 // Id of the script.
-func (r *SetBlackboxedRangesRequest) ScriptId(v interface{}) *SetBlackboxedRangesRequest {
+func (r *SetBlackboxedRangesRequest) ScriptId(v runtime.ScriptId) *SetBlackboxedRangesRequest {
 	r.opts["scriptId"] = v
 	return r
 }
@@ -791,7 +793,7 @@ func init() {
 // Fired when virtual machine parses script. This event is also fired for all known and uncollected scripts upon enabling debugger.
 type ScriptParsedEvent struct {
 	// Identifier of the script parsed.
-	ScriptId interface{} `json:"scriptId"`
+	ScriptId runtime.ScriptId `json:"scriptId"`
 
 	// URL or name of the script parsed (if any).
 	URL string `json:"url"`
@@ -809,7 +811,7 @@ type ScriptParsedEvent struct {
 	EndColumn int `json:"endColumn"`
 
 	// Specifies script creation context.
-	ExecutionContextId interface{} `json:"executionContextId"`
+	ExecutionContextId runtime.ExecutionContextId `json:"executionContextId"`
 
 	// Content hash of the script.
 	Hash string `json:"hash"`
@@ -833,13 +835,13 @@ type ScriptParsedEvent struct {
 	Length int `json:"length"`
 
 	// JavaScript top stack frame of where the script parsed event was triggered if available. (optional, experimental)
-	StackTrace interface{} `json:"stackTrace"`
+	StackTrace *runtime.StackTrace `json:"stackTrace"`
 }
 
 // Fired when virtual machine fails to parse the script.
 type ScriptFailedToParseEvent struct {
 	// Identifier of the script parsed.
-	ScriptId interface{} `json:"scriptId"`
+	ScriptId runtime.ScriptId `json:"scriptId"`
 
 	// URL or name of the script parsed (if any).
 	URL string `json:"url"`
@@ -857,7 +859,7 @@ type ScriptFailedToParseEvent struct {
 	EndColumn int `json:"endColumn"`
 
 	// Specifies script creation context.
-	ExecutionContextId interface{} `json:"executionContextId"`
+	ExecutionContextId runtime.ExecutionContextId `json:"executionContextId"`
 
 	// Content hash of the script.
 	Hash string `json:"hash"`
@@ -878,7 +880,7 @@ type ScriptFailedToParseEvent struct {
 	Length int `json:"length"`
 
 	// JavaScript top stack frame of where the script parsed event was triggered if available. (optional, experimental)
-	StackTrace interface{} `json:"stackTrace"`
+	StackTrace *runtime.StackTrace `json:"stackTrace"`
 }
 
 // Fired when breakpoint is resolved to an actual script and location.
@@ -905,7 +907,7 @@ type PausedEvent struct {
 	HitBreakpoints []string `json:"hitBreakpoints"`
 
 	// Async stack trace, if any. (optional)
-	AsyncStackTrace interface{} `json:"asyncStackTrace"`
+	AsyncStackTrace *runtime.StackTrace `json:"asyncStackTrace"`
 }
 
 // Fired when the virtual machine resumed execution.

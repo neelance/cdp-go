@@ -3,6 +3,8 @@ package layertree
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/dom"
 )
 
 // (experimental)
@@ -22,7 +24,7 @@ type SnapshotId string
 
 type ScrollRect struct {
 	// Rectangle itself.
-	Rect interface{} `json:"rect"`
+	Rect *dom.Rect `json:"rect"`
 
 	// Reason for rectangle to force scrolling on the main thread
 	Type string `json:"type"`
@@ -51,7 +53,7 @@ type Layer struct {
 	ParentLayerId LayerId `json:"parentLayerId,omitempty"`
 
 	// The backend id for the node associated with this layer. (optional)
-	BackendNodeId interface{} `json:"backendNodeId,omitempty"`
+	BackendNodeId dom.BackendNodeId `json:"backendNodeId,omitempty"`
 
 	// Offset from parent layer, X coordinate.
 	OffsetX float64 `json:"offsetX"`
@@ -251,7 +253,7 @@ func (r *ProfileSnapshotRequest) MinDuration(v float64) *ProfileSnapshotRequest 
 }
 
 // The clip rectangle to apply when replaying the snapshot. (optional)
-func (r *ProfileSnapshotRequest) ClipRect(v interface{}) *ProfileSnapshotRequest {
+func (r *ProfileSnapshotRequest) ClipRect(v *dom.Rect) *ProfileSnapshotRequest {
 	r.opts["clipRect"] = v
 	return r
 }
@@ -354,5 +356,5 @@ type LayerPaintedEvent struct {
 	LayerId LayerId `json:"layerId"`
 
 	// Clip rectangle.
-	Clip interface{} `json:"clip"`
+	Clip *dom.Rect `json:"clip"`
 }

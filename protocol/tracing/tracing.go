@@ -3,6 +3,8 @@ package tracing
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/io"
 )
 
 // (experimental)
@@ -178,7 +180,7 @@ type DataCollectedEvent struct {
 // Signals that tracing is stopped and there is no trace buffers pending flush, all data were delivered via dataCollected events.
 type TracingCompleteEvent struct {
 	// A handle of the stream that holds resulting trace data. (optional)
-	Stream interface{} `json:"stream"`
+	Stream io.StreamHandle `json:"stream"`
 }
 
 type BufferUsageEvent struct {

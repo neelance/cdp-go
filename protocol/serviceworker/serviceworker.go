@@ -3,6 +3,8 @@ package serviceworker
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/target"
 )
 
 // (experimental)
@@ -44,10 +46,10 @@ type ServiceWorkerVersion struct {
 	ScriptResponseTime float64 `json:"scriptResponseTime,omitempty"`
 
 	// (optional)
-	ControlledClients []interface{} `json:"controlledClients,omitempty"`
+	ControlledClients []target.TargetID `json:"controlledClients,omitempty"`
 
 	// (optional)
-	TargetId interface{} `json:"targetId,omitempty"`
+	TargetId target.TargetID `json:"targetId,omitempty"`
 }
 
 // ServiceWorker error message.

@@ -3,6 +3,9 @@ package animation
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/dom"
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // (experimental)
@@ -69,7 +72,7 @@ type AnimationEffect struct {
 	Fill string `json:"fill"`
 
 	// <code>AnimationEffect</code>'s target node.
-	BackendNodeId interface{} `json:"backendNodeId"`
+	BackendNodeId dom.BackendNodeId `json:"backendNodeId"`
 
 	// <code>AnimationEffect</code>'s keyframes. (optional)
 	KeyframesRule *KeyframesRule `json:"keyframesRule,omitempty"`
@@ -316,7 +319,7 @@ func (r *ResolveAnimationRequest) AnimationId(v string) *ResolveAnimationRequest
 
 type ResolveAnimationResult struct {
 	// Corresponding remote object.
-	RemoteObject interface{} `json:"remoteObject"`
+	RemoteObject *runtime.RemoteObject `json:"remoteObject"`
 }
 
 func (r *ResolveAnimationRequest) Do() (*ResolveAnimationResult, error) {

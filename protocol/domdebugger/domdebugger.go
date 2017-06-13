@@ -3,6 +3,9 @@ package domdebugger
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/dom"
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // DOM debugging allows setting breakpoints on particular DOM operations and events. JavaScript execution will stop on these operations as if there was a regular breakpoint set.
@@ -30,7 +33,7 @@ type EventListener struct {
 	Once bool `json:"once"`
 
 	// Script id of the handler code.
-	ScriptId interface{} `json:"scriptId"`
+	ScriptId runtime.ScriptId `json:"scriptId"`
 
 	// Line number in the script (0-based).
 	LineNumber int `json:"lineNumber"`
@@ -39,13 +42,13 @@ type EventListener struct {
 	ColumnNumber int `json:"columnNumber"`
 
 	// Event handler function value. (optional)
-	Handler interface{} `json:"handler,omitempty"`
+	Handler *runtime.RemoteObject `json:"handler,omitempty"`
 
 	// Event original handler function value. (optional)
-	OriginalHandler interface{} `json:"originalHandler,omitempty"`
+	OriginalHandler *runtime.RemoteObject `json:"originalHandler,omitempty"`
 
 	// Node the listener is added to (if any). (optional)
-	BackendNodeId interface{} `json:"backendNodeId,omitempty"`
+	BackendNodeId dom.BackendNodeId `json:"backendNodeId,omitempty"`
 }
 
 type SetDOMBreakpointRequest struct {
@@ -59,7 +62,7 @@ func (d *Client) SetDOMBreakpoint() *SetDOMBreakpointRequest {
 }
 
 // Identifier of the node to set breakpoint on.
-func (r *SetDOMBreakpointRequest) NodeId(v interface{}) *SetDOMBreakpointRequest {
+func (r *SetDOMBreakpointRequest) NodeId(v dom.NodeId) *SetDOMBreakpointRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -85,7 +88,7 @@ func (d *Client) RemoveDOMBreakpoint() *RemoveDOMBreakpointRequest {
 }
 
 // Identifier of the node to remove breakpoint from.
-func (r *RemoveDOMBreakpointRequest) NodeId(v interface{}) *RemoveDOMBreakpointRequest {
+func (r *RemoveDOMBreakpointRequest) NodeId(v dom.NodeId) *RemoveDOMBreakpointRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -243,7 +246,7 @@ func (d *Client) GetEventListeners() *GetEventListenersRequest {
 }
 
 // Identifier of the object to return listeners for.
-func (r *GetEventListenersRequest) ObjectId(v interface{}) *GetEventListenersRequest {
+func (r *GetEventListenersRequest) ObjectId(v runtime.RemoteObjectId) *GetEventListenersRequest {
 	r.opts["objectId"] = v
 	return r
 }

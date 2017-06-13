@@ -3,6 +3,8 @@ package browser
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/target"
 )
 
 // The Browser domain defines methods and events for browser managing. (experimental)
@@ -46,7 +48,7 @@ func (d *Client) GetWindowForTarget() *GetWindowForTargetRequest {
 }
 
 // Devtools agent host id.
-func (r *GetWindowForTargetRequest) TargetId(v interface{}) *GetWindowForTargetRequest {
+func (r *GetWindowForTargetRequest) TargetId(v target.TargetID) *GetWindowForTargetRequest {
 	r.opts["targetId"] = v
 	return r
 }

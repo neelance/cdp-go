@@ -2,6 +2,9 @@ package profiler
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/debugger"
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 type Client struct {
@@ -15,7 +18,7 @@ type ProfileNode struct {
 	Id int `json:"id"`
 
 	// Function location.
-	CallFrame interface{} `json:"callFrame"`
+	CallFrame *runtime.CallFrame `json:"callFrame"`
 
 	// Number of samples where this node was on top of the call stack. (optional, experimental)
 	HitCount int `json:"hitCount,omitempty"`
@@ -86,7 +89,7 @@ type FunctionCoverage struct {
 
 type ScriptCoverage struct {
 	// JavaScript script id.
-	ScriptId interface{} `json:"scriptId"`
+	ScriptId runtime.ScriptId `json:"scriptId"`
 
 	// JavaScript script name or url.
 	URL string `json:"url"`
@@ -260,7 +263,7 @@ type ConsoleProfileStartedEvent struct {
 	Id string `json:"id"`
 
 	// Location of console.profile().
-	Location interface{} `json:"location"`
+	Location *debugger.Location `json:"location"`
 
 	// Profile title passed as an argument to console.profile(). (optional)
 	Title string `json:"title"`
@@ -270,7 +273,7 @@ type ConsoleProfileFinishedEvent struct {
 	Id string `json:"id"`
 
 	// Location of console.profileEnd().
-	Location interface{} `json:"location"`
+	Location *debugger.Location `json:"location"`
 
 	Profile *Profile `json:"profile"`
 

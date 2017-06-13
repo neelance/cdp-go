@@ -3,6 +3,9 @@ package domsnapshot
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/css"
+	"github.com/neelance/cdp-go/protocol/dom"
 )
 
 // This domain facilitates obtaining document snapshots with DOM, layout, and style information. (experimental)
@@ -23,7 +26,7 @@ type DOMNode struct {
 	NodeValue string `json:"nodeValue"`
 
 	// <code>Node</code>'s id, corresponds to DOM.Node.backendNodeId.
-	BackendNodeId interface{} `json:"backendNodeId"`
+	BackendNodeId dom.BackendNodeId `json:"backendNodeId"`
 
 	// The indexes of the node's child nodes in the <code>domNodes</code> array returned by <code>getSnapshot</code>, if any. (optional)
 	ChildNodeIndexes []int `json:"childNodeIndexes,omitempty"`
@@ -50,7 +53,7 @@ type DOMNode struct {
 	SystemId string `json:"systemId,omitempty"`
 
 	// Frame ID for frame owner elements. (optional)
-	FrameId interface{} `json:"frameId,omitempty"`
+	FrameId string `json:"frameId,omitempty"`
 
 	// The index of a frame owner element's content document in the <code>domNodes</code> array returned by <code>getSnapshot</code>, if any. (optional)
 	ContentDocumentIndex int `json:"contentDocumentIndex,omitempty"`
@@ -62,7 +65,7 @@ type DOMNode struct {
 	TemplateContentIndex int `json:"templateContentIndex,omitempty"`
 
 	// Type of a pseudo element node. (optional)
-	PseudoType interface{} `json:"pseudoType,omitempty"`
+	PseudoType dom.PseudoType `json:"pseudoType,omitempty"`
 }
 
 // Details of an element in the DOM tree with a LayoutObject.
@@ -72,13 +75,13 @@ type LayoutTreeNode struct {
 	DomNodeIndex int `json:"domNodeIndex"`
 
 	// The absolute position bounding box.
-	BoundingBox interface{} `json:"boundingBox"`
+	BoundingBox *dom.Rect `json:"boundingBox"`
 
 	// Contents of the LayoutText, if any. (optional)
 	LayoutText string `json:"layoutText,omitempty"`
 
 	// The post-layout inline text nodes, if any. (optional)
-	InlineTextNodes []interface{} `json:"inlineTextNodes,omitempty"`
+	InlineTextNodes []*css.InlineTextBox `json:"inlineTextNodes,omitempty"`
 
 	// Index into the <code>computedStyles</code> array returned by <code>getSnapshot</code>. (optional)
 	StyleIndex int `json:"styleIndex,omitempty"`

@@ -3,6 +3,8 @@ package heapprofiler
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // (experimental)
@@ -18,7 +20,7 @@ type HeapSnapshotObjectId string
 
 type SamplingHeapProfileNode struct {
 	// Function location.
-	CallFrame interface{} `json:"callFrame"`
+	CallFrame *runtime.CallFrame `json:"callFrame"`
 
 	// Allocations size in bytes for the node excluding children.
 	SelfSize float64 `json:"selfSize"`
@@ -151,7 +153,7 @@ func (r *GetObjectByHeapObjectIdRequest) ObjectGroup(v string) *GetObjectByHeapO
 
 type GetObjectByHeapObjectIdResult struct {
 	// Evaluation result.
-	Result interface{} `json:"result"`
+	Result *runtime.RemoteObject `json:"result"`
 }
 
 func (r *GetObjectByHeapObjectIdRequest) Do() (*GetObjectByHeapObjectIdResult, error) {
@@ -190,7 +192,7 @@ func (d *Client) GetHeapObjectId() *GetHeapObjectIdRequest {
 }
 
 // Identifier of the object to get heap object id for.
-func (r *GetHeapObjectIdRequest) ObjectId(v interface{}) *GetHeapObjectIdRequest {
+func (r *GetHeapObjectIdRequest) ObjectId(v runtime.RemoteObjectId) *GetHeapObjectIdRequest {
 	r.opts["objectId"] = v
 	return r
 }

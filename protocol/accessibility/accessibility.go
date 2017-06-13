@@ -3,6 +3,8 @@ package accessibility
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/dom"
 )
 
 // (experimental)
@@ -59,7 +61,7 @@ type AXValueSource struct {
 
 type AXRelatedNode struct {
 	// The BackendNodeId of the related DOM node.
-	BackendDOMNodeId interface{} `json:"backendDOMNodeId"`
+	BackendDOMNodeId dom.BackendNodeId `json:"backendDOMNodeId"`
 
 	// The IDRef value provided, if any. (optional)
 	Idref string `json:"idref,omitempty"`
@@ -143,7 +145,7 @@ type AXNode struct {
 	ChildIds []AXNodeId `json:"childIds,omitempty"`
 
 	// The backend ID for the associated DOM node, if any. (optional)
-	BackendDOMNodeId interface{} `json:"backendDOMNodeId,omitempty"`
+	BackendDOMNodeId dom.BackendNodeId `json:"backendDOMNodeId,omitempty"`
 }
 
 type GetPartialAXTreeRequest struct {
@@ -157,7 +159,7 @@ func (d *Client) GetPartialAXTree() *GetPartialAXTreeRequest {
 }
 
 // ID of node to get the partial accessibility tree for.
-func (r *GetPartialAXTreeRequest) NodeId(v interface{}) *GetPartialAXTreeRequest {
+func (r *GetPartialAXTreeRequest) NodeId(v dom.NodeId) *GetPartialAXTreeRequest {
 	r.opts["nodeId"] = v
 	return r
 }

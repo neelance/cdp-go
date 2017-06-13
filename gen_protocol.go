@@ -3,7 +3,9 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"os"
 	"sort"
 	"strings"
@@ -22,6 +24,8 @@ type Domain struct {
 	Events       []*Event
 	Description  string
 	Experimental bool
+
+	Imports []string `json:"-"`
 }
 
 func (d *Domain) GoPackage() string {
@@ -43,6 +47,15 @@ func (d *Domain) lookupType(id string) *Type {
 		}
 	}
 	panic("type not found")
+}
+
+func (d *Domain) addImport(name string) {
+	for _, imp := range d.Imports {
+		if imp == name {
+			return
+		}
+	}
+	d.Imports = append(d.Imports, name)
 }
 
 type Type struct {
@@ -147,15 +160,25 @@ type TypeRef struct {
 	Items *TypeRef
 }
 
-func goType(d *Domain, t *TypeRef) string {
-	if t.Ref != "" {
-		if strings.Contains(t.Ref, ".") {
-			return "interface{}" // TODO
+func goType(domains []*Domain, d *Domain, t *TypeRef) string {
+	if ref := t.Ref; t.Ref != "" {
+		if ref == "Page.FrameId" || ref == "Page.ResourceType" {
+			return "string" // avoid circular dependency
 		}
-		if d.lookupType(t.Ref).Type == "object" {
-			return "*" + t.Ref
+
+		pkg := ""
+		if i := strings.Index(ref, "."); i != -1 {
+			refD := findDomain(domains, ref[:i])
+			d.addImport("github.com/neelance/cdp-go/protocol/" + refD.GoPackage())
+			pkg = refD.GoPackage() + "."
+			d = refD
+			ref = ref[i+1:]
 		}
-		return t.Ref
+
+		if d.lookupType(ref).Type == "object" {
+			return "*" + pkg + ref
+		}
+		return pkg + ref
 	}
 
 	switch t.Type {
@@ -168,12 +191,21 @@ func goType(d *Domain, t *TypeRef) string {
 	case "number":
 		return "float64"
 	case "array":
-		return "[]" + goType(d, t.Items)
+		return "[]" + goType(domains, d, t.Items)
 	case "any", "object":
 		return "interface{}"
 	default:
 		panic("unknown type: " + t.Type)
 	}
+}
+
+func findDomain(domains []*Domain, name string) *Domain {
+	for _, d := range domains {
+		if d.Domain == name {
+			return d
+		}
+	}
+	panic("domain not found")
 }
 
 func main() {
@@ -201,36 +233,49 @@ func main() {
 	os.Mkdir("protocol", 0777)
 
 	for _, d := range domains {
+		t := template.Must(template.New("").Funcs(template.FuncMap{
+			"goType": func(t *TypeRef) string {
+				return goType(domains, d, t)
+			},
+		}).Parse(domainTmpl))
+
+		// collect imports
+		if err := t.Execute(ioutil.Discard, d); err != nil {
+			panic(err)
+		}
+
+		var buf bytes.Buffer
+		if err := t.Execute(&buf, d); err != nil {
+			panic(err)
+		}
+
 		dir := "protocol/" + d.GoPackage()
 		os.Mkdir(dir, 0777)
-		out, err := os.Create(dir + "/" + d.GoPackage() + ".go")
-		if err != nil {
+		if err := ioutil.WriteFile(dir+"/"+d.GoPackage()+".go", buf.Bytes(), 0666); err != nil {
 			panic(err)
 		}
-		if err := domainTmpl.Execute(out, d); err != nil {
-			panic(err)
-		}
-		out.Close()
 	}
 
-	out, err := os.Create("client.go")
-	if err != nil {
+	t := template.Must(template.New("").Parse(clientTmpl))
+	var buf bytes.Buffer
+	if err := t.Execute(&buf, domains); err != nil {
 		panic(err)
 	}
-	if err := clientTmpl.Execute(out, domains); err != nil {
+	if err := ioutil.WriteFile("client.go", buf.Bytes(), 0666); err != nil {
 		panic(err)
 	}
-	out.Close()
 }
 
-var domainTmpl = template.Must(template.New("").Funcs(template.FuncMap{
-	"goType": goType,
-}).Parse(`
+const domainTmpl = `
 {{if .Doc}}// {{.Doc}}{{end}}
 package {{.GoPackage}}
-{{$domain := .}}
+{{$domain := .Domain}}
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	{{range .Imports}}
+		"{{.}}"
+	{{- end}}
 )
 
 {{if .Doc}}// {{.Doc}}{{end}}
@@ -244,11 +289,11 @@ type Client struct {
 		type {{.ID}} struct {
 			{{- range .Properties}}
 				{{if .Doc}}// {{.Doc}}{{end}}
-				{{.GoName}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
+				{{.GoName}} {{goType .TypeRef}} ` + "`" + `json:"{{.Name}}{{if .Optional}},omitempty{{end}}"` + "`" + `
 			{{end}}
 		}
 	{{else}}
-		type {{.ID}} {{goType $domain .TypeRef}}
+		type {{.ID}} {{goType .TypeRef}}
 	{{end}}
 {{end}}
 
@@ -266,7 +311,7 @@ type Client struct {
 
 	{{- range .Parameters}}
 		{{if .Doc}}// {{.Doc}}{{end}}
-		func (r *{{$reqType}}) {{.GoName}}(v {{goType $domain .TypeRef}}) *{{$reqType}} {
+		func (r *{{$reqType}}) {{.GoName}}(v {{goType .TypeRef}}) *{{$reqType}} {
 			r.opts["{{.Name}}"] = v
 			return r
 		}
@@ -276,25 +321,25 @@ type Client struct {
 		type {{.GoResultType}} struct {
 			{{- range .Returns}}
 				{{if .Doc}}// {{.Doc}}{{end}}
-				{{.GoName}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
+				{{.GoName}} {{goType .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
 			{{end}}
 		}
 
 		func (r *{{.GoRequestType}}) Do() (*{{.GoResultType}}, error) {
 			var result {{.GoResultType}}
-			err := r.client.Call("{{$domain.Domain}}.{{.Name}}", r.opts, &result)
+			err := r.client.Call("{{$domain}}.{{.Name}}", r.opts, &result)
 			return &result, err
 		}
 	{{else}}
 		func (r *{{.GoRequestType}}) Do() error {
-			return r.client.Call("{{$domain.Domain}}.{{.Name}}", r.opts, nil)
+			return r.client.Call("{{$domain}}.{{.Name}}", r.opts, nil)
 		}
 	{{end}}
 {{end}}
 
 func init() {
 	{{- range .Events}}
-		rpc.EventTypes["{{$domain.Domain}}.{{.Name}}"] = func() interface{} { return new({{.GoType}}) }
+		rpc.EventTypes["{{$domain}}.{{.Name}}"] = func() interface{} { return new({{.GoType}}) }
 	{{- end}}
 }
 
@@ -303,13 +348,13 @@ func init() {
 	type {{.GoType}} struct {
 		{{- range .Parameters}}
 			{{if .Doc}}// {{.Doc}}{{end}}
-			{{.GoName}} {{goType $domain .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
+			{{.GoName}} {{goType .TypeRef}} ` + "`" + `json:"{{.Name}}"` + "`" + `
 		{{end}}
 	}
 {{end}}
-`))
+`
 
-var clientTmpl = template.Must(template.New("").Parse(`
+const clientTmpl = `
 package cdp
 
 import (
@@ -345,4 +390,4 @@ func Dial(url string) *Client {
 		{{- end}}
 	}
 }
-`))
+`

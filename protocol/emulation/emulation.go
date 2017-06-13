@@ -3,6 +3,8 @@ package emulation
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/dom"
 )
 
 // This domain emulates different environments for the page.
@@ -425,7 +427,7 @@ func (d *Client) SetDefaultBackgroundColorOverride() *SetDefaultBackgroundColorO
 }
 
 // RGBA of the default background color. If not specified, any existing override will be cleared. (optional)
-func (r *SetDefaultBackgroundColorOverrideRequest) Color(v interface{}) *SetDefaultBackgroundColorOverrideRequest {
+func (r *SetDefaultBackgroundColorOverrideRequest) Color(v *dom.RGBA) *SetDefaultBackgroundColorOverrideRequest {
 	r.opts["color"] = v
 	return r
 }

@@ -3,6 +3,8 @@ package indexeddb
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // (experimental)
@@ -94,13 +96,13 @@ type KeyRange struct {
 
 type DataEntry struct {
 	// Key object.
-	Key interface{} `json:"key"`
+	Key *runtime.RemoteObject `json:"key"`
 
 	// Primary key object.
-	PrimaryKey interface{} `json:"primaryKey"`
+	PrimaryKey *runtime.RemoteObject `json:"primaryKey"`
 
 	// Value object.
-	Value interface{} `json:"value"`
+	Value *runtime.RemoteObject `json:"value"`
 }
 
 // Key path.

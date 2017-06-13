@@ -3,6 +3,8 @@ package dom
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // This domain exposes DOM read/write operations. Each DOM Node is represented with its mirror object that has an <code>id</code>. This <code>id</code> can be used to get additional information on the Node, resolve it into the JavaScript object wrapper, etc. It is important that client receives DOM events only for the nodes that are known to the client. Backend keeps track of the nodes that were sent to the client and never sends the same node twice. It is client's responsibility to collect information about the nodes that were sent to the client.<p>Note that <code>iframe</code> owner elements will return corresponding document elements as their child nodes.</p>
@@ -102,7 +104,7 @@ type Node struct {
 	ShadowRootType ShadowRootType `json:"shadowRootType,omitempty"`
 
 	// Frame ID for frame owner elements. (optional, experimental)
-	FrameId interface{} `json:"frameId,omitempty"`
+	FrameId string `json:"frameId,omitempty"`
 
 	// Content document for frame owner elements. (optional)
 	ContentDocument *Node `json:"contentDocument,omitempty"`
@@ -747,7 +749,7 @@ func (d *Client) RequestNode() *RequestNodeRequest {
 }
 
 // JavaScript object id to convert into node.
-func (r *RequestNodeRequest) ObjectId(v interface{}) *RequestNodeRequest {
+func (r *RequestNodeRequest) ObjectId(v runtime.RemoteObjectId) *RequestNodeRequest {
 	r.opts["objectId"] = v
 	return r
 }
@@ -903,7 +905,7 @@ func (r *ResolveNodeRequest) ObjectGroup(v string) *ResolveNodeRequest {
 
 type ResolveNodeResult struct {
 	// JavaScript object wrapper for given node.
-	Object interface{} `json:"object"`
+	Object *runtime.RemoteObject `json:"object"`
 }
 
 func (r *ResolveNodeRequest) Do() (*ResolveNodeResult, error) {

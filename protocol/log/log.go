@@ -3,6 +3,9 @@ package log
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/network"
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // Provides access to log entries. (experimental)
@@ -23,7 +26,7 @@ type LogEntry struct {
 	Text string `json:"text"`
 
 	// Timestamp when this entry was added.
-	Timestamp interface{} `json:"timestamp"`
+	Timestamp runtime.Timestamp `json:"timestamp"`
 
 	// URL of the resource if known. (optional)
 	URL string `json:"url,omitempty"`
@@ -32,10 +35,10 @@ type LogEntry struct {
 	LineNumber int `json:"lineNumber,omitempty"`
 
 	// JavaScript stack trace. (optional)
-	StackTrace interface{} `json:"stackTrace,omitempty"`
+	StackTrace *runtime.StackTrace `json:"stackTrace,omitempty"`
 
 	// Identifier of the network request associated with this entry. (optional)
-	NetworkRequestId interface{} `json:"networkRequestId,omitempty"`
+	NetworkRequestId network.RequestId `json:"networkRequestId,omitempty"`
 
 	// Identifier of the worker associated with this entry. (optional)
 	WorkerId string `json:"workerId,omitempty"`

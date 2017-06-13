@@ -3,6 +3,9 @@ package overlay
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/dom"
+	"github.com/neelance/cdp-go/protocol/runtime"
 )
 
 // This domain provides various functionality related to drawing atop the inspected page. (experimental)
@@ -26,25 +29,25 @@ type HighlightConfig struct {
 	DisplayAsMaterial bool `json:"displayAsMaterial,omitempty"`
 
 	// The content box highlight fill color (default: transparent). (optional)
-	ContentColor interface{} `json:"contentColor,omitempty"`
+	ContentColor *dom.RGBA `json:"contentColor,omitempty"`
 
 	// The padding highlight fill color (default: transparent). (optional)
-	PaddingColor interface{} `json:"paddingColor,omitempty"`
+	PaddingColor *dom.RGBA `json:"paddingColor,omitempty"`
 
 	// The border highlight fill color (default: transparent). (optional)
-	BorderColor interface{} `json:"borderColor,omitempty"`
+	BorderColor *dom.RGBA `json:"borderColor,omitempty"`
 
 	// The margin highlight fill color (default: transparent). (optional)
-	MarginColor interface{} `json:"marginColor,omitempty"`
+	MarginColor *dom.RGBA `json:"marginColor,omitempty"`
 
 	// The event target element highlight fill color (default: transparent). (optional)
-	EventTargetColor interface{} `json:"eventTargetColor,omitempty"`
+	EventTargetColor *dom.RGBA `json:"eventTargetColor,omitempty"`
 
 	// The shape outside fill color (default: transparent). (optional)
-	ShapeColor interface{} `json:"shapeColor,omitempty"`
+	ShapeColor *dom.RGBA `json:"shapeColor,omitempty"`
 
 	// The shape margin fill color (default: transparent). (optional)
-	ShapeMarginColor interface{} `json:"shapeMarginColor,omitempty"`
+	ShapeMarginColor *dom.RGBA `json:"shapeMarginColor,omitempty"`
 
 	// Selectors to highlight relevant nodes. (optional)
 	SelectorList string `json:"selectorList,omitempty"`
@@ -279,13 +282,13 @@ func (r *HighlightRectRequest) Height(v int) *HighlightRectRequest {
 }
 
 // The highlight fill color (default: transparent). (optional)
-func (r *HighlightRectRequest) Color(v interface{}) *HighlightRectRequest {
+func (r *HighlightRectRequest) Color(v *dom.RGBA) *HighlightRectRequest {
 	r.opts["color"] = v
 	return r
 }
 
 // The highlight outline color (default: transparent). (optional)
-func (r *HighlightRectRequest) OutlineColor(v interface{}) *HighlightRectRequest {
+func (r *HighlightRectRequest) OutlineColor(v *dom.RGBA) *HighlightRectRequest {
 	r.opts["outlineColor"] = v
 	return r
 }
@@ -305,19 +308,19 @@ func (d *Client) HighlightQuad() *HighlightQuadRequest {
 }
 
 // Quad to highlight
-func (r *HighlightQuadRequest) Quad(v interface{}) *HighlightQuadRequest {
+func (r *HighlightQuadRequest) Quad(v dom.Quad) *HighlightQuadRequest {
 	r.opts["quad"] = v
 	return r
 }
 
 // The highlight fill color (default: transparent). (optional)
-func (r *HighlightQuadRequest) Color(v interface{}) *HighlightQuadRequest {
+func (r *HighlightQuadRequest) Color(v *dom.RGBA) *HighlightQuadRequest {
 	r.opts["color"] = v
 	return r
 }
 
 // The highlight outline color (default: transparent). (optional)
-func (r *HighlightQuadRequest) OutlineColor(v interface{}) *HighlightQuadRequest {
+func (r *HighlightQuadRequest) OutlineColor(v *dom.RGBA) *HighlightQuadRequest {
 	r.opts["outlineColor"] = v
 	return r
 }
@@ -343,19 +346,19 @@ func (r *HighlightNodeRequest) HighlightConfig(v *HighlightConfig) *HighlightNod
 }
 
 // Identifier of the node to highlight. (optional)
-func (r *HighlightNodeRequest) NodeId(v interface{}) *HighlightNodeRequest {
+func (r *HighlightNodeRequest) NodeId(v dom.NodeId) *HighlightNodeRequest {
 	r.opts["nodeId"] = v
 	return r
 }
 
 // Identifier of the backend node to highlight. (optional)
-func (r *HighlightNodeRequest) BackendNodeId(v interface{}) *HighlightNodeRequest {
+func (r *HighlightNodeRequest) BackendNodeId(v dom.BackendNodeId) *HighlightNodeRequest {
 	r.opts["backendNodeId"] = v
 	return r
 }
 
 // JavaScript object id of the node to be highlighted. (optional)
-func (r *HighlightNodeRequest) ObjectId(v interface{}) *HighlightNodeRequest {
+func (r *HighlightNodeRequest) ObjectId(v runtime.RemoteObjectId) *HighlightNodeRequest {
 	r.opts["objectId"] = v
 	return r
 }
@@ -375,19 +378,19 @@ func (d *Client) HighlightFrame() *HighlightFrameRequest {
 }
 
 // Identifier of the frame to highlight.
-func (r *HighlightFrameRequest) FrameId(v interface{}) *HighlightFrameRequest {
+func (r *HighlightFrameRequest) FrameId(v string) *HighlightFrameRequest {
 	r.opts["frameId"] = v
 	return r
 }
 
 // The content box highlight fill color (default: transparent). (optional)
-func (r *HighlightFrameRequest) ContentColor(v interface{}) *HighlightFrameRequest {
+func (r *HighlightFrameRequest) ContentColor(v *dom.RGBA) *HighlightFrameRequest {
 	r.opts["contentColor"] = v
 	return r
 }
 
 // The content box highlight outline color (default: transparent). (optional)
-func (r *HighlightFrameRequest) ContentOutlineColor(v interface{}) *HighlightFrameRequest {
+func (r *HighlightFrameRequest) ContentOutlineColor(v *dom.RGBA) *HighlightFrameRequest {
 	r.opts["contentOutlineColor"] = v
 	return r
 }
@@ -421,7 +424,7 @@ func (d *Client) GetHighlightObjectForTest() *GetHighlightObjectForTestRequest {
 }
 
 // Id of the node to get highlight object for.
-func (r *GetHighlightObjectForTestRequest) NodeId(v interface{}) *GetHighlightObjectForTestRequest {
+func (r *GetHighlightObjectForTestRequest) NodeId(v dom.NodeId) *GetHighlightObjectForTestRequest {
 	r.opts["nodeId"] = v
 	return r
 }
@@ -444,11 +447,11 @@ func init() {
 
 // Fired when the node should be highlighted. This happens after call to <code>setInspectMode</code>.
 type NodeHighlightRequestedEvent struct {
-	NodeId interface{} `json:"nodeId"`
+	NodeId dom.NodeId `json:"nodeId"`
 }
 
 // Fired when the node should be inspected. This happens after call to <code>setInspectMode</code> or when user manually inspects an element.
 type InspectNodeRequestedEvent struct {
 	// Id of the node to inspect.
-	BackendNodeId interface{} `json:"backendNodeId"`
+	BackendNodeId dom.BackendNodeId `json:"backendNodeId"`
 }

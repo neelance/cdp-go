@@ -3,6 +3,9 @@ package network
 
 import (
 	"github.com/neelance/cdp-go/rpc"
+
+	"github.com/neelance/cdp-go/protocol/runtime"
+	"github.com/neelance/cdp-go/protocol/security"
 )
 
 // Network domain allows tracking network activities of the page. It exposes information about http, file, data and other requests and responses, their headers, bodies, timing, etc.
@@ -174,7 +177,7 @@ type SecurityDetails struct {
 	Mac string `json:"mac,omitempty"`
 
 	// Certificate ID value.
-	CertificateId interface{} `json:"certificateId"`
+	CertificateId security.CertificateId `json:"certificateId"`
 
 	// Certificate subject name.
 	SubjectName string `json:"subjectName"`
@@ -254,7 +257,7 @@ type Response struct {
 	Protocol string `json:"protocol,omitempty"`
 
 	// Security state of the request resource.
-	SecurityState interface{} `json:"securityState"`
+	SecurityState security.SecurityState `json:"securityState"`
 
 	// Security details for the request. (optional)
 	SecurityDetails *SecurityDetails `json:"securityDetails,omitempty"`
@@ -309,7 +312,7 @@ type CachedResource struct {
 	URL string `json:"url"`
 
 	// Type of this resource.
-	Type interface{} `json:"type"`
+	Type string `json:"type"`
 
 	// Cached response data. (optional)
 	Response *Response `json:"response,omitempty"`
@@ -325,7 +328,7 @@ type Initiator struct {
 	Type string `json:"type"`
 
 	// Initiator JavaScript stack trace, set for Script only. (optional)
-	Stack interface{} `json:"stack,omitempty"`
+	Stack *runtime.StackTrace `json:"stack,omitempty"`
 
 	// Initiator URL, set for Parser type only. (optional)
 	URL string `json:"url,omitempty"`
@@ -1006,7 +1009,7 @@ type RequestWillBeSentEvent struct {
 	RequestId RequestId `json:"requestId"`
 
 	// Frame identifier.
-	FrameId interface{} `json:"frameId"`
+	FrameId string `json:"frameId"`
 
 	// Loader identifier.
 	LoaderId LoaderId `json:"loaderId"`
@@ -1030,7 +1033,7 @@ type RequestWillBeSentEvent struct {
 	RedirectResponse *Response `json:"redirectResponse"`
 
 	// Type of this resource. (optional, experimental)
-	Type interface{} `json:"type"`
+	Type string `json:"type"`
 }
 
 // Fired if request ended up loading from cache.
@@ -1045,7 +1048,7 @@ type ResponseReceivedEvent struct {
 	RequestId RequestId `json:"requestId"`
 
 	// Frame identifier.
-	FrameId interface{} `json:"frameId"`
+	FrameId string `json:"frameId"`
 
 	// Loader identifier.
 	LoaderId LoaderId `json:"loaderId"`
@@ -1054,7 +1057,7 @@ type ResponseReceivedEvent struct {
 	Timestamp Timestamp `json:"timestamp"`
 
 	// Resource type.
-	Type interface{} `json:"type"`
+	Type string `json:"type"`
 
 	// Response data.
 	Response *Response `json:"response"`
@@ -1096,7 +1099,7 @@ type LoadingFailedEvent struct {
 	Timestamp Timestamp `json:"timestamp"`
 
 	// Resource type.
-	Type interface{} `json:"type"`
+	Type string `json:"type"`
 
 	// User friendly error message.
 	ErrorText string `json:"errorText"`
@@ -1218,7 +1221,7 @@ type RequestInterceptedEvent struct {
 	Request *Request `json:"request"`
 
 	// How the requested resource will be used.
-	ResourceType interface{} `json:"resourceType"`
+	ResourceType string `json:"resourceType"`
 
 	// HTTP response headers, only sent if a redirect was intercepted. (optional)
 	RedirectHeaders *Headers `json:"redirectHeaders"`

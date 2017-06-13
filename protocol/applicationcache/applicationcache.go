@@ -46,7 +46,7 @@ type ApplicationCache struct {
 
 type FrameWithManifest struct {
 	// Frame identifier.
-	FrameId interface{} `json:"frameId"`
+	FrameId string `json:"frameId"`
 
 	// Manifest URL.
 	ManifestURL string `json:"manifestURL"`
@@ -101,7 +101,7 @@ func (d *Client) GetManifestForFrame() *GetManifestForFrameRequest {
 }
 
 // Identifier of the frame containing document whose manifest is retrieved.
-func (r *GetManifestForFrameRequest) FrameId(v interface{}) *GetManifestForFrameRequest {
+func (r *GetManifestForFrameRequest) FrameId(v string) *GetManifestForFrameRequest {
 	r.opts["frameId"] = v
 	return r
 }
@@ -128,7 +128,7 @@ func (d *Client) GetApplicationCacheForFrame() *GetApplicationCacheForFrameReque
 }
 
 // Identifier of the frame containing document whose application cache is retrieved.
-func (r *GetApplicationCacheForFrameRequest) FrameId(v interface{}) *GetApplicationCacheForFrameRequest {
+func (r *GetApplicationCacheForFrameRequest) FrameId(v string) *GetApplicationCacheForFrameRequest {
 	r.opts["frameId"] = v
 	return r
 }
@@ -151,7 +151,7 @@ func init() {
 
 type ApplicationCacheStatusUpdatedEvent struct {
 	// Identifier of the frame containing document whose application cache updated status.
-	FrameId interface{} `json:"frameId"`
+	FrameId string `json:"frameId"`
 
 	// Manifest URL.
 	ManifestURL string `json:"manifestURL"`
