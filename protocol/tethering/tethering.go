@@ -6,8 +6,8 @@ import (
 )
 
 // The Tethering domain defines methods and events for browser port binding. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Request browser port binding.
@@ -16,7 +16,7 @@ type BindRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Bind() *BindRequest {
+func (d *Client) Bind() *BindRequest {
 	return &BindRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -37,7 +37,7 @@ type UnbindRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Unbind() *UnbindRequest {
+func (d *Client) Unbind() *UnbindRequest {
 	return &UnbindRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

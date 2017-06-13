@@ -6,8 +6,8 @@ import (
 )
 
 // Network domain allows tracking network activities of the page. It exposes information about http, file, data and other requests and responses, their headers, bodies, timing, etc.
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Unique loader identifier.
@@ -374,7 +374,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -401,7 +401,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -416,7 +416,7 @@ type SetUserAgentOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetUserAgentOverride() *SetUserAgentOverrideRequest {
+func (d *Client) SetUserAgentOverride() *SetUserAgentOverrideRequest {
 	return &SetUserAgentOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -437,7 +437,7 @@ type SetExtraHTTPHeadersRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetExtraHTTPHeaders() *SetExtraHTTPHeadersRequest {
+func (d *Client) SetExtraHTTPHeaders() *SetExtraHTTPHeadersRequest {
 	return &SetExtraHTTPHeadersRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -458,7 +458,7 @@ type GetResponseBodyRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetResponseBody() *GetResponseBodyRequest {
+func (d *Client) GetResponseBody() *GetResponseBodyRequest {
 	return &GetResponseBodyRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -488,7 +488,7 @@ type SetBlockedURLsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetBlockedURLs() *SetBlockedURLsRequest {
+func (d *Client) SetBlockedURLs() *SetBlockedURLsRequest {
 	return &SetBlockedURLsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -509,7 +509,7 @@ type ReplayXHRRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ReplayXHR() *ReplayXHRRequest {
+func (d *Client) ReplayXHR() *ReplayXHRRequest {
 	return &ReplayXHRRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -530,7 +530,7 @@ type CanClearBrowserCacheRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CanClearBrowserCache() *CanClearBrowserCacheRequest {
+func (d *Client) CanClearBrowserCache() *CanClearBrowserCacheRequest {
 	return &CanClearBrowserCacheRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -551,7 +551,7 @@ type ClearBrowserCacheRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearBrowserCache() *ClearBrowserCacheRequest {
+func (d *Client) ClearBrowserCache() *ClearBrowserCacheRequest {
 	return &ClearBrowserCacheRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -566,7 +566,7 @@ type CanClearBrowserCookiesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CanClearBrowserCookies() *CanClearBrowserCookiesRequest {
+func (d *Client) CanClearBrowserCookies() *CanClearBrowserCookiesRequest {
 	return &CanClearBrowserCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -587,7 +587,7 @@ type ClearBrowserCookiesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearBrowserCookies() *ClearBrowserCookiesRequest {
+func (d *Client) ClearBrowserCookies() *ClearBrowserCookiesRequest {
 	return &ClearBrowserCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -602,7 +602,7 @@ type GetCookiesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetCookies() *GetCookiesRequest {
+func (d *Client) GetCookies() *GetCookiesRequest {
 	return &GetCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -629,7 +629,7 @@ type GetAllCookiesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetAllCookies() *GetAllCookiesRequest {
+func (d *Client) GetAllCookies() *GetAllCookiesRequest {
 	return &GetAllCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -650,7 +650,7 @@ type DeleteCookieRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DeleteCookie() *DeleteCookieRequest {
+func (d *Client) DeleteCookie() *DeleteCookieRequest {
 	return &DeleteCookieRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -677,7 +677,7 @@ type SetCookieRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetCookie() *SetCookieRequest {
+func (d *Client) SetCookie() *SetCookieRequest {
 	return &SetCookieRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -752,7 +752,7 @@ type CanEmulateNetworkConditionsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CanEmulateNetworkConditions() *CanEmulateNetworkConditionsRequest {
+func (d *Client) CanEmulateNetworkConditions() *CanEmulateNetworkConditionsRequest {
 	return &CanEmulateNetworkConditionsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -773,7 +773,7 @@ type EmulateNetworkConditionsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) EmulateNetworkConditions() *EmulateNetworkConditionsRequest {
+func (d *Client) EmulateNetworkConditions() *EmulateNetworkConditionsRequest {
 	return &EmulateNetworkConditionsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -818,7 +818,7 @@ type SetCacheDisabledRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetCacheDisabled() *SetCacheDisabledRequest {
+func (d *Client) SetCacheDisabled() *SetCacheDisabledRequest {
 	return &SetCacheDisabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -839,7 +839,7 @@ type SetBypassServiceWorkerRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetBypassServiceWorker() *SetBypassServiceWorkerRequest {
+func (d *Client) SetBypassServiceWorker() *SetBypassServiceWorkerRequest {
 	return &SetBypassServiceWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -860,7 +860,7 @@ type SetDataSizeLimitsForTestRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDataSizeLimitsForTest() *SetDataSizeLimitsForTestRequest {
+func (d *Client) SetDataSizeLimitsForTest() *SetDataSizeLimitsForTestRequest {
 	return &SetDataSizeLimitsForTestRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -887,7 +887,7 @@ type GetCertificateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetCertificate() *GetCertificateRequest {
+func (d *Client) GetCertificate() *GetCertificateRequest {
 	return &GetCertificateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -913,7 +913,7 @@ type EnableRequestInterceptionRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) EnableRequestInterception() *EnableRequestInterceptionRequest {
+func (d *Client) EnableRequestInterception() *EnableRequestInterceptionRequest {
 	return &EnableRequestInterceptionRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -934,7 +934,7 @@ type ContinueInterceptedRequestRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ContinueInterceptedRequest() *ContinueInterceptedRequestRequest {
+func (d *Client) ContinueInterceptedRequest() *ContinueInterceptedRequestRequest {
 	return &ContinueInterceptedRequestRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

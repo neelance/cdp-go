@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Unique Layer identifier.
@@ -100,7 +100,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -115,7 +115,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -130,7 +130,7 @@ type CompositingReasonsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CompositingReasons() *CompositingReasonsRequest {
+func (d *Client) CompositingReasons() *CompositingReasonsRequest {
 	return &CompositingReasonsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -157,7 +157,7 @@ type MakeSnapshotRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) MakeSnapshot() *MakeSnapshotRequest {
+func (d *Client) MakeSnapshot() *MakeSnapshotRequest {
 	return &MakeSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -184,7 +184,7 @@ type LoadSnapshotRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) LoadSnapshot() *LoadSnapshotRequest {
+func (d *Client) LoadSnapshot() *LoadSnapshotRequest {
 	return &LoadSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -211,7 +211,7 @@ type ReleaseSnapshotRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ReleaseSnapshot() *ReleaseSnapshotRequest {
+func (d *Client) ReleaseSnapshot() *ReleaseSnapshotRequest {
 	return &ReleaseSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -231,7 +231,7 @@ type ProfileSnapshotRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ProfileSnapshot() *ProfileSnapshotRequest {
+func (d *Client) ProfileSnapshot() *ProfileSnapshotRequest {
 	return &ProfileSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -276,7 +276,7 @@ type ReplaySnapshotRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ReplaySnapshot() *ReplaySnapshotRequest {
+func (d *Client) ReplaySnapshot() *ReplaySnapshotRequest {
 	return &ReplaySnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -321,7 +321,7 @@ type SnapshotCommandLogRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SnapshotCommandLog() *SnapshotCommandLogRequest {
+func (d *Client) SnapshotCommandLog() *SnapshotCommandLogRequest {
 	return &SnapshotCommandLogRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

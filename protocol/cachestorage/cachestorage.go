@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Unique identifier of the Cache object.
@@ -46,7 +46,7 @@ type RequestCacheNamesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestCacheNames() *RequestCacheNamesRequest {
+func (d *Client) RequestCacheNames() *RequestCacheNamesRequest {
 	return &RequestCacheNamesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -73,7 +73,7 @@ type RequestEntriesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestEntries() *RequestEntriesRequest {
+func (d *Client) RequestEntries() *RequestEntriesRequest {
 	return &RequestEntriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -115,7 +115,7 @@ type DeleteCacheRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DeleteCache() *DeleteCacheRequest {
+func (d *Client) DeleteCache() *DeleteCacheRequest {
 	return &DeleteCacheRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -136,7 +136,7 @@ type DeleteEntryRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DeleteEntry() *DeleteEntryRequest {
+func (d *Client) DeleteEntry() *DeleteEntryRequest {
 	return &DeleteEntryRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

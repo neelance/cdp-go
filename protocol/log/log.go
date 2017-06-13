@@ -6,8 +6,8 @@ import (
 )
 
 // Provides access to log entries. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Log entry.
@@ -57,7 +57,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -72,7 +72,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -87,7 +87,7 @@ type ClearRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Clear() *ClearRequest {
+func (d *Client) Clear() *ClearRequest {
 	return &ClearRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -102,7 +102,7 @@ type StartViolationsReportRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StartViolationsReport() *StartViolationsReportRequest {
+func (d *Client) StartViolationsReport() *StartViolationsReportRequest {
 	return &StartViolationsReportRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -123,7 +123,7 @@ type StopViolationsReportRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StopViolationsReport() *StopViolationsReportRequest {
+func (d *Client) StopViolationsReport() *StopViolationsReportRequest {
 	return &StopViolationsReportRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

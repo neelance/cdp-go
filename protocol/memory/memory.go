@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Memory pressure level.
@@ -19,7 +19,7 @@ type GetDOMCountersRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetDOMCounters() *GetDOMCountersRequest {
+func (d *Client) GetDOMCounters() *GetDOMCountersRequest {
 	return &GetDOMCountersRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -43,7 +43,7 @@ type SetPressureNotificationsSuppressedRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetPressureNotificationsSuppressed() *SetPressureNotificationsSuppressedRequest {
+func (d *Client) SetPressureNotificationsSuppressed() *SetPressureNotificationsSuppressedRequest {
 	return &SetPressureNotificationsSuppressedRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -64,7 +64,7 @@ type SimulatePressureNotificationRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SimulatePressureNotification() *SimulatePressureNotificationRequest {
+func (d *Client) SimulatePressureNotification() *SimulatePressureNotificationRequest {
 	return &SimulatePressureNotificationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

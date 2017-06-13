@@ -6,8 +6,8 @@ import (
 )
 
 // This domain exposes CSS read/write operations. All CSS objects (stylesheets, rules, and styles) have an associated <code>id</code> used in subsequent operations on the related object. Each object type has a specific <code>id</code> structure, and those are not interchangeable between objects of different kinds. CSS objects can be loaded using the <code>get*ForNode()</code> calls (which accept a DOM node id). A client can also discover all the existing stylesheets with the <code>getAllStyleSheets()</code> method (or keeping track of the <code>styleSheetAdded</code>/<code>styleSheetRemoved</code> events) and subsequently load the required stylesheet contents using the <code>getStyleSheet[Text]()</code> methods. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 type StyleSheetId string
@@ -373,7 +373,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -388,7 +388,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -403,7 +403,7 @@ type GetMatchedStylesForNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetMatchedStylesForNode() *GetMatchedStylesForNodeRequest {
+func (d *Client) GetMatchedStylesForNode() *GetMatchedStylesForNodeRequest {
 	return &GetMatchedStylesForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -444,7 +444,7 @@ type GetInlineStylesForNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetInlineStylesForNode() *GetInlineStylesForNodeRequest {
+func (d *Client) GetInlineStylesForNode() *GetInlineStylesForNodeRequest {
 	return &GetInlineStylesForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -473,7 +473,7 @@ type GetComputedStyleForNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetComputedStyleForNode() *GetComputedStyleForNodeRequest {
+func (d *Client) GetComputedStyleForNode() *GetComputedStyleForNodeRequest {
 	return &GetComputedStyleForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -499,7 +499,7 @@ type GetPlatformFontsForNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetPlatformFontsForNode() *GetPlatformFontsForNodeRequest {
+func (d *Client) GetPlatformFontsForNode() *GetPlatformFontsForNodeRequest {
 	return &GetPlatformFontsForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -525,7 +525,7 @@ type GetStyleSheetTextRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetStyleSheetText() *GetStyleSheetTextRequest {
+func (d *Client) GetStyleSheetText() *GetStyleSheetTextRequest {
 	return &GetStyleSheetTextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -551,7 +551,7 @@ type CollectClassNamesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CollectClassNames() *CollectClassNamesRequest {
+func (d *Client) CollectClassNames() *CollectClassNamesRequest {
 	return &CollectClassNamesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -577,7 +577,7 @@ type SetStyleSheetTextRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetStyleSheetText() *SetStyleSheetTextRequest {
+func (d *Client) SetStyleSheetText() *SetStyleSheetTextRequest {
 	return &SetStyleSheetTextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -608,7 +608,7 @@ type SetRuleSelectorRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetRuleSelector() *SetRuleSelectorRequest {
+func (d *Client) SetRuleSelector() *SetRuleSelectorRequest {
 	return &SetRuleSelectorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -644,7 +644,7 @@ type SetKeyframeKeyRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetKeyframeKey() *SetKeyframeKeyRequest {
+func (d *Client) SetKeyframeKey() *SetKeyframeKeyRequest {
 	return &SetKeyframeKeyRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -680,7 +680,7 @@ type SetStyleTextsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetStyleTexts() *SetStyleTextsRequest {
+func (d *Client) SetStyleTexts() *SetStyleTextsRequest {
 	return &SetStyleTextsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -706,7 +706,7 @@ type SetMediaTextRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetMediaText() *SetMediaTextRequest {
+func (d *Client) SetMediaText() *SetMediaTextRequest {
 	return &SetMediaTextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -742,7 +742,7 @@ type CreateStyleSheetRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CreateStyleSheet() *CreateStyleSheetRequest {
+func (d *Client) CreateStyleSheet() *CreateStyleSheetRequest {
 	return &CreateStyleSheetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -769,7 +769,7 @@ type AddRuleRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) AddRule() *AddRuleRequest {
+func (d *Client) AddRule() *AddRuleRequest {
 	return &AddRuleRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -808,7 +808,7 @@ type ForcePseudoStateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ForcePseudoState() *ForcePseudoStateRequest {
+func (d *Client) ForcePseudoState() *ForcePseudoStateRequest {
 	return &ForcePseudoStateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -835,7 +835,7 @@ type GetMediaQueriesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetMediaQueries() *GetMediaQueriesRequest {
+func (d *Client) GetMediaQueries() *GetMediaQueriesRequest {
 	return &GetMediaQueriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -855,7 +855,7 @@ type SetEffectivePropertyValueForNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetEffectivePropertyValueForNode() *SetEffectivePropertyValueForNodeRequest {
+func (d *Client) SetEffectivePropertyValueForNode() *SetEffectivePropertyValueForNodeRequest {
 	return &SetEffectivePropertyValueForNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -886,7 +886,7 @@ type GetBackgroundColorsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetBackgroundColors() *GetBackgroundColorsRequest {
+func (d *Client) GetBackgroundColors() *GetBackgroundColorsRequest {
 	return &GetBackgroundColorsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -913,7 +913,7 @@ type GetLayoutTreeAndStylesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetLayoutTreeAndStyles() *GetLayoutTreeAndStylesRequest {
+func (d *Client) GetLayoutTreeAndStyles() *GetLayoutTreeAndStylesRequest {
 	return &GetLayoutTreeAndStylesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -941,7 +941,7 @@ type StartRuleUsageTrackingRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StartRuleUsageTracking() *StartRuleUsageTrackingRequest {
+func (d *Client) StartRuleUsageTracking() *StartRuleUsageTrackingRequest {
 	return &StartRuleUsageTrackingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -956,7 +956,7 @@ type TakeCoverageDeltaRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) TakeCoverageDelta() *TakeCoverageDeltaRequest {
+func (d *Client) TakeCoverageDelta() *TakeCoverageDeltaRequest {
 	return &TakeCoverageDeltaRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -976,7 +976,7 @@ type StopRuleUsageTrackingRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StopRuleUsageTracking() *StopRuleUsageTrackingRequest {
+func (d *Client) StopRuleUsageTracking() *StopRuleUsageTrackingRequest {
 	return &StopRuleUsageTrackingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

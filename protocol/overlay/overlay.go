@@ -6,8 +6,8 @@ import (
 )
 
 // This domain provides various functionality related to drawing atop the inspected page. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Configuration data for the highlighting of page elements.
@@ -58,7 +58,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -73,7 +73,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -88,7 +88,7 @@ type SetShowPaintRectsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetShowPaintRects() *SetShowPaintRectsRequest {
+func (d *Client) SetShowPaintRects() *SetShowPaintRectsRequest {
 	return &SetShowPaintRectsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -109,7 +109,7 @@ type SetShowDebugBordersRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetShowDebugBorders() *SetShowDebugBordersRequest {
+func (d *Client) SetShowDebugBorders() *SetShowDebugBordersRequest {
 	return &SetShowDebugBordersRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -130,7 +130,7 @@ type SetShowFPSCounterRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetShowFPSCounter() *SetShowFPSCounterRequest {
+func (d *Client) SetShowFPSCounter() *SetShowFPSCounterRequest {
 	return &SetShowFPSCounterRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -151,7 +151,7 @@ type SetShowScrollBottleneckRectsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetShowScrollBottleneckRects() *SetShowScrollBottleneckRectsRequest {
+func (d *Client) SetShowScrollBottleneckRects() *SetShowScrollBottleneckRectsRequest {
 	return &SetShowScrollBottleneckRectsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -172,7 +172,7 @@ type SetShowViewportSizeOnResizeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetShowViewportSizeOnResize() *SetShowViewportSizeOnResizeRequest {
+func (d *Client) SetShowViewportSizeOnResize() *SetShowViewportSizeOnResizeRequest {
 	return &SetShowViewportSizeOnResizeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -192,7 +192,7 @@ type SetPausedInDebuggerMessageRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetPausedInDebuggerMessage() *SetPausedInDebuggerMessageRequest {
+func (d *Client) SetPausedInDebuggerMessage() *SetPausedInDebuggerMessageRequest {
 	return &SetPausedInDebuggerMessageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -211,7 +211,7 @@ type SetSuspendedRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetSuspended() *SetSuspendedRequest {
+func (d *Client) SetSuspended() *SetSuspendedRequest {
 	return &SetSuspendedRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -231,7 +231,7 @@ type SetInspectModeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetInspectMode() *SetInspectModeRequest {
+func (d *Client) SetInspectMode() *SetInspectModeRequest {
 	return &SetInspectModeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -258,7 +258,7 @@ type HighlightRectRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HighlightRect() *HighlightRectRequest {
+func (d *Client) HighlightRect() *HighlightRectRequest {
 	return &HighlightRectRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -309,7 +309,7 @@ type HighlightQuadRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HighlightQuad() *HighlightQuadRequest {
+func (d *Client) HighlightQuad() *HighlightQuadRequest {
 	return &HighlightQuadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -342,7 +342,7 @@ type HighlightNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HighlightNode() *HighlightNodeRequest {
+func (d *Client) HighlightNode() *HighlightNodeRequest {
 	return &HighlightNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -381,7 +381,7 @@ type HighlightFrameRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HighlightFrame() *HighlightFrameRequest {
+func (d *Client) HighlightFrame() *HighlightFrameRequest {
 	return &HighlightFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -414,7 +414,7 @@ type HideHighlightRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HideHighlight() *HideHighlightRequest {
+func (d *Client) HideHighlight() *HideHighlightRequest {
 	return &HideHighlightRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -429,7 +429,7 @@ type GetHighlightObjectForTestRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetHighlightObjectForTest() *GetHighlightObjectForTestRequest {
+func (d *Client) GetHighlightObjectForTest() *GetHighlightObjectForTestRequest {
 	return &GetHighlightObjectForTestRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

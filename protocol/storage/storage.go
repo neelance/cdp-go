@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Enum of possible storage types.
@@ -20,7 +20,7 @@ type ClearDataForOriginRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearDataForOrigin() *ClearDataForOriginRequest {
+func (d *Client) ClearDataForOrigin() *ClearDataForOriginRequest {
 	return &ClearDataForOriginRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

@@ -6,8 +6,8 @@ import (
 )
 
 // DOM debugging allows setting breakpoints on particular DOM operations and events. JavaScript execution will stop on these operations as if there was a regular breakpoint set.
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // DOM breakpoint type.
@@ -54,7 +54,7 @@ type SetDOMBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDOMBreakpoint() *SetDOMBreakpointRequest {
+func (d *Client) SetDOMBreakpoint() *SetDOMBreakpointRequest {
 	return &SetDOMBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -81,7 +81,7 @@ type RemoveDOMBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveDOMBreakpoint() *RemoveDOMBreakpointRequest {
+func (d *Client) RemoveDOMBreakpoint() *RemoveDOMBreakpointRequest {
 	return &RemoveDOMBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -108,7 +108,7 @@ type SetEventListenerBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetEventListenerBreakpoint() *SetEventListenerBreakpointRequest {
+func (d *Client) SetEventListenerBreakpoint() *SetEventListenerBreakpointRequest {
 	return &SetEventListenerBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -135,7 +135,7 @@ type RemoveEventListenerBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveEventListenerBreakpoint() *RemoveEventListenerBreakpointRequest {
+func (d *Client) RemoveEventListenerBreakpoint() *RemoveEventListenerBreakpointRequest {
 	return &RemoveEventListenerBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -162,7 +162,7 @@ type SetInstrumentationBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetInstrumentationBreakpoint() *SetInstrumentationBreakpointRequest {
+func (d *Client) SetInstrumentationBreakpoint() *SetInstrumentationBreakpointRequest {
 	return &SetInstrumentationBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -183,7 +183,7 @@ type RemoveInstrumentationBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveInstrumentationBreakpoint() *RemoveInstrumentationBreakpointRequest {
+func (d *Client) RemoveInstrumentationBreakpoint() *RemoveInstrumentationBreakpointRequest {
 	return &RemoveInstrumentationBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -204,7 +204,7 @@ type SetXHRBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetXHRBreakpoint() *SetXHRBreakpointRequest {
+func (d *Client) SetXHRBreakpoint() *SetXHRBreakpointRequest {
 	return &SetXHRBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -225,7 +225,7 @@ type RemoveXHRBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveXHRBreakpoint() *RemoveXHRBreakpointRequest {
+func (d *Client) RemoveXHRBreakpoint() *RemoveXHRBreakpointRequest {
 	return &RemoveXHRBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -246,7 +246,7 @@ type GetEventListenersRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetEventListeners() *GetEventListenersRequest {
+func (d *Client) GetEventListeners() *GetEventListenersRequest {
 	return &GetEventListenersRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

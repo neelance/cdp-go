@@ -6,8 +6,8 @@ import (
 )
 
 // Actions and events related to the inspected page belong to the page domain.
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Resource type as it was perceived by the rendering engine.
@@ -204,7 +204,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -219,7 +219,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -234,7 +234,7 @@ type AddScriptToEvaluateOnLoadRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) AddScriptToEvaluateOnLoad() *AddScriptToEvaluateOnLoadRequest {
+func (d *Client) AddScriptToEvaluateOnLoad() *AddScriptToEvaluateOnLoadRequest {
 	return &AddScriptToEvaluateOnLoadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -260,7 +260,7 @@ type RemoveScriptToEvaluateOnLoadRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveScriptToEvaluateOnLoad() *RemoveScriptToEvaluateOnLoadRequest {
+func (d *Client) RemoveScriptToEvaluateOnLoad() *RemoveScriptToEvaluateOnLoadRequest {
 	return &RemoveScriptToEvaluateOnLoadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -280,7 +280,7 @@ type SetAutoAttachToCreatedPagesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetAutoAttachToCreatedPages() *SetAutoAttachToCreatedPagesRequest {
+func (d *Client) SetAutoAttachToCreatedPages() *SetAutoAttachToCreatedPagesRequest {
 	return &SetAutoAttachToCreatedPagesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -301,7 +301,7 @@ type ReloadRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Reload() *ReloadRequest {
+func (d *Client) Reload() *ReloadRequest {
 	return &ReloadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -328,7 +328,7 @@ type NavigateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Navigate() *NavigateRequest {
+func (d *Client) Navigate() *NavigateRequest {
 	return &NavigateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -367,7 +367,7 @@ type StopLoadingRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StopLoading() *StopLoadingRequest {
+func (d *Client) StopLoading() *StopLoadingRequest {
 	return &StopLoadingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -382,7 +382,7 @@ type GetNavigationHistoryRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetNavigationHistory() *GetNavigationHistoryRequest {
+func (d *Client) GetNavigationHistory() *GetNavigationHistoryRequest {
 	return &GetNavigationHistoryRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -406,7 +406,7 @@ type NavigateToHistoryEntryRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) NavigateToHistoryEntry() *NavigateToHistoryEntryRequest {
+func (d *Client) NavigateToHistoryEntry() *NavigateToHistoryEntryRequest {
 	return &NavigateToHistoryEntryRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -427,7 +427,7 @@ type GetCookiesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetCookies() *GetCookiesRequest {
+func (d *Client) GetCookies() *GetCookiesRequest {
 	return &GetCookiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -448,7 +448,7 @@ type DeleteCookieRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DeleteCookie() *DeleteCookieRequest {
+func (d *Client) DeleteCookie() *DeleteCookieRequest {
 	return &DeleteCookieRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -475,7 +475,7 @@ type GetResourceTreeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetResourceTree() *GetResourceTreeRequest {
+func (d *Client) GetResourceTree() *GetResourceTreeRequest {
 	return &GetResourceTreeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -496,7 +496,7 @@ type GetResourceContentRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetResourceContent() *GetResourceContentRequest {
+func (d *Client) GetResourceContent() *GetResourceContentRequest {
 	return &GetResourceContentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -532,7 +532,7 @@ type SearchInResourceRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SearchInResource() *SearchInResourceRequest {
+func (d *Client) SearchInResource() *SearchInResourceRequest {
 	return &SearchInResourceRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -583,7 +583,7 @@ type SetDocumentContentRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDocumentContent() *SetDocumentContentRequest {
+func (d *Client) SetDocumentContent() *SetDocumentContentRequest {
 	return &SetDocumentContentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -610,7 +610,7 @@ type SetDeviceMetricsOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDeviceMetricsOverride() *SetDeviceMetricsOverrideRequest {
+func (d *Client) SetDeviceMetricsOverride() *SetDeviceMetricsOverrideRequest {
 	return &SetDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -703,7 +703,7 @@ type ClearDeviceMetricsOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearDeviceMetricsOverride() *ClearDeviceMetricsOverrideRequest {
+func (d *Client) ClearDeviceMetricsOverride() *ClearDeviceMetricsOverrideRequest {
 	return &ClearDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -718,7 +718,7 @@ type SetGeolocationOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetGeolocationOverride() *SetGeolocationOverrideRequest {
+func (d *Client) SetGeolocationOverride() *SetGeolocationOverrideRequest {
 	return &SetGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -751,7 +751,7 @@ type ClearGeolocationOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearGeolocationOverride() *ClearGeolocationOverrideRequest {
+func (d *Client) ClearGeolocationOverride() *ClearGeolocationOverrideRequest {
 	return &ClearGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -766,7 +766,7 @@ type SetDeviceOrientationOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDeviceOrientationOverride() *SetDeviceOrientationOverrideRequest {
+func (d *Client) SetDeviceOrientationOverride() *SetDeviceOrientationOverrideRequest {
 	return &SetDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -799,7 +799,7 @@ type ClearDeviceOrientationOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearDeviceOrientationOverride() *ClearDeviceOrientationOverrideRequest {
+func (d *Client) ClearDeviceOrientationOverride() *ClearDeviceOrientationOverrideRequest {
 	return &ClearDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -814,7 +814,7 @@ type SetTouchEmulationEnabledRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetTouchEmulationEnabled() *SetTouchEmulationEnabledRequest {
+func (d *Client) SetTouchEmulationEnabled() *SetTouchEmulationEnabledRequest {
 	return &SetTouchEmulationEnabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -841,7 +841,7 @@ type CaptureScreenshotRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CaptureScreenshot() *CaptureScreenshotRequest {
+func (d *Client) CaptureScreenshot() *CaptureScreenshotRequest {
 	return &CaptureScreenshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -880,7 +880,7 @@ type PrintToPDFRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) PrintToPDF() *PrintToPDFRequest {
+func (d *Client) PrintToPDF() *PrintToPDFRequest {
 	return &PrintToPDFRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -967,7 +967,7 @@ type StartScreencastRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StartScreencast() *StartScreencastRequest {
+func (d *Client) StartScreencast() *StartScreencastRequest {
 	return &StartScreencastRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1012,7 +1012,7 @@ type StopScreencastRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StopScreencast() *StopScreencastRequest {
+func (d *Client) StopScreencast() *StopScreencastRequest {
 	return &StopScreencastRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1027,7 +1027,7 @@ type ScreencastFrameAckRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ScreencastFrameAck() *ScreencastFrameAckRequest {
+func (d *Client) ScreencastFrameAck() *ScreencastFrameAckRequest {
 	return &ScreencastFrameAckRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1048,7 +1048,7 @@ type HandleJavaScriptDialogRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HandleJavaScriptDialog() *HandleJavaScriptDialogRequest {
+func (d *Client) HandleJavaScriptDialog() *HandleJavaScriptDialogRequest {
 	return &HandleJavaScriptDialogRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1075,7 +1075,7 @@ type GetAppManifestRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetAppManifest() *GetAppManifestRequest {
+func (d *Client) GetAppManifest() *GetAppManifestRequest {
 	return &GetAppManifestRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1101,7 +1101,7 @@ type RequestAppBannerRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestAppBanner() *RequestAppBannerRequest {
+func (d *Client) RequestAppBanner() *RequestAppBannerRequest {
 	return &RequestAppBannerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1116,7 +1116,7 @@ type SetControlNavigationsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetControlNavigations() *SetControlNavigationsRequest {
+func (d *Client) SetControlNavigations() *SetControlNavigationsRequest {
 	return &SetControlNavigationsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1136,7 +1136,7 @@ type ProcessNavigationRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ProcessNavigation() *ProcessNavigationRequest {
+func (d *Client) ProcessNavigation() *ProcessNavigationRequest {
 	return &ProcessNavigationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1161,7 +1161,7 @@ type GetLayoutMetricsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetLayoutMetrics() *GetLayoutMetricsRequest {
+func (d *Client) GetLayoutMetrics() *GetLayoutMetricsRequest {
 	return &GetLayoutMetricsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1188,7 +1188,7 @@ type CreateIsolatedWorldRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CreateIsolatedWorld() *CreateIsolatedWorldRequest {
+func (d *Client) CreateIsolatedWorld() *CreateIsolatedWorldRequest {
 	return &CreateIsolatedWorldRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

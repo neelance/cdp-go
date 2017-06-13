@@ -6,8 +6,8 @@ import (
 )
 
 // This domain is deprecated - use Runtime or Log instead.
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Console message.
@@ -38,7 +38,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -53,7 +53,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -68,7 +68,7 @@ type ClearMessagesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearMessages() *ClearMessagesRequest {
+func (d *Client) ClearMessages() *ClearMessagesRequest {
 	return &ClearMessagesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

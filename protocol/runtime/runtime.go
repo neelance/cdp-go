@@ -6,8 +6,8 @@ import (
 )
 
 // Runtime domain exposes JavaScript runtime by means of remote evaluation and mirror objects. Evaluation results are returned as mirror object that expose object type, string representation and unique identifier that can be used for further object reference. Original objects are maintained in memory unless they are either explicitly released or are released along with the other objects in their object group.
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Unique script identifier.
@@ -272,7 +272,7 @@ type EvaluateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Evaluate() *EvaluateRequest {
+func (d *Client) Evaluate() *EvaluateRequest {
 	return &EvaluateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -350,7 +350,7 @@ type AwaitPromiseRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) AwaitPromise() *AwaitPromiseRequest {
+func (d *Client) AwaitPromise() *AwaitPromiseRequest {
 	return &AwaitPromiseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -392,7 +392,7 @@ type CallFunctionOnRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CallFunctionOn() *CallFunctionOnRequest {
+func (d *Client) CallFunctionOn() *CallFunctionOnRequest {
 	return &CallFunctionOnRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -464,7 +464,7 @@ type GetPropertiesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetProperties() *GetPropertiesRequest {
+func (d *Client) GetProperties() *GetPropertiesRequest {
 	return &GetPropertiesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -515,7 +515,7 @@ type ReleaseObjectRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ReleaseObject() *ReleaseObjectRequest {
+func (d *Client) ReleaseObject() *ReleaseObjectRequest {
 	return &ReleaseObjectRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -536,7 +536,7 @@ type ReleaseObjectGroupRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ReleaseObjectGroup() *ReleaseObjectGroupRequest {
+func (d *Client) ReleaseObjectGroup() *ReleaseObjectGroupRequest {
 	return &ReleaseObjectGroupRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -557,7 +557,7 @@ type RunIfWaitingForDebuggerRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RunIfWaitingForDebugger() *RunIfWaitingForDebuggerRequest {
+func (d *Client) RunIfWaitingForDebugger() *RunIfWaitingForDebuggerRequest {
 	return &RunIfWaitingForDebuggerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -572,7 +572,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -587,7 +587,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -602,7 +602,7 @@ type DiscardConsoleEntriesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DiscardConsoleEntries() *DiscardConsoleEntriesRequest {
+func (d *Client) DiscardConsoleEntries() *DiscardConsoleEntriesRequest {
 	return &DiscardConsoleEntriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -617,7 +617,7 @@ type SetCustomObjectFormatterEnabledRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetCustomObjectFormatterEnabled() *SetCustomObjectFormatterEnabledRequest {
+func (d *Client) SetCustomObjectFormatterEnabled() *SetCustomObjectFormatterEnabledRequest {
 	return &SetCustomObjectFormatterEnabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -637,7 +637,7 @@ type CompileScriptRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CompileScript() *CompileScriptRequest {
+func (d *Client) CompileScript() *CompileScriptRequest {
 	return &CompileScriptRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -685,7 +685,7 @@ type RunScriptRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RunScript() *RunScriptRequest {
+func (d *Client) RunScript() *RunScriptRequest {
 	return &RunScriptRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

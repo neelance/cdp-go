@@ -6,8 +6,8 @@ import (
 )
 
 // Debugger domain exposes JavaScript debugging capabilities. It allows setting and removing breakpoints, stepping through execution, exploring stack traces, etc.
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Breakpoint identifier.
@@ -115,7 +115,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -130,7 +130,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -145,7 +145,7 @@ type SetBreakpointsActiveRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetBreakpointsActive() *SetBreakpointsActiveRequest {
+func (d *Client) SetBreakpointsActive() *SetBreakpointsActiveRequest {
 	return &SetBreakpointsActiveRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -166,7 +166,7 @@ type SetSkipAllPausesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetSkipAllPauses() *SetSkipAllPausesRequest {
+func (d *Client) SetSkipAllPauses() *SetSkipAllPausesRequest {
 	return &SetSkipAllPausesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -187,7 +187,7 @@ type SetBreakpointByUrlRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetBreakpointByUrl() *SetBreakpointByUrlRequest {
+func (d *Client) SetBreakpointByUrl() *SetBreakpointByUrlRequest {
 	return &SetBreakpointByUrlRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -241,7 +241,7 @@ type SetBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetBreakpoint() *SetBreakpointRequest {
+func (d *Client) SetBreakpoint() *SetBreakpointRequest {
 	return &SetBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -277,7 +277,7 @@ type RemoveBreakpointRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveBreakpoint() *RemoveBreakpointRequest {
+func (d *Client) RemoveBreakpoint() *RemoveBreakpointRequest {
 	return &RemoveBreakpointRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -297,7 +297,7 @@ type GetPossibleBreakpointsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetPossibleBreakpoints() *GetPossibleBreakpointsRequest {
+func (d *Client) GetPossibleBreakpoints() *GetPossibleBreakpointsRequest {
 	return &GetPossibleBreakpointsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -336,7 +336,7 @@ type ContinueToLocationRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ContinueToLocation() *ContinueToLocationRequest {
+func (d *Client) ContinueToLocation() *ContinueToLocationRequest {
 	return &ContinueToLocationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -363,7 +363,7 @@ type StepOverRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StepOver() *StepOverRequest {
+func (d *Client) StepOver() *StepOverRequest {
 	return &StepOverRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -378,7 +378,7 @@ type StepIntoRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StepInto() *StepIntoRequest {
+func (d *Client) StepInto() *StepIntoRequest {
 	return &StepIntoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -393,7 +393,7 @@ type StepOutRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StepOut() *StepOutRequest {
+func (d *Client) StepOut() *StepOutRequest {
 	return &StepOutRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -408,7 +408,7 @@ type PauseRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Pause() *PauseRequest {
+func (d *Client) Pause() *PauseRequest {
 	return &PauseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -423,7 +423,7 @@ type ScheduleStepIntoAsyncRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ScheduleStepIntoAsync() *ScheduleStepIntoAsyncRequest {
+func (d *Client) ScheduleStepIntoAsync() *ScheduleStepIntoAsyncRequest {
 	return &ScheduleStepIntoAsyncRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -438,7 +438,7 @@ type ResumeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Resume() *ResumeRequest {
+func (d *Client) Resume() *ResumeRequest {
 	return &ResumeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -453,7 +453,7 @@ type SearchInContentRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SearchInContent() *SearchInContentRequest {
+func (d *Client) SearchInContent() *SearchInContentRequest {
 	return &SearchInContentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -498,7 +498,7 @@ type SetScriptSourceRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetScriptSource() *SetScriptSourceRequest {
+func (d *Client) SetScriptSource() *SetScriptSourceRequest {
 	return &SetScriptSourceRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -546,7 +546,7 @@ type RestartFrameRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RestartFrame() *RestartFrameRequest {
+func (d *Client) RestartFrame() *RestartFrameRequest {
 	return &RestartFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -576,7 +576,7 @@ type GetScriptSourceRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetScriptSource() *GetScriptSourceRequest {
+func (d *Client) GetScriptSource() *GetScriptSourceRequest {
 	return &GetScriptSourceRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -603,7 +603,7 @@ type SetPauseOnExceptionsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetPauseOnExceptions() *SetPauseOnExceptionsRequest {
+func (d *Client) SetPauseOnExceptions() *SetPauseOnExceptionsRequest {
 	return &SetPauseOnExceptionsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -624,7 +624,7 @@ type EvaluateOnCallFrameRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) EvaluateOnCallFrame() *EvaluateOnCallFrameRequest {
+func (d *Client) EvaluateOnCallFrame() *EvaluateOnCallFrameRequest {
 	return &EvaluateOnCallFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -696,7 +696,7 @@ type SetVariableValueRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetVariableValue() *SetVariableValueRequest {
+func (d *Client) SetVariableValue() *SetVariableValueRequest {
 	return &SetVariableValueRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -735,7 +735,7 @@ type SetAsyncCallStackDepthRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetAsyncCallStackDepth() *SetAsyncCallStackDepthRequest {
+func (d *Client) SetAsyncCallStackDepth() *SetAsyncCallStackDepthRequest {
 	return &SetAsyncCallStackDepthRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -756,7 +756,7 @@ type SetBlackboxPatternsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetBlackboxPatterns() *SetBlackboxPatternsRequest {
+func (d *Client) SetBlackboxPatterns() *SetBlackboxPatternsRequest {
 	return &SetBlackboxPatternsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -777,7 +777,7 @@ type SetBlackboxedRangesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetBlackboxedRanges() *SetBlackboxedRangesRequest {
+func (d *Client) SetBlackboxedRanges() *SetBlackboxedRangesRequest {
 	return &SetBlackboxedRangesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

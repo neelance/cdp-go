@@ -6,8 +6,8 @@ import (
 )
 
 // This domain facilitates obtaining document snapshots with DOM, layout, and style information. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // A Node in the DOM tree.
@@ -107,7 +107,7 @@ type GetSnapshotRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetSnapshot() *GetSnapshotRequest {
+func (d *Client) GetSnapshot() *GetSnapshotRequest {
 	return &GetSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

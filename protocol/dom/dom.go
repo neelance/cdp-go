@@ -6,8 +6,8 @@ import (
 )
 
 // This domain exposes DOM read/write operations. Each DOM Node is represented with its mirror object that has an <code>id</code>. This <code>id</code> can be used to get additional information on the Node, resolve it into the JavaScript object wrapper, etc. It is important that client receives DOM events only for the nodes that are known to the client. Backend keeps track of the nodes that were sent to the client and never sends the same node twice. It is client's responsibility to collect information about the nodes that were sent to the client.<p>Note that <code>iframe</code> owner elements will return corresponding document elements as their child nodes.</p>
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Unique DOM node identifier.
@@ -206,7 +206,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -221,7 +221,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -236,7 +236,7 @@ type GetDocumentRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetDocument() *GetDocumentRequest {
+func (d *Client) GetDocument() *GetDocumentRequest {
 	return &GetDocumentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -269,7 +269,7 @@ type GetFlattenedDocumentRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetFlattenedDocument() *GetFlattenedDocumentRequest {
+func (d *Client) GetFlattenedDocument() *GetFlattenedDocumentRequest {
 	return &GetFlattenedDocumentRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -302,7 +302,7 @@ type CollectClassNamesFromSubtreeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CollectClassNamesFromSubtree() *CollectClassNamesFromSubtreeRequest {
+func (d *Client) CollectClassNamesFromSubtree() *CollectClassNamesFromSubtreeRequest {
 	return &CollectClassNamesFromSubtreeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -329,7 +329,7 @@ type RequestChildNodesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestChildNodes() *RequestChildNodesRequest {
+func (d *Client) RequestChildNodes() *RequestChildNodesRequest {
 	return &RequestChildNodesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -362,7 +362,7 @@ type QuerySelectorRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) QuerySelector() *QuerySelectorRequest {
+func (d *Client) QuerySelector() *QuerySelectorRequest {
 	return &QuerySelectorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -395,7 +395,7 @@ type QuerySelectorAllRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) QuerySelectorAll() *QuerySelectorAllRequest {
+func (d *Client) QuerySelectorAll() *QuerySelectorAllRequest {
 	return &QuerySelectorAllRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -428,7 +428,7 @@ type SetNodeNameRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetNodeName() *SetNodeNameRequest {
+func (d *Client) SetNodeName() *SetNodeNameRequest {
 	return &SetNodeNameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -461,7 +461,7 @@ type SetNodeValueRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetNodeValue() *SetNodeValueRequest {
+func (d *Client) SetNodeValue() *SetNodeValueRequest {
 	return &SetNodeValueRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -488,7 +488,7 @@ type RemoveNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveNode() *RemoveNodeRequest {
+func (d *Client) RemoveNode() *RemoveNodeRequest {
 	return &RemoveNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -509,7 +509,7 @@ type SetAttributeValueRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetAttributeValue() *SetAttributeValueRequest {
+func (d *Client) SetAttributeValue() *SetAttributeValueRequest {
 	return &SetAttributeValueRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -542,7 +542,7 @@ type SetAttributesAsTextRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetAttributesAsText() *SetAttributesAsTextRequest {
+func (d *Client) SetAttributesAsText() *SetAttributesAsTextRequest {
 	return &SetAttributesAsTextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -575,7 +575,7 @@ type RemoveAttributeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveAttribute() *RemoveAttributeRequest {
+func (d *Client) RemoveAttribute() *RemoveAttributeRequest {
 	return &RemoveAttributeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -602,7 +602,7 @@ type GetOuterHTMLRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetOuterHTML() *GetOuterHTMLRequest {
+func (d *Client) GetOuterHTML() *GetOuterHTMLRequest {
 	return &GetOuterHTMLRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -629,7 +629,7 @@ type SetOuterHTMLRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetOuterHTML() *SetOuterHTMLRequest {
+func (d *Client) SetOuterHTML() *SetOuterHTMLRequest {
 	return &SetOuterHTMLRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -656,7 +656,7 @@ type PerformSearchRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) PerformSearch() *PerformSearchRequest {
+func (d *Client) PerformSearch() *PerformSearchRequest {
 	return &PerformSearchRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -692,7 +692,7 @@ type GetSearchResultsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetSearchResults() *GetSearchResultsRequest {
+func (d *Client) GetSearchResults() *GetSearchResultsRequest {
 	return &GetSearchResultsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -731,7 +731,7 @@ type DiscardSearchResultsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DiscardSearchResults() *DiscardSearchResultsRequest {
+func (d *Client) DiscardSearchResults() *DiscardSearchResultsRequest {
 	return &DiscardSearchResultsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -752,7 +752,7 @@ type RequestNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestNode() *RequestNodeRequest {
+func (d *Client) RequestNode() *RequestNodeRequest {
 	return &RequestNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -779,7 +779,7 @@ type HighlightRectRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HighlightRect() *HighlightRectRequest {
+func (d *Client) HighlightRect() *HighlightRectRequest {
 	return &HighlightRectRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -794,7 +794,7 @@ type HighlightNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HighlightNode() *HighlightNodeRequest {
+func (d *Client) HighlightNode() *HighlightNodeRequest {
 	return &HighlightNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -809,7 +809,7 @@ type HideHighlightRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HideHighlight() *HideHighlightRequest {
+func (d *Client) HideHighlight() *HideHighlightRequest {
 	return &HideHighlightRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -824,7 +824,7 @@ type PushNodeByPathToFrontendRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) PushNodeByPathToFrontend() *PushNodeByPathToFrontendRequest {
+func (d *Client) PushNodeByPathToFrontend() *PushNodeByPathToFrontendRequest {
 	return &PushNodeByPathToFrontendRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -851,7 +851,7 @@ type PushNodesByBackendIdsToFrontendRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) PushNodesByBackendIdsToFrontend() *PushNodesByBackendIdsToFrontendRequest {
+func (d *Client) PushNodesByBackendIdsToFrontend() *PushNodesByBackendIdsToFrontendRequest {
 	return &PushNodesByBackendIdsToFrontendRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -878,7 +878,7 @@ type SetInspectedNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetInspectedNode() *SetInspectedNodeRequest {
+func (d *Client) SetInspectedNode() *SetInspectedNodeRequest {
 	return &SetInspectedNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -899,7 +899,7 @@ type ResolveNodeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ResolveNode() *ResolveNodeRequest {
+func (d *Client) ResolveNode() *ResolveNodeRequest {
 	return &ResolveNodeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -932,7 +932,7 @@ type GetAttributesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetAttributes() *GetAttributesRequest {
+func (d *Client) GetAttributes() *GetAttributesRequest {
 	return &GetAttributesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -959,7 +959,7 @@ type CopyToRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CopyTo() *CopyToRequest {
+func (d *Client) CopyTo() *CopyToRequest {
 	return &CopyToRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -998,7 +998,7 @@ type MoveToRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) MoveTo() *MoveToRequest {
+func (d *Client) MoveTo() *MoveToRequest {
 	return &MoveToRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1037,7 +1037,7 @@ type UndoRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Undo() *UndoRequest {
+func (d *Client) Undo() *UndoRequest {
 	return &UndoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1052,7 +1052,7 @@ type RedoRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Redo() *RedoRequest {
+func (d *Client) Redo() *RedoRequest {
 	return &RedoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1067,7 +1067,7 @@ type MarkUndoableStateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) MarkUndoableState() *MarkUndoableStateRequest {
+func (d *Client) MarkUndoableState() *MarkUndoableStateRequest {
 	return &MarkUndoableStateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1082,7 +1082,7 @@ type FocusRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Focus() *FocusRequest {
+func (d *Client) Focus() *FocusRequest {
 	return &FocusRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1103,7 +1103,7 @@ type SetFileInputFilesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetFileInputFiles() *SetFileInputFilesRequest {
+func (d *Client) SetFileInputFiles() *SetFileInputFilesRequest {
 	return &SetFileInputFilesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1130,7 +1130,7 @@ type GetBoxModelRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetBoxModel() *GetBoxModelRequest {
+func (d *Client) GetBoxModel() *GetBoxModelRequest {
 	return &GetBoxModelRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1157,7 +1157,7 @@ type GetNodeForLocationRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetNodeForLocation() *GetNodeForLocationRequest {
+func (d *Client) GetNodeForLocation() *GetNodeForLocationRequest {
 	return &GetNodeForLocationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -1196,7 +1196,7 @@ type GetRelayoutBoundaryRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetRelayoutBoundary() *GetRelayoutBoundaryRequest {
+func (d *Client) GetRelayoutBoundary() *GetRelayoutBoundaryRequest {
 	return &GetRelayoutBoundaryRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

@@ -4,8 +4,8 @@ import (
 	"github.com/neelance/cdp-go/rpc"
 )
 
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Profile node. Holds callsite information, execution statistics and child nodes.
@@ -100,7 +100,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -113,7 +113,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -127,7 +127,7 @@ type SetSamplingIntervalRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetSamplingInterval() *SetSamplingIntervalRequest {
+func (d *Client) SetSamplingInterval() *SetSamplingIntervalRequest {
 	return &SetSamplingIntervalRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -147,7 +147,7 @@ type StartRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Start() *StartRequest {
+func (d *Client) Start() *StartRequest {
 	return &StartRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -160,7 +160,7 @@ type StopRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Stop() *StopRequest {
+func (d *Client) Stop() *StopRequest {
 	return &StopRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -181,7 +181,7 @@ type StartPreciseCoverageRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StartPreciseCoverage() *StartPreciseCoverageRequest {
+func (d *Client) StartPreciseCoverage() *StartPreciseCoverageRequest {
 	return &StartPreciseCoverageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -202,7 +202,7 @@ type StopPreciseCoverageRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StopPreciseCoverage() *StopPreciseCoverageRequest {
+func (d *Client) StopPreciseCoverage() *StopPreciseCoverageRequest {
 	return &StopPreciseCoverageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -217,7 +217,7 @@ type TakePreciseCoverageRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) TakePreciseCoverage() *TakePreciseCoverageRequest {
+func (d *Client) TakePreciseCoverage() *TakePreciseCoverageRequest {
 	return &TakePreciseCoverageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -238,7 +238,7 @@ type GetBestEffortCoverageRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetBestEffortCoverage() *GetBestEffortCoverageRequest {
+func (d *Client) GetBestEffortCoverage() *GetBestEffortCoverageRequest {
 	return &GetBestEffortCoverageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

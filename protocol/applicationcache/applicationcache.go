@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Detailed application cache resource information.
@@ -61,7 +61,7 @@ type GetFramesWithManifestsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetFramesWithManifests() *GetFramesWithManifestsRequest {
+func (d *Client) GetFramesWithManifests() *GetFramesWithManifestsRequest {
 	return &GetFramesWithManifestsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -82,7 +82,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -97,7 +97,7 @@ type GetManifestForFrameRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetManifestForFrame() *GetManifestForFrameRequest {
+func (d *Client) GetManifestForFrame() *GetManifestForFrameRequest {
 	return &GetManifestForFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -124,7 +124,7 @@ type GetApplicationCacheForFrameRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetApplicationCacheForFrame() *GetApplicationCacheForFrameRequest {
+func (d *Client) GetApplicationCacheForFrame() *GetApplicationCacheForFrameRequest {
 	return &GetApplicationCacheForFrameRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

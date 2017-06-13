@@ -6,8 +6,8 @@ import (
 )
 
 // Supports additional targets discovery and allows to attach to them. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 type TargetID string
@@ -36,7 +36,7 @@ type SetDiscoverTargetsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDiscoverTargets() *SetDiscoverTargetsRequest {
+func (d *Client) SetDiscoverTargets() *SetDiscoverTargetsRequest {
 	return &SetDiscoverTargetsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -57,7 +57,7 @@ type SetAutoAttachRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetAutoAttach() *SetAutoAttachRequest {
+func (d *Client) SetAutoAttach() *SetAutoAttachRequest {
 	return &SetAutoAttachRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -83,7 +83,7 @@ type SetAttachToFramesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetAttachToFrames() *SetAttachToFramesRequest {
+func (d *Client) SetAttachToFrames() *SetAttachToFramesRequest {
 	return &SetAttachToFramesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -103,7 +103,7 @@ type SetRemoteLocationsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetRemoteLocations() *SetRemoteLocationsRequest {
+func (d *Client) SetRemoteLocations() *SetRemoteLocationsRequest {
 	return &SetRemoteLocationsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -124,7 +124,7 @@ type SendMessageToTargetRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SendMessageToTarget() *SendMessageToTargetRequest {
+func (d *Client) SendMessageToTarget() *SendMessageToTargetRequest {
 	return &SendMessageToTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -149,7 +149,7 @@ type GetTargetInfoRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetTargetInfo() *GetTargetInfoRequest {
+func (d *Client) GetTargetInfo() *GetTargetInfoRequest {
 	return &GetTargetInfoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -174,7 +174,7 @@ type ActivateTargetRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ActivateTarget() *ActivateTargetRequest {
+func (d *Client) ActivateTarget() *ActivateTargetRequest {
 	return &ActivateTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -194,7 +194,7 @@ type CloseTargetRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CloseTarget() *CloseTargetRequest {
+func (d *Client) CloseTarget() *CloseTargetRequest {
 	return &CloseTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -219,7 +219,7 @@ type AttachToTargetRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) AttachToTarget() *AttachToTargetRequest {
+func (d *Client) AttachToTarget() *AttachToTargetRequest {
 	return &AttachToTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -245,7 +245,7 @@ type DetachFromTargetRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DetachFromTarget() *DetachFromTargetRequest {
+func (d *Client) DetachFromTarget() *DetachFromTargetRequest {
 	return &DetachFromTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -265,7 +265,7 @@ type CreateBrowserContextRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CreateBrowserContext() *CreateBrowserContextRequest {
+func (d *Client) CreateBrowserContext() *CreateBrowserContextRequest {
 	return &CreateBrowserContextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -286,7 +286,7 @@ type DisposeBrowserContextRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DisposeBrowserContext() *DisposeBrowserContextRequest {
+func (d *Client) DisposeBrowserContext() *DisposeBrowserContextRequest {
 	return &DisposeBrowserContextRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -311,7 +311,7 @@ type CreateTargetRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CreateTarget() *CreateTargetRequest {
+func (d *Client) CreateTarget() *CreateTargetRequest {
 	return &CreateTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -356,7 +356,7 @@ type GetTargetsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetTargets() *GetTargetsRequest {
+func (d *Client) GetTargets() *GetTargetsRequest {
 	return &GetTargetsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

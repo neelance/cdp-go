@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Configuration for memory dump. Used only when "memory-infra" category is enabled.
@@ -47,7 +47,7 @@ type StartRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Start() *StartRequest {
+func (d *Client) Start() *StartRequest {
 	return &StartRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -92,7 +92,7 @@ type EndRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) End() *EndRequest {
+func (d *Client) End() *EndRequest {
 	return &EndRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -107,7 +107,7 @@ type GetCategoriesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetCategories() *GetCategoriesRequest {
+func (d *Client) GetCategories() *GetCategoriesRequest {
 	return &GetCategoriesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -128,7 +128,7 @@ type RequestMemoryDumpRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestMemoryDump() *RequestMemoryDumpRequest {
+func (d *Client) RequestMemoryDump() *RequestMemoryDumpRequest {
 	return &RequestMemoryDumpRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -152,7 +152,7 @@ type RecordClockSyncMarkerRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RecordClockSyncMarker() *RecordClockSyncMarkerRequest {
+func (d *Client) RecordClockSyncMarker() *RecordClockSyncMarkerRequest {
 	return &RecordClockSyncMarkerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

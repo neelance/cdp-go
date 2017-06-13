@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Database with an array of object stores.
@@ -122,7 +122,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -137,7 +137,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -152,7 +152,7 @@ type RequestDatabaseNamesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestDatabaseNames() *RequestDatabaseNamesRequest {
+func (d *Client) RequestDatabaseNames() *RequestDatabaseNamesRequest {
 	return &RequestDatabaseNamesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -179,7 +179,7 @@ type RequestDatabaseRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestDatabase() *RequestDatabaseRequest {
+func (d *Client) RequestDatabase() *RequestDatabaseRequest {
 	return &RequestDatabaseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -212,7 +212,7 @@ type RequestDataRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RequestData() *RequestDataRequest {
+func (d *Client) RequestData() *RequestDataRequest {
 	return &RequestDataRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -278,7 +278,7 @@ type ClearObjectStoreRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearObjectStore() *ClearObjectStoreRequest {
+func (d *Client) ClearObjectStore() *ClearObjectStoreRequest {
 	return &ClearObjectStoreRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -311,7 +311,7 @@ type DeleteDatabaseRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DeleteDatabase() *DeleteDatabaseRequest {
+func (d *Client) DeleteDatabase() *DeleteDatabaseRequest {
 	return &DeleteDatabaseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

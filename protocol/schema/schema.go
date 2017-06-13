@@ -6,8 +6,8 @@ import (
 )
 
 // Provides information about the protocol schema.
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Description of the protocol domain.
@@ -26,7 +26,7 @@ type GetDomainsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetDomains() *GetDomainsRequest {
+func (d *Client) GetDomains() *GetDomainsRequest {
 	return &GetDomainsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

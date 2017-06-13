@@ -6,8 +6,8 @@ import (
 )
 
 // This domain emulates different environments for the page.
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Screen orientation.
@@ -30,7 +30,7 @@ type SetDeviceMetricsOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDeviceMetricsOverride() *SetDeviceMetricsOverrideRequest {
+func (d *Client) SetDeviceMetricsOverride() *SetDeviceMetricsOverrideRequest {
 	return &SetDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -123,7 +123,7 @@ type ClearDeviceMetricsOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearDeviceMetricsOverride() *ClearDeviceMetricsOverrideRequest {
+func (d *Client) ClearDeviceMetricsOverride() *ClearDeviceMetricsOverrideRequest {
 	return &ClearDeviceMetricsOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -138,7 +138,7 @@ type ForceViewportRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ForceViewport() *ForceViewportRequest {
+func (d *Client) ForceViewport() *ForceViewportRequest {
 	return &ForceViewportRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -171,7 +171,7 @@ type ResetViewportRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ResetViewport() *ResetViewportRequest {
+func (d *Client) ResetViewport() *ResetViewportRequest {
 	return &ResetViewportRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -186,7 +186,7 @@ type ResetPageScaleFactorRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ResetPageScaleFactor() *ResetPageScaleFactorRequest {
+func (d *Client) ResetPageScaleFactor() *ResetPageScaleFactorRequest {
 	return &ResetPageScaleFactorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -201,7 +201,7 @@ type SetPageScaleFactorRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetPageScaleFactor() *SetPageScaleFactorRequest {
+func (d *Client) SetPageScaleFactor() *SetPageScaleFactorRequest {
 	return &SetPageScaleFactorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -222,7 +222,7 @@ type SetVisibleSizeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetVisibleSize() *SetVisibleSizeRequest {
+func (d *Client) SetVisibleSize() *SetVisibleSizeRequest {
 	return &SetVisibleSizeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -249,7 +249,7 @@ type SetScriptExecutionDisabledRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetScriptExecutionDisabled() *SetScriptExecutionDisabledRequest {
+func (d *Client) SetScriptExecutionDisabled() *SetScriptExecutionDisabledRequest {
 	return &SetScriptExecutionDisabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -270,7 +270,7 @@ type SetGeolocationOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetGeolocationOverride() *SetGeolocationOverrideRequest {
+func (d *Client) SetGeolocationOverride() *SetGeolocationOverrideRequest {
 	return &SetGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -303,7 +303,7 @@ type ClearGeolocationOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearGeolocationOverride() *ClearGeolocationOverrideRequest {
+func (d *Client) ClearGeolocationOverride() *ClearGeolocationOverrideRequest {
 	return &ClearGeolocationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -318,7 +318,7 @@ type SetTouchEmulationEnabledRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetTouchEmulationEnabled() *SetTouchEmulationEnabledRequest {
+func (d *Client) SetTouchEmulationEnabled() *SetTouchEmulationEnabledRequest {
 	return &SetTouchEmulationEnabledRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -345,7 +345,7 @@ type SetEmulatedMediaRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetEmulatedMedia() *SetEmulatedMediaRequest {
+func (d *Client) SetEmulatedMedia() *SetEmulatedMediaRequest {
 	return &SetEmulatedMediaRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -366,7 +366,7 @@ type SetCPUThrottlingRateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetCPUThrottlingRate() *SetCPUThrottlingRateRequest {
+func (d *Client) SetCPUThrottlingRate() *SetCPUThrottlingRateRequest {
 	return &SetCPUThrottlingRateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -387,7 +387,7 @@ type CanEmulateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CanEmulate() *CanEmulateRequest {
+func (d *Client) CanEmulate() *CanEmulateRequest {
 	return &CanEmulateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -408,7 +408,7 @@ type SetVirtualTimePolicyRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetVirtualTimePolicy() *SetVirtualTimePolicyRequest {
+func (d *Client) SetVirtualTimePolicy() *SetVirtualTimePolicyRequest {
 	return &SetVirtualTimePolicyRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -434,7 +434,7 @@ type SetDefaultBackgroundColorOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDefaultBackgroundColorOverride() *SetDefaultBackgroundColorOverrideRequest {
+func (d *Client) SetDefaultBackgroundColorOverride() *SetDefaultBackgroundColorOverrideRequest {
 	return &SetDefaultBackgroundColorOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

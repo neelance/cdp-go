@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Heap snapshot object id.
@@ -38,7 +38,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -51,7 +51,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -64,7 +64,7 @@ type StartTrackingHeapObjectsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StartTrackingHeapObjects() *StartTrackingHeapObjectsRequest {
+func (d *Client) StartTrackingHeapObjects() *StartTrackingHeapObjectsRequest {
 	return &StartTrackingHeapObjectsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -83,7 +83,7 @@ type StopTrackingHeapObjectsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StopTrackingHeapObjects() *StopTrackingHeapObjectsRequest {
+func (d *Client) StopTrackingHeapObjects() *StopTrackingHeapObjectsRequest {
 	return &StopTrackingHeapObjectsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -102,7 +102,7 @@ type TakeHeapSnapshotRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) TakeHeapSnapshot() *TakeHeapSnapshotRequest {
+func (d *Client) TakeHeapSnapshot() *TakeHeapSnapshotRequest {
 	return &TakeHeapSnapshotRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -121,7 +121,7 @@ type CollectGarbageRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) CollectGarbage() *CollectGarbageRequest {
+func (d *Client) CollectGarbage() *CollectGarbageRequest {
 	return &CollectGarbageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -134,7 +134,7 @@ type GetObjectByHeapObjectIdRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetObjectByHeapObjectId() *GetObjectByHeapObjectIdRequest {
+func (d *Client) GetObjectByHeapObjectId() *GetObjectByHeapObjectIdRequest {
 	return &GetObjectByHeapObjectIdRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -166,7 +166,7 @@ type AddInspectedHeapObjectRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) AddInspectedHeapObject() *AddInspectedHeapObjectRequest {
+func (d *Client) AddInspectedHeapObject() *AddInspectedHeapObjectRequest {
 	return &AddInspectedHeapObjectRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -186,7 +186,7 @@ type GetHeapObjectIdRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetHeapObjectId() *GetHeapObjectIdRequest {
+func (d *Client) GetHeapObjectId() *GetHeapObjectIdRequest {
 	return &GetHeapObjectIdRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -212,7 +212,7 @@ type StartSamplingRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StartSampling() *StartSamplingRequest {
+func (d *Client) StartSampling() *StartSamplingRequest {
 	return &StartSamplingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -231,7 +231,7 @@ type StopSamplingRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StopSampling() *StopSamplingRequest {
+func (d *Client) StopSampling() *StopSamplingRequest {
 	return &StopSamplingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

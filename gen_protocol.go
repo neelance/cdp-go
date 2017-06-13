@@ -234,8 +234,8 @@ import (
 )
 
 {{if .Doc}}// {{.Doc}}{{end}}
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 {{range .Types}}
@@ -260,7 +260,7 @@ type Domain struct {
 		opts map[string]interface{}
 	}
 
-	func (d *Domain) {{.GoName}}() *{{$reqType}} {
+	func (d *Client) {{.GoName}}() *{{$reqType}} {
 		return &{{$reqType}}{opts: make(map[string]interface{}), client: d.Client}
 	}
 
@@ -327,7 +327,7 @@ type Client struct {
 	*rpc.Client
 
 	{{range .}}
-		{{.Domain}} {{.GoPackage}}.Domain
+		{{.Domain}} {{.GoPackage}}.Client
 	{{- end}}
 }
 
@@ -342,7 +342,7 @@ func Dial(url string) *Client {
 		Client: cl,
 
 		{{range .}}
-			{{.Domain}}: {{.GoPackage}}.Domain{Client: cl},
+			{{.Domain}}: {{.GoPackage}}.Client{Client: cl},
 		{{- end}}
 	}
 }

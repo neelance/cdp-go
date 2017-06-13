@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Animation instance. (experimental)
@@ -104,7 +104,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -119,7 +119,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -134,7 +134,7 @@ type GetPlaybackRateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetPlaybackRate() *GetPlaybackRateRequest {
+func (d *Client) GetPlaybackRate() *GetPlaybackRateRequest {
 	return &GetPlaybackRateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -155,7 +155,7 @@ type SetPlaybackRateRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetPlaybackRate() *SetPlaybackRateRequest {
+func (d *Client) SetPlaybackRate() *SetPlaybackRateRequest {
 	return &SetPlaybackRateRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -176,7 +176,7 @@ type GetCurrentTimeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetCurrentTime() *GetCurrentTimeRequest {
+func (d *Client) GetCurrentTime() *GetCurrentTimeRequest {
 	return &GetCurrentTimeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -203,7 +203,7 @@ type SetPausedRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetPaused() *SetPausedRequest {
+func (d *Client) SetPaused() *SetPausedRequest {
 	return &SetPausedRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -230,7 +230,7 @@ type SetTimingRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetTiming() *SetTimingRequest {
+func (d *Client) SetTiming() *SetTimingRequest {
 	return &SetTimingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -263,7 +263,7 @@ type SeekAnimationsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SeekAnimations() *SeekAnimationsRequest {
+func (d *Client) SeekAnimations() *SeekAnimationsRequest {
 	return &SeekAnimationsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -290,7 +290,7 @@ type ReleaseAnimationsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ReleaseAnimations() *ReleaseAnimationsRequest {
+func (d *Client) ReleaseAnimations() *ReleaseAnimationsRequest {
 	return &ReleaseAnimationsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -311,7 +311,7 @@ type ResolveAnimationRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ResolveAnimation() *ResolveAnimationRequest {
+func (d *Client) ResolveAnimation() *ResolveAnimationRequest {
 	return &ResolveAnimationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

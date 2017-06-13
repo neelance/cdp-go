@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Unique accessibility node identifier.
@@ -152,7 +152,7 @@ type GetPartialAXTreeRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetPartialAXTree() *GetPartialAXTreeRequest {
+func (d *Client) GetPartialAXTree() *GetPartialAXTreeRequest {
 	return &GetPartialAXTreeRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

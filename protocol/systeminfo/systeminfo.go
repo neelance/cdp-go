@@ -6,8 +6,8 @@ import (
 )
 
 // The SystemInfo domain defines methods and events for querying low-level system information. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Describes a single graphics processor (GPU).
@@ -48,7 +48,7 @@ type GetInfoRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetInfo() *GetInfoRequest {
+func (d *Client) GetInfo() *GetInfoRequest {
 	return &GetInfoRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

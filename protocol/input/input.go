@@ -4,8 +4,8 @@ import (
 	"github.com/neelance/cdp-go/rpc"
 )
 
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // (experimental)
@@ -46,7 +46,7 @@ type SetIgnoreInputEventsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetIgnoreInputEvents() *SetIgnoreInputEventsRequest {
+func (d *Client) SetIgnoreInputEvents() *SetIgnoreInputEventsRequest {
 	return &SetIgnoreInputEventsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -67,7 +67,7 @@ type DispatchKeyEventRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DispatchKeyEvent() *DispatchKeyEventRequest {
+func (d *Client) DispatchKeyEvent() *DispatchKeyEventRequest {
 	return &DispatchKeyEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -160,7 +160,7 @@ type DispatchMouseEventRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DispatchMouseEvent() *DispatchMouseEventRequest {
+func (d *Client) DispatchMouseEvent() *DispatchMouseEventRequest {
 	return &DispatchMouseEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -217,7 +217,7 @@ type DispatchTouchEventRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DispatchTouchEvent() *DispatchTouchEventRequest {
+func (d *Client) DispatchTouchEvent() *DispatchTouchEventRequest {
 	return &DispatchTouchEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -256,7 +256,7 @@ type EmulateTouchFromMouseEventRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) EmulateTouchFromMouseEvent() *EmulateTouchFromMouseEventRequest {
+func (d *Client) EmulateTouchFromMouseEvent() *EmulateTouchFromMouseEventRequest {
 	return &EmulateTouchFromMouseEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -325,7 +325,7 @@ type SynthesizePinchGestureRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SynthesizePinchGesture() *SynthesizePinchGestureRequest {
+func (d *Client) SynthesizePinchGesture() *SynthesizePinchGestureRequest {
 	return &SynthesizePinchGestureRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -370,7 +370,7 @@ type SynthesizeScrollGestureRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SynthesizeScrollGesture() *SynthesizeScrollGestureRequest {
+func (d *Client) SynthesizeScrollGesture() *SynthesizeScrollGestureRequest {
 	return &SynthesizeScrollGestureRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -457,7 +457,7 @@ type SynthesizeTapGestureRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SynthesizeTapGesture() *SynthesizeTapGestureRequest {
+func (d *Client) SynthesizeTapGesture() *SynthesizeTapGestureRequest {
 	return &SynthesizeTapGestureRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

@@ -46,42 +46,42 @@ import (
 type Client struct {
 	*rpc.Client
 
-	Accessibility     accessibility.Domain
-	Animation         animation.Domain
-	ApplicationCache  applicationcache.Domain
-	Browser           browser.Domain
-	CSS               css.Domain
-	CacheStorage      cachestorage.Domain
-	Console           console.Domain
-	DOM               dom.Domain
-	DOMDebugger       domdebugger.Domain
-	DOMSnapshot       domsnapshot.Domain
-	DOMStorage        domstorage.Domain
-	Database          database.Domain
-	Debugger          debugger.Domain
-	DeviceOrientation deviceorientation.Domain
-	Emulation         emulation.Domain
-	HeapProfiler      heapprofiler.Domain
-	IO                io.Domain
-	IndexedDB         indexeddb.Domain
-	Input             input.Domain
-	Inspector         inspector.Domain
-	LayerTree         layertree.Domain
-	Log               log.Domain
-	Memory            memory.Domain
-	Network           network.Domain
-	Overlay           overlay.Domain
-	Page              page.Domain
-	Profiler          profiler.Domain
-	Runtime           runtime.Domain
-	Schema            schema.Domain
-	Security          security.Domain
-	ServiceWorker     serviceworker.Domain
-	Storage           storage.Domain
-	SystemInfo        systeminfo.Domain
-	Target            target.Domain
-	Tethering         tethering.Domain
-	Tracing           tracing.Domain
+	Accessibility     accessibility.Client
+	Animation         animation.Client
+	ApplicationCache  applicationcache.Client
+	Browser           browser.Client
+	CSS               css.Client
+	CacheStorage      cachestorage.Client
+	Console           console.Client
+	DOM               dom.Client
+	DOMDebugger       domdebugger.Client
+	DOMSnapshot       domsnapshot.Client
+	DOMStorage        domstorage.Client
+	Database          database.Client
+	Debugger          debugger.Client
+	DeviceOrientation deviceorientation.Client
+	Emulation         emulation.Client
+	HeapProfiler      heapprofiler.Client
+	IO                io.Client
+	IndexedDB         indexeddb.Client
+	Input             input.Client
+	Inspector         inspector.Client
+	LayerTree         layertree.Client
+	Log               log.Client
+	Memory            memory.Client
+	Network           network.Client
+	Overlay           overlay.Client
+	Page              page.Client
+	Profiler          profiler.Client
+	Runtime           runtime.Client
+	Schema            schema.Client
+	Security          security.Client
+	ServiceWorker     serviceworker.Client
+	Storage           storage.Client
+	SystemInfo        systeminfo.Client
+	Target            target.Client
+	Tethering         tethering.Client
+	Tracing           tracing.Client
 }
 
 func Dial(url string) *Client {
@@ -94,41 +94,41 @@ func Dial(url string) *Client {
 	return &Client{
 		Client: cl,
 
-		Accessibility:     accessibility.Domain{Client: cl},
-		Animation:         animation.Domain{Client: cl},
-		ApplicationCache:  applicationcache.Domain{Client: cl},
-		Browser:           browser.Domain{Client: cl},
-		CSS:               css.Domain{Client: cl},
-		CacheStorage:      cachestorage.Domain{Client: cl},
-		Console:           console.Domain{Client: cl},
-		DOM:               dom.Domain{Client: cl},
-		DOMDebugger:       domdebugger.Domain{Client: cl},
-		DOMSnapshot:       domsnapshot.Domain{Client: cl},
-		DOMStorage:        domstorage.Domain{Client: cl},
-		Database:          database.Domain{Client: cl},
-		Debugger:          debugger.Domain{Client: cl},
-		DeviceOrientation: deviceorientation.Domain{Client: cl},
-		Emulation:         emulation.Domain{Client: cl},
-		HeapProfiler:      heapprofiler.Domain{Client: cl},
-		IO:                io.Domain{Client: cl},
-		IndexedDB:         indexeddb.Domain{Client: cl},
-		Input:             input.Domain{Client: cl},
-		Inspector:         inspector.Domain{Client: cl},
-		LayerTree:         layertree.Domain{Client: cl},
-		Log:               log.Domain{Client: cl},
-		Memory:            memory.Domain{Client: cl},
-		Network:           network.Domain{Client: cl},
-		Overlay:           overlay.Domain{Client: cl},
-		Page:              page.Domain{Client: cl},
-		Profiler:          profiler.Domain{Client: cl},
-		Runtime:           runtime.Domain{Client: cl},
-		Schema:            schema.Domain{Client: cl},
-		Security:          security.Domain{Client: cl},
-		ServiceWorker:     serviceworker.Domain{Client: cl},
-		Storage:           storage.Domain{Client: cl},
-		SystemInfo:        systeminfo.Domain{Client: cl},
-		Target:            target.Domain{Client: cl},
-		Tethering:         tethering.Domain{Client: cl},
-		Tracing:           tracing.Domain{Client: cl},
+		Accessibility:     accessibility.Client{Client: cl},
+		Animation:         animation.Client{Client: cl},
+		ApplicationCache:  applicationcache.Client{Client: cl},
+		Browser:           browser.Client{Client: cl},
+		CSS:               css.Client{Client: cl},
+		CacheStorage:      cachestorage.Client{Client: cl},
+		Console:           console.Client{Client: cl},
+		DOM:               dom.Client{Client: cl},
+		DOMDebugger:       domdebugger.Client{Client: cl},
+		DOMSnapshot:       domsnapshot.Client{Client: cl},
+		DOMStorage:        domstorage.Client{Client: cl},
+		Database:          database.Client{Client: cl},
+		Debugger:          debugger.Client{Client: cl},
+		DeviceOrientation: deviceorientation.Client{Client: cl},
+		Emulation:         emulation.Client{Client: cl},
+		HeapProfiler:      heapprofiler.Client{Client: cl},
+		IO:                io.Client{Client: cl},
+		IndexedDB:         indexeddb.Client{Client: cl},
+		Input:             input.Client{Client: cl},
+		Inspector:         inspector.Client{Client: cl},
+		LayerTree:         layertree.Client{Client: cl},
+		Log:               log.Client{Client: cl},
+		Memory:            memory.Client{Client: cl},
+		Network:           network.Client{Client: cl},
+		Overlay:           overlay.Client{Client: cl},
+		Page:              page.Client{Client: cl},
+		Profiler:          profiler.Client{Client: cl},
+		Runtime:           runtime.Client{Client: cl},
+		Schema:            schema.Client{Client: cl},
+		Security:          security.Client{Client: cl},
+		ServiceWorker:     serviceworker.Client{Client: cl},
+		Storage:           storage.Client{Client: cl},
+		SystemInfo:        systeminfo.Client{Client: cl},
+		Target:            target.Client{Client: cl},
+		Tethering:         tethering.Client{Client: cl},
+		Tracing:           tracing.Client{Client: cl},
 	}
 }

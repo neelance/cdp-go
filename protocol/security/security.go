@@ -6,8 +6,8 @@ import (
 )
 
 // Security (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // An internal certificate ID value.
@@ -69,7 +69,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -84,7 +84,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -99,7 +99,7 @@ type ShowCertificateViewerRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ShowCertificateViewer() *ShowCertificateViewerRequest {
+func (d *Client) ShowCertificateViewer() *ShowCertificateViewerRequest {
 	return &ShowCertificateViewerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -114,7 +114,7 @@ type HandleCertificateErrorRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) HandleCertificateError() *HandleCertificateErrorRequest {
+func (d *Client) HandleCertificateError() *HandleCertificateErrorRequest {
 	return &HandleCertificateErrorRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -141,7 +141,7 @@ type SetOverrideCertificateErrorsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetOverrideCertificateErrors() *SetOverrideCertificateErrorsRequest {
+func (d *Client) SetOverrideCertificateErrors() *SetOverrideCertificateErrorsRequest {
 	return &SetOverrideCertificateErrorsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

@@ -6,8 +6,8 @@ import (
 )
 
 // The Browser domain defines methods and events for browser managing. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 type WindowID int
@@ -41,7 +41,7 @@ type GetWindowForTargetRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetWindowForTarget() *GetWindowForTargetRequest {
+func (d *Client) GetWindowForTarget() *GetWindowForTargetRequest {
 	return &GetWindowForTargetRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -71,7 +71,7 @@ type SetWindowBoundsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetWindowBounds() *SetWindowBoundsRequest {
+func (d *Client) SetWindowBounds() *SetWindowBoundsRequest {
 	return &SetWindowBoundsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -98,7 +98,7 @@ type GetWindowBoundsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetWindowBounds() *GetWindowBoundsRequest {
+func (d *Client) GetWindowBounds() *GetWindowBoundsRequest {
 	return &GetWindowBoundsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

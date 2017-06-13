@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Overrides the Device Orientation.
@@ -16,7 +16,7 @@ type SetDeviceOrientationOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDeviceOrientationOverride() *SetDeviceOrientationOverrideRequest {
+func (d *Client) SetDeviceOrientationOverride() *SetDeviceOrientationOverrideRequest {
 	return &SetDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -49,7 +49,7 @@ type ClearDeviceOrientationOverrideRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ClearDeviceOrientationOverride() *ClearDeviceOrientationOverrideRequest {
+func (d *Client) ClearDeviceOrientationOverride() *ClearDeviceOrientationOverrideRequest {
 	return &ClearDeviceOrientationOverrideRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

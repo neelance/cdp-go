@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // ServiceWorker registration.
@@ -71,7 +71,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -84,7 +84,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -97,7 +97,7 @@ type UnregisterRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Unregister() *UnregisterRequest {
+func (d *Client) Unregister() *UnregisterRequest {
 	return &UnregisterRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -115,7 +115,7 @@ type UpdateRegistrationRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) UpdateRegistration() *UpdateRegistrationRequest {
+func (d *Client) UpdateRegistration() *UpdateRegistrationRequest {
 	return &UpdateRegistrationRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -133,7 +133,7 @@ type StartWorkerRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StartWorker() *StartWorkerRequest {
+func (d *Client) StartWorker() *StartWorkerRequest {
 	return &StartWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -151,7 +151,7 @@ type SkipWaitingRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SkipWaiting() *SkipWaitingRequest {
+func (d *Client) SkipWaiting() *SkipWaitingRequest {
 	return &SkipWaitingRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -169,7 +169,7 @@ type StopWorkerRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) StopWorker() *StopWorkerRequest {
+func (d *Client) StopWorker() *StopWorkerRequest {
 	return &StopWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -187,7 +187,7 @@ type InspectWorkerRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) InspectWorker() *InspectWorkerRequest {
+func (d *Client) InspectWorker() *InspectWorkerRequest {
 	return &InspectWorkerRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -205,7 +205,7 @@ type SetForceUpdateOnPageLoadRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetForceUpdateOnPageLoad() *SetForceUpdateOnPageLoadRequest {
+func (d *Client) SetForceUpdateOnPageLoad() *SetForceUpdateOnPageLoadRequest {
 	return &SetForceUpdateOnPageLoadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -223,7 +223,7 @@ type DeliverPushMessageRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DeliverPushMessage() *DeliverPushMessageRequest {
+func (d *Client) DeliverPushMessage() *DeliverPushMessageRequest {
 	return &DeliverPushMessageRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -251,7 +251,7 @@ type DispatchSyncEventRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) DispatchSyncEvent() *DispatchSyncEventRequest {
+func (d *Client) DispatchSyncEvent() *DispatchSyncEventRequest {
 	return &DispatchSyncEventRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

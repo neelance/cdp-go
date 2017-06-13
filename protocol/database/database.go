@@ -6,8 +6,8 @@ import (
 )
 
 // (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // Unique identifier of Database object. (experimental)
@@ -46,7 +46,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -61,7 +61,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -75,7 +75,7 @@ type GetDatabaseTableNamesRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetDatabaseTableNames() *GetDatabaseTableNamesRequest {
+func (d *Client) GetDatabaseTableNames() *GetDatabaseTableNamesRequest {
 	return &GetDatabaseTableNamesRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -99,7 +99,7 @@ type ExecuteSQLRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) ExecuteSQL() *ExecuteSQLRequest {
+func (d *Client) ExecuteSQL() *ExecuteSQLRequest {
 	return &ExecuteSQLRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

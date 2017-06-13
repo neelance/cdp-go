@@ -6,8 +6,8 @@ import (
 )
 
 // Input/Output operations for streams produced by DevTools. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 type StreamHandle string
@@ -18,7 +18,7 @@ type ReadRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Read() *ReadRequest {
+func (d *Client) Read() *ReadRequest {
 	return &ReadRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -60,7 +60,7 @@ type CloseRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Close() *CloseRequest {
+func (d *Client) Close() *CloseRequest {
 	return &CloseRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 

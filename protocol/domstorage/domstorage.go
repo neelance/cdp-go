@@ -6,8 +6,8 @@ import (
 )
 
 // Query and modify DOM storage. (experimental)
-type Domain struct {
-	Client *rpc.Client
+type Client struct {
+	*rpc.Client
 }
 
 // DOM Storage identifier. (experimental)
@@ -30,7 +30,7 @@ type EnableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Enable() *EnableRequest {
+func (d *Client) Enable() *EnableRequest {
 	return &EnableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -45,7 +45,7 @@ type DisableRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Disable() *DisableRequest {
+func (d *Client) Disable() *DisableRequest {
 	return &DisableRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -59,7 +59,7 @@ type ClearRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) Clear() *ClearRequest {
+func (d *Client) Clear() *ClearRequest {
 	return &ClearRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -77,7 +77,7 @@ type GetDOMStorageItemsRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) GetDOMStorageItems() *GetDOMStorageItemsRequest {
+func (d *Client) GetDOMStorageItems() *GetDOMStorageItemsRequest {
 	return &GetDOMStorageItemsRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -101,7 +101,7 @@ type SetDOMStorageItemRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) SetDOMStorageItem() *SetDOMStorageItemRequest {
+func (d *Client) SetDOMStorageItem() *SetDOMStorageItemRequest {
 	return &SetDOMStorageItemRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
@@ -129,7 +129,7 @@ type RemoveDOMStorageItemRequest struct {
 	opts   map[string]interface{}
 }
 
-func (d *Domain) RemoveDOMStorageItem() *RemoveDOMStorageItemRequest {
+func (d *Client) RemoveDOMStorageItem() *RemoveDOMStorageItemRequest {
 	return &RemoveDOMStorageItemRequest{opts: make(map[string]interface{}), client: d.Client}
 }
 
